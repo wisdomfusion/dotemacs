@@ -1,0 +1,20 @@
+# -*- mod: org; coding: utf-8 -*-
+
+* Introduction
+
+My .emacs.d configration files.
+
+* Requirement
+
+- GNU Emacs 24
+- Mac OS X, Windows 8/7/XP
+
+* Installatiion
+
+Just download and exract files to ~/.emacs.d/ folder, and restart your Emacs.
+
+* changelog
+
+** 20130813
+- manage packages using elpa
+- tidy init.el
