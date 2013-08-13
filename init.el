@@ -4,13 +4,12 @@
 ;; @auther: WisdomFusion <WisdomFusion[at]gmail[dot]com>
 ;; @date:   2013/07/24
 
-;;; global setting
+(defconst *is-mac-p* (eq system-type 'darwin))
+(defconst *is-win-p* (eq system-type 'windows-nt))
+
+;;; bootstrap confign
 
 (require 'cl)
-
-(defconst *is-a-mac* (eq system-type 'darwin))
-(defconst *is-cocoa-emacs*
-  (and *is-a-mac* (eq window-system 'ns)))
 
 ;; load path
 (let* ((my-lisp-dir "~/.emacs.d/")
@@ -93,9 +92,9 @@
 
 (when window-system
   ;; Setting English Font
-  (if (string-equal system-type 'darwin)
+  (if *is-mac-p*
       (set-face-attribute 'default nil :font "Monaco 14"))
-  (if (string-equal system-type 'windows-nt)
+  (if *is-win-p*
       (set-face-attribute 'default nil :font "Monaco 10"))
   ;; Chinese Font
   (dolist (charset '(kana han symbol cjk-misc bopomofo))
