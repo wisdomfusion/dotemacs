@@ -1,0 +1,10 @@
+-*- mode: org; coding: utf-8 -*-
+#+STARTUP: showall
+
+* 2013-08-14
+- manage config using org-mode, a draft
+- add necessary comments and instructions
+
+* 2013-08-13
+- init
+- get rid of several modes and packages

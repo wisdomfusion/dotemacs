@@ -1,6 +1,6 @@
-* Introduction
+* About
 
-My .emacs.d configration files.
+My .emacs.d configration, structured as an org-mode file.
 
 * Requirement
 
@@ -9,10 +9,16 @@ My .emacs.d configration files.
 
 * Installation
 
-Just download and exract files to ~/.emacs.d/ folder, and restart your Emacs.
+Git clone or just download and exract files to ~/.emacs.d/ folder, and restart your Emacs.
 
-* Changelog
+All of the configration is written in config.org using org-babel blocks, e.g:
 
-** 20130813
-- manage packages using elpa
-- tidy init.el
+#+BEGIN_SRC emacs-lisp
+  (require 'cl)
+#+END_SRC
+
+* How it works
+
+Using org-babel, which is part of org-mode.
+
+The code in init.el invokes org-babel functiion org-babel-load-file, which will generate a config.el file and executes it immediately.
