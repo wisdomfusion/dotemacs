@@ -4,24 +4,30 @@
 #+DATE: 2013-08-14
 
 #+STARTUP: showall
+#+STARTUP: hidestars
 
 * Global Settings
 
-** cl
+** Common Lisp for Emacs
 
+Some Common Lisp functions and macros can be used in Emacs Lisp programs.
 #+BEGIN_SRC emacs-lisp
   (require 'cl)
 #+END_SRC
 
-** user info
+** User Info
 
+My full name and mail address
 #+BEGIN_SRC emacs-lisp
   (setq user-full-name    "WisdomFusion")
   (setq user-mail-address "WisdomFusion@gmail.com")
 #+END_SRC
 
-** load path
+** Set load-path
 
+The variable `load-path' lists all the directories where Emacs should look for Elisp files.
+
+Preference is given to byte-compiled files (*.elc) when both a byte-compiled file and a source file (*.el) are found. Therefore, make sure to recompile files after making changes to them (or don't compile the files at all).
 #+BEGIN_SRC emacs-lisp
   ;; load path
   (let* ((my-lisp-dir "~/.emacs.d/")
@@ -30,7 +36,7 @@
     (normal-top-level-add-subdirs-to-load-path))
 #+END_SRC
 
-** Global Variables
+** Declare global variables
 
 #+BEGIN_SRC emacs-lisp
   ;; global variables
@@ -38,8 +44,9 @@
   (defconst *is-win-p* (eq system-type 'windows-nt))
 #+END_SRC
 
-** elpa
+** ELPA
 
+ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 #+BEGIN_SRC emacs-lisp
   ;; elpa
   (when (> emacs-major-version 23)
@@ -52,7 +59,7 @@
     (package-initialize))
 #+END_SRC
 
-** basic ui
+** Basic UI Settings
 
 #+BEGIN_SRC emacs-lisp
   (when window-system
@@ -68,13 +75,13 @@
   (defvar mode-line-cleaner-alist
     `((abbrev-mode . "")
       (undo-tree-mode . "")
-      (paredit-mode . " Par")
+      (paredit-mode . " Pa")
       ;; Major modes
       (lisp-interaction-mode . "λ")
       (cperl-mode . "pl")
       (python-mode . "py")
       (ruby-mode . "rb")
-      (emacs-lisp-mode . "EL")
+      (emacs-lisp-mode . "El")
       (js2-mode . "js2")))
   (defun clean-mode-line ()
     (interactive)
@@ -101,9 +108,10 @@
   
   ;; color-theme
   ;;(load-theme 'deeper-blue)
+  
 #+END_SRC
 
-** window and frame
+** Window and Frame
 
 #+BEGIN_SRC emacs-lisp
   ;; frame demostration
@@ -125,7 +133,7 @@
     (global-set-key [f11] 'maximize-toggle-frame-hmax))
 #+END_SRC
 
-** fonts and encoding
+** Fonts and Encoding
 
 #+BEGIN_SRC emacs-lisp
   ;; unicad -  Universal Charset Auto Detector
@@ -145,7 +153,7 @@
     (setq default-buffer-file-coding-system 'utf-8))
   ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-  ;; 时间戳中文变英文，包括 mode-line
+  
   (setq system-time-locale "C")
   
   (when window-system
@@ -160,26 +168,16 @@
                         charset
                         (font-spec :family "Microsoft YaHei" :size 14))))
   
-  ;; 如果想让 org-mode 下表格中英文对齐，使用这个配置
-  ;; 缺点是英文偏小
-  ;; (defun wf-set-font (english chinese english-size chinese-size)
-  ;;   (set-face-attribute 'default nil :font
-  ;;       (format "%s:pixelsize=%d" english english-size))
-  ;;   (dolist (charset '(kana han symbol cjk-misc bopomofo))
-  ;;     (set-fontset-font (frame-parameter nil 'font) charset
-  ;;       (font-spec :family chinese :size chinese-size))))
-  ;; (wf-set-font "Monaco" "Microsoft Yahei" 14 16)
-  
-  ;; disable bold or underline globally
-  ;; (set-face-attribute face nil :weight 'normal :underline nil)
   (mapc
    (lambda (face)
      (set-face-attribute face nil :weight 'normal :underline nil))
    (face-list))
+  
 #+END_SRC
 
-** tabbar
+** Tab Bar Mode
 
+Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the idea of web browser's tabs.
 #+BEGIN_SRC emacs-lisp
   ;;; tabbar
   (when (require 'tabbar nil 'noerror)
@@ -291,7 +289,7 @@
        (setq tabbar-ruler-excluded-buffers '())))
 #+END_SRC
 
-** usefull packages
+** Usefull Packages
 
 #+BEGIN_SRC emacs-lisp
   ;; ibuffer
@@ -442,7 +440,7 @@
                   (setq oddmuse-post (concat "uihnscuskc=1;" oddmuse-post))))))
 #+END_SRC
 
-** misc
+** Misc Settings
 
 #+BEGIN_SRC emacs-lisp
   ;; quiet, please! No dinging!
@@ -549,7 +547,7 @@
   ;;   (setq mac-option-modifier nil))
 #+END_SRC
 
-* defuns
+* defun - user defined functions
 
 #+BEGIN_SRC emacs-lisp
   ;;; defuns - my defuns
@@ -728,7 +726,9 @@
 
 * coding
 
-** lisp
+All major mode for coding and IT things: lisp, elisp, f2e, php, perl, etc.
+
+** Lisp
 
 #+BEGIN_SRC emacs-lisp
   ;; slime
@@ -805,6 +805,7 @@
 
 ** css-mode
 
+Major mode for editing css files.
 #+BEGIN_SRC emacs-lisp
   ;;; css-mode
   (autoload 'css-mode "css-mode")
@@ -816,6 +817,7 @@
 
 ** js2-mode
 
+js2-mode by SteveYegge is arguably the best JavaScript mode available for emacs. It has very accurate syntax highlighting, supports newer JavaScript extensions implemented in SpiderMonkey, and highlights syntax errors as you type.
 #+BEGIN_SRC emacs-lisp
   ;;; js2-mode --- Improved JavaScript editing mode
   (autoload 'js2-mode "js2-mode")
@@ -824,6 +826,7 @@
 
 ** php-mode
 
+Major mode for editing PHP files.
 #+BEGIN_SRC emacs-lisp
   ;;; php-mode
   (require 'php-mode)
@@ -855,10 +858,10 @@
 #+END_SRC
 
 ** multi web mode
-   
+
+Multi Web Mode is a minor mode which makes web editing in Emacs much easier.   
 #+BEGIN_SRC emacs-lisp
   ;;; multi-web-mode, mweb
-  ;;; Multi Web Mode is a minor mode which makes web editing in Emacs much easier.
   ;;; https://github.com/fgallina/multi-web-mode
   (require 'multi-web-mode)
   (setq mweb-default-major-mode 'html-mode)
@@ -875,6 +878,7 @@
 
 ** cperl-mode
 
+cperl-mode is a more advanced mode for programming Perl than the default Perl Mode.
 #+BEGIN_SRC emacs-lisp
   ;;; cperl-mode
   ;;; http://www.emacswiki.org/emacs/CPerlMode
@@ -912,6 +916,7 @@
 
 ** ruby-mode
 
+Major mode for editing Ruby files.
 #+BEGIN_SRC emacs-lisp
   ;;; ruby-mode
   (autoload 'ruby-mode "ruby-mode"
@@ -924,6 +929,7 @@
 
 ** c and cpp
 
+Major mode for editing c and cpp files.
 #+BEGIN_SRC emacs-lisp
   ;;; c and cpp
   (add-hook 'c-mode-common-hook
@@ -940,6 +946,7 @@
 
 ** lua-mode
 
+Major mode for editing Lua files.
 #+BEGIN_SRC emacs-lisp
   ;;; lua-mode
   (autoload 'lua-mode "lua-mode" "Major mode for editing lua code." t)
@@ -949,6 +956,7 @@
 
 ** LaTeX
 
+AUCTEX is an extensible package for writing and formatting TEX files in GNU Emacs.
 #+BEGIN_SRC emacs-lisp
   ;;; text-mode
   (add-hook 'text-mode-hook
@@ -1105,6 +1113,7 @@
    
 * org-mode
 
+Org mode is for keeping notes, maintaining TODO lists, planning projects, and authoring documents with a fast and effective plain-text system.
 #+BEGIN_SRC emacs-lisp
   (require 'org)
   (require 'remember)
@@ -1139,20 +1148,12 @@
       (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
   (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
 #+END_SRC
-   
-* emacs server
 
-#+BEGIN_SRC emacs-lisp
-  ;; allow access from emacsclient
-  (require 'server)
-  (unless (server-running-p)
-    (server-start))
-#+END_SRC
+* Misc and Others
 
-* misc
+** Abbrev
 
-** abbrev
-
+Define some words abbreviation.
 #+BEGIN_SRC emacs-lisp
   ;; my personal abbreviations
   (define-abbrev-table 'global-abbrev-table
@@ -1209,8 +1210,9 @@
   (abbrev-mode 1)
 #+END_SRC
 
-** alias
+** Alias
 
+Use some alias to shorten commands.
 #+BEGIN_SRC emacs-lisp
   ; shortening of often used commands
   (defalias 'qrr 'query-replace-regexp)
@@ -1259,4 +1261,12 @@
   (defalias 'acm 'auto-complete-mode)
   (defalias 'vlm 'visual-line-mode)
   (defalias 'glm 'global-linum-mode)
+#+END_SRC
+   
+* emacs server
+Allow access form emacsclient.
+#+BEGIN_SRC emacs-lisp
+  (require 'server)
+  (unless (server-running-p)
+    (server-start))
 #+END_SRC

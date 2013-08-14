@@ -4,6 +4,7 @@
 * 2013-08-14
 - manage config using org-mode, a draft
 - add necessary comments and instructions
+- add auctex
 
 * 2013-08-13
 - init

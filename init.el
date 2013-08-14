@@ -1,4 +1,4 @@
-;;; -*- mode: emacs-Lisp; coding: utf-8 -*-
+;;; -*- mode: emacs-lisp; coding: utf-8 -*-
 
 ;; require packages
 (require 'org-install)
