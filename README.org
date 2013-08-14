@@ -2,11 +2,6 @@
 
 My .emacs.d configration, structured as an org-mode file.
 
-* Requirement
-
-- GNU Emacs 24
-- Mac OS X, Windows XP or later
-
 * Installation
 
 Git clone or just download and exract files to ~/.emacs.d/ folder, and restart your Emacs.
