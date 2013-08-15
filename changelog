@@ -3,6 +3,7 @@
 
 * 2013-08-15 
 - add slime switch, and turn it off by default
+- improve document
 
 * 2013-08-14
 - manage config using org-mode, a draft

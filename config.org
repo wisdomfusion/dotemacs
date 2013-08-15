@@ -1,52 +1,50 @@
 # -*- mode: org; coding: utf-8 -*-
 #+TITLE: Emacs config using org-mode
 #+AUTHOR: WisdomFusion <WisdomFusion[at]gmail[dot]com>
-#+DATE: 2013-08-14
+#+DATE: 2013-08-15
 
-#+STARTUP: showall
 #+STARTUP: hidestars
+
 
 * Global Settings
 
 ** Common Lisp for Emacs
 
 Some Common Lisp functions and macros can be used in Emacs Lisp programs.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (require 'cl)
-#+END_SRC
+#+end_src
 
 ** User Info
 
 My full name and mail address
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq user-full-name    "WisdomFusion")
   (setq user-mail-address "WisdomFusion@gmail.com")
-#+END_SRC
+#+end_src
 
 ** Set load-path
 
 The variable `load-path' lists all the directories where Emacs should look for Elisp files.
-
-Preference is given to byte-compiled files (*.elc) when both a byte-compiled file and a source file (*.el) are found. Therefore, make sure to recompile files after making changes to them (or don't compile the files at all).
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; load path
   (let* ((my-lisp-dir "~/.emacs.d/")
          (default-directory my-lisp-dir))
     (setq load-path (cons my-lisp-dir load-path))
     (normal-top-level-add-subdirs-to-load-path))
-#+END_SRC
+#+end_src
 
 ** Declare global variables
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; global variables
   (defconst *is-mac-p* (eq system-type 'darwin))
   (defconst *is-win-p* (eq system-type 'windows-nt))
-#+END_SRC
+#+end_src
 
 ** Fonts and Encoding
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; unicad -  Universal Charset Auto Detector
   ;; http://www.emacswiki.org/emacs/Unicad
   (require 'unicad nil 'noerror)
@@ -83,14 +81,12 @@ Preference is given to byte-compiled files (*.elc) when both a byte-compiled fil
    (lambda (face)
      (set-face-attribute face nil :weight 'normal :underline nil))
    (face-list))
-  
-#+END_SRC
+#+end_src
 
 ** ELPA
 
 ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
-#+BEGIN_SRC emacs-lisp
-  ;; elpa
+#+begin_src emacs-lisp
   (when (> emacs-major-version 23)
     (require 'package)
     (setq package-archives
@@ -99,11 +95,11 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
             ("melpa"     . "http://melpa.milkbox.net/packages/")
             ("org"       . "http://orgmode.org/elpa/")))
     (package-initialize))
-#+END_SRC
+#+end_src
 
 ** Basic UI Settings
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (when window-system
     (setq frame-title-format '(buffer-file-name "%f" ("%b")))
     (tool-bar-mode -1)
@@ -151,11 +147,11 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   ;; color-theme
   ;;(load-theme 'deeper-blue)
   
-#+END_SRC
+#+end_src
 
 ** Window and Frame
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; frame demostration
   (defun set-frame-size-according-to-resolution ()
     (interactive)
@@ -173,13 +169,30 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
     (require 'maximize nil 'noerror)
     (global-set-key [f9]  'maximize-toggle-frame-vmax)
     (global-set-key [f11] 'maximize-toggle-frame-hmax))
-#+END_SRC
+  
+  ;; alpha of frame
+  ;;(when window-system
+  ;;  (setq alpha-list '((95 75) (100 100)))
+  ;;  (defun wf-toggle-alpha ()
+  ;;    "Toggle alpha of frame"
+  ;;    (interactive)
+  ;;    (let ((h (car alpha-list)))
+  ;;      ((lambda (a ab)
+  ;;         (set-frame-parameter (selected-frame) 'alpha (list a ab))
+  ;;         (add-to-list 'default-frame-alist (cons 'alpha (list a ab)))
+  ;;         ) (car h) (car (cdr h)))
+  ;;      (setq alpha-list (cdr (append alpha-list (list h))))))
+  ;;  (wf-toggle-alpha))
+  
+  
+  
+  
+#+end_src
 
 ** Tab Bar Mode
 
 Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the idea of web browser's tabs.
-#+BEGIN_SRC emacs-lisp
-  ;;; tabbar
+#+begin_src emacs-lisp
   (when (require 'tabbar nil 'noerror)
     (tabbar-mode t)
     (setq tabbar-home-button-enabled-image-orig tabbar-home-button-enabled-image
@@ -287,11 +300,13 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
                            :foreground "blue")
        (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
        (setq tabbar-ruler-excluded-buffers '())))
-#+END_SRC
+#+end_src
 
 ** Usefull Packages
 
-#+BEGIN_SRC emacs-lisp
+*** ibuffer
+
+#+begin_src emacs-lisp
   ;; ibuffer
   (when (require 'ibuffer nil 'noerror)
     (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -322,7 +337,11 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   (add-hook 'ibuffer-mode-hook
             (lambda ()
               (ibuffer-switch-to-saved-filter-groups "default")))
-  
+#+end_src
+
+*** ido
+
+#+begin_src emacs-lisp
   ;; ido-mode is like magic pixie dust!
   (ido-mode t)
   (require 'ido-ubiquitous nil 'noerror) ;; Does what you expected ido-everywhere to do
@@ -335,32 +354,43 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
         ido-handle-duplicate-virtual-buffers 2
         ido-max-prospects 10
         ido-save-directory-list-file "~/.emacs.d/ido.last")
-  
+#+end_src
+
+*** smex
+
+#+begin_src emacs-lisp
   ;; smex
   (when (require 'smex nil 'noerror)
        (setq smex-save-file (concat user-emacs-directory ".smex-items"))
        (smex-initialize)
        (global-set-key (kbd "M-x") 'smex))
-  
+#+end_src
+
+*** recentf
+
+#+begin_src emacs-lisp
   ;; recent files
   (when (require 'recentf nil 'noerror)
     (recentf-mode 1)
     (setq recentf-max-saved-items 500)
     (setq recentf-max-menu-items 60)
     (setq recentf-save-file "~/.emacs.d/recentf"))
-  
+#+end_src
+
+*** undo-tree
+
+#+begin_src emacs-lisp
   ;; undo-tree
   (when (require 'undo-tree nil 'noerror)
        (global-undo-tree-mode 1)
        (defalias 'redo 'undo-tree-redo)
        (global-set-key (kbd "C-z") 'undo)
        (global-set-key (kbd "C-S-z") 'redo))
-  
-  ;; save cursor place
-  (when (require 'saveplace nil 'noerror)
-    (setq-default save-place t)
-    (setq save-place-file "~/.emacs.d/saved-places"))
-  
+#+end_src
+
+*** re-builder
+
+#+begin_src emacs-lisp
   ;; re-builder
   (require 're-builder)
   (setq reb-re-syntax 'string)
@@ -373,25 +403,39 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
                                          "Query replace"  t))))
     (with-current-buffer reb-target-buffer
       (query-replace-regexp (reb-target-binding reb-regexp) to-string)))
+
   (defun reb-beginning-of-buffer ()
     "In re-builder, move target buffer point position back to beginning."
     (interactive)
     (set-window-point (get-buffer-window reb-target-buffer)
                       (with-current-buffer reb-target-buffer (point-min))))
+
   (defun reb-end-of-buffer ()
     "In re-builder, move target buffer point position back to beginning."
     (interactive)
     (set-window-point (get-buffer-window reb-target-buffer)
                       (with-current-buffer reb-target-buffer (point-max))))
   ;; end of re-builder
-  
-  ;; ace-jump-mode
+#+end_src
+
+*** ace-jump-mode
+
+#+begin_src emacs-lisp
   (autoload 'ace-jump-mode "ace-jump-mode" nil t)
   (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
   (eval-after-load "ace-jump-mode"
     '(set-face-background 'ace-jump-face-foreground "yellow"))
   (eval-after-load "viper-keym"
     '(define-key viper-vi-global-user-map (kbd "SPC") 'ace-jump-mode))
+#+end_src
+
+*** many others
+
+#+begin_src emacs-lisp
+  ;; save cursor place
+  (when (require 'saveplace nil 'noerror)
+    (setq-default save-place t)
+    (setq save-place-file "~/.emacs.d/saved-places"))
   
   ;; to prevent error like:
   ;; "help-setup-xref: Symbol's value as variable is void: help-xref-following"
@@ -438,11 +482,11 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
               (lambda ()
                 (unless (string-match "question" oddmuse-post)
                   (setq oddmuse-post (concat "uihnscuskc=1;" oddmuse-post))))))
-#+END_SRC
+#+end_src
 
 ** Misc Settings
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; quiet, please! No dinging!
   (setq visible-bell t)
   (setq ring-bell-function (lambda () t))
@@ -545,13 +589,11 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   ;;   (setq mac-command-key-is-meta t)
   ;;   (setq mac-command-modifier 'meta)
   ;;   (setq mac-option-modifier nil))
-#+END_SRC
+#+end_src
 
 * defun - user defined functions
 
-#+BEGIN_SRC emacs-lisp
-  ;;; defuns - my defuns
-  
+#+begin_src emacs-lisp
   (defun wf-local-comment-auto-fill ()
     (set (make-local-variable 'comment-auto-fill-only-comments) t)
     (auto-fill-mode t))
@@ -603,21 +645,7 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
                                 'undecided new-eol)))
         (set-buffer-file-coding-system new-coding-system)))
     (message "EOL conversion now %s" new-eol))
-  
-  ;; alpha of frame
-  ;;(when window-system
-  ;;  (setq alpha-list '((95 75) (100 100)))
-  ;;  (defun wf-toggle-alpha ()
-  ;;    "Toggle alpha of frame"
-  ;;    (interactive)
-  ;;    (let ((h (car alpha-list)))
-  ;;      ((lambda (a ab)
-  ;;         (set-frame-parameter (selected-frame) 'alpha (list a ab))
-  ;;         (add-to-list 'default-frame-alist (cons 'alpha (list a ab)))
-  ;;         ) (car h) (car (cdr h)))
-  ;;      (setq alpha-list (cdr (append alpha-list (list h))))))
-  ;;  (wf-toggle-alpha))
-  
+    
   ;; Commands
   
   (defun wf-eval-and-replace ()
@@ -722,7 +750,7 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
      See also: `copy-to-register-1', `insert-register'."
     (interactive)
     (insert-register ?1))
-#+END_SRC
+#+end_src
 
 * coding
 
@@ -730,25 +758,34 @@ All major mode for coding and IT things: lisp, elisp, f2e, php, perl, etc.
 
 ** Lisp
 
-#+BEGIN_SRC emacs-lisp
+*** slime
+
+#+begin_src emacs-lisp
   ;; slime
-  ;; CLISP
   (when *hack-slime-p*
-    (if (string-equal system-type 'darwin)
+    (if *is-mac-p*
       (progn
        (setq inferior-lisp-program "sbcl")
        (load (expand-file-name "~/quicklisp/slime-helper.el"))))
-    (if (string-equal system-type 'windows-nt)
+    (if *is-win-p*
       (progn
         (setq inferior-lisp-program "clisp.exe")
         (load "C:\\quicklisp\\slime-helper.el"))))
-  
+#+end_src
+
+*** emacs-lisp
+
+#+begin_src emacs-lisp
   ;;; emacs-lisp-mode
   ;; now '-' is not considered a word-delimiter
   (add-hook 'emacs-lisp-mode-hook
             '(lambda ()
                (modify-syntax-entry ?- "w")))
-  
+#+end_src
+
+*** paredit
+
+#+begin_src emacs-lisp
   ;;; paredit
   ;;; http://pub.gajendra.net/src/paredit-refcard.pdf
   (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
@@ -785,11 +822,11 @@ All major mode for coding and IT things: lisp, elisp, f2e, php, perl, etc.
       (indent-according-to-mode)))
   ;; Using local-set-key in a mode-hook is a better idea.
   (global-set-key (kbd "RET") 'electrify-return-if-match)
-#+END_SRC
+#+end_src
 
-** AC
+** auto-complete
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;;; auto-complete
   ;;; http://cx4a.org/software/auto-complete/
   (require 'auto-complete-config)
@@ -802,33 +839,33 @@ All major mode for coding and IT things: lisp, elisp, f2e, php, perl, etc.
   (setq ac-auto-start 2)
   ;; case sensitivity is important when finding matches
   (setq ac-ignore-case nil)
-#+END_SRC
+#+end_src
 
 ** css-mode
 
 Major mode for editing css files.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;;; css-mode
   (autoload 'css-mode "css-mode")
   ;; set the indentation style to the c-mode style
   (setq cssm-indent-function 'cssm-c-style-indenter)
   ;; use this mode when loading .css files
   (setq auto-mode-alist (cons '("\\.css\\'" . css-mode) auto-mode-alist))
-#+END_SRC
+#+end_src
 
 ** js2-mode
 
 js2-mode by SteveYegge is arguably the best JavaScript mode available for emacs. It has very accurate syntax highlighting, supports newer JavaScript extensions implemented in SpiderMonkey, and highlights syntax errors as you type.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;;; js2-mode --- Improved JavaScript editing mode
   (autoload 'js2-mode "js2-mode")
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-#+END_SRC
+#+end_src
 
 ** php-mode
 
 Major mode for editing PHP files.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;;; php-mode
   (require 'php-mode)
   (autoload 'php-mode "php-mode" "Major mode for editing php code." t)
@@ -856,12 +893,12 @@ Major mode for editing PHP files.
     (c-set-offset 'arglist-cont 0)
     (c-set-offset 'arglist-close 0))
   (add-hook 'php-mode-hook 'wf-php-mode-init)
-#+END_SRC
+#+end_src
 
 ** multi web mode
 
 Multi Web Mode is a minor mode which makes web editing in Emacs much easier.   
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;;; multi-web-mode, mweb
   ;;; https://github.com/fgallina/multi-web-mode
   (require 'multi-web-mode)
@@ -875,12 +912,12 @@ Multi Web Mode is a minor mode which makes web editing in Emacs much easier.
   ;; M-<f11> : Prompts the user to override the default major mode.
   ;; M-<f12> : Prompts the user to override the calculated extra indentation.
   ;; Useful when the automatic calculation is not good enough.
-#+END_SRC
+#+end_src
 
 ** cperl-mode
 
 cperl-mode is a more advanced mode for programming Perl than the default Perl Mode.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;;; cperl-mode
   ;;; http://www.emacswiki.org/emacs/CPerlMode
   (mapc (lambda (pair)
@@ -913,12 +950,12 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
      '(cperl-array-face ((t (:background nil :weight normal))))
      '(cperl-hash-face  ((t (:background nil :weight normal))))))
   (add-hook 'cperl-mode-hook 'wf-cperl-mode-init)
-#+END_SRC
+#+end_src
 
 ** ruby-mode
 
 Major mode for editing Ruby files.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;;; ruby-mode
   (autoload 'ruby-mode "ruby-mode"
     "Mode for editing ruby source files" t)
@@ -926,13 +963,12 @@ Major mode for editing Ruby files.
         (append '(("\\.rb$" . ruby-mode)) auto-mode-alist))
   (setq interpreter-mode-alist (append '(("ruby" . ruby-mode))
                                        interpreter-mode-alist))
-#+END_SRC
+#+end_src
 
-** c and cpp
+** c & cpp
 
 Major mode for editing c and cpp files.
-#+BEGIN_SRC emacs-lisp
-  ;;; c and cpp
+#+begin_src emacs-lisp
   (add-hook 'c-mode-common-hook
             (lambda ()
               (turn-on-auto-fill)
@@ -943,22 +979,22 @@ Major mode for editing c and cpp files.
                              'tempo-forward-mark)))
   (setq auto-mode-alist
         (append '(("\\.h$" . c++-mode)) auto-mode-alist))
-#+END_SRC
+#+end_src
 
 ** lua-mode
 
 Major mode for editing Lua files.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;;; lua-mode
   (autoload 'lua-mode "lua-mode" "Major mode for editing lua code." t)
   (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
   (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
-#+END_SRC
+#+end_src
 
 ** LaTeX
 
 AUCTEX is an extensible package for writing and formatting TEX files in GNU Emacs.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;;; text-mode
   (add-hook 'text-mode-hook
             '(lambda ()
@@ -1046,13 +1082,11 @@ AUCTEX is an extensible package for writing and formatting TEX files in GNU Emac
     "Make citation" nil)
   (autoload 'reftex-index-phrase-mode
     "reftex-index" "Phrase mode" t)
-#+END_SRC
+#+end_src
    
-* key-bindings
+* Key Bindings
 
-#+BEGIN_SRC emacs-lisp
-  ;;; key-bindings
-  
+#+begin_src emacs-lisp
   ;; resolve conflict with Windows IME
   (when window-system
     (global-set-key (kbd "M-SPC") 'set-mark-command))
@@ -1110,19 +1144,19 @@ AUCTEX is an extensible package for writing and formatting TEX files in GNU Emac
       (let ((case-fold-search isearch-case-fold-search))
         (occur (if isearch-regexp isearch-string
                  (regexp-quote isearch-string))))))
-#+END_SRC
+#+end_src
    
 * org-mode
 
 Org mode is for keeping notes, maintaining TODO lists, planning projects, and authoring documents with a fast and effective plain-text system.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (require 'org)
   (require 'remember)
   (require 'org-mouse)
   
   ;; I want files with the extension ".org" to open in org-mode.
-  (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-  (add-to-list 'auto-mode-alist '("\\.txt$" . org-mode))
+  (add-to-list 'auto-mode-alist
+               '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
   
   ;; Some basic keybindings.
   (global-set-key "\C-cl" 'org-store-link)
@@ -1131,7 +1165,14 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   
   ;; a basic set of keywords to start out
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAIT(w)" "STRT(s)" "|" "DONE(d)" "CANL(c)")))
+        '((sequence "TODO(t)" "STRT(s)" "|" "DONE(d)")
+          (sequencep "WAIT(w@/!)" "|" "CANL(c@/!)")))
+  
+  (setq org-todo-keyword-faces
+        '(("TODO" :foreground "red" :weight bold)
+          ("DONE" :foreground "forest green" :weight bold)
+          ("WAIT" :foreground "orange" :weight bold)
+          ("CANL" :foreground "forest green" :weight bold)))
   
   ;; I use org's tag feature to implement contexts.
   (setq org-tag-alist '(("OFFICE"  . ?o)
@@ -1148,14 +1189,15 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
     (let (org-log-done org-log-states)   ; turn off logging
       (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
   (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-#+END_SRC
+  
+#+end_src
 
 * Misc and Others
 
 ** Abbrev
 
 Define some words abbreviation.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; my personal abbreviations
   (define-abbrev-table 'global-abbrev-table
     '(
@@ -1209,12 +1251,12 @@ Define some words abbreviation.
   
   ;; turn on abbrev mode
   (abbrev-mode 1)
-#+END_SRC
+#+end_src
 
 ** Alias
 
 Use some alias to shorten commands.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ; shortening of often used commands
   (defalias 'qrr 'query-replace-regexp)
   (defalias 'rebq 'reb-query-replace)
@@ -1262,12 +1304,12 @@ Use some alias to shorten commands.
   (defalias 'acm 'auto-complete-mode)
   (defalias 'vlm 'visual-line-mode)
   (defalias 'glm 'global-linum-mode)
-#+END_SRC
+#+end_src
    
 * emacs server
 Allow access form emacsclient.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (require 'server)
   (unless (server-running-p)
     (server-start))
-#+END_SRC
+#+end_src
