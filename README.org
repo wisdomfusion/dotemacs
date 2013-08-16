@@ -1,12 +1,18 @@
 * About
 
-My .emacs.d configration, structured as an org-mode file.
+My .emacs.d configration, structured as an [[http://orgmode.org/][org-mode]] file.
+
+* Requirement
+
+- GNU Emacs 23 or later
+- Mac OS X; *nix; Windows XP or later
+- install CLISP and slime before turn on slime on in init.el
 
 * Installation
 
-Git clone or just download and exract files to ~/.emacs.d/ folder, and restart your Emacs.
+Git clone or just download and exract files to *~/.emacs.d/* folder, and restart your Emacs.
 
-All of the configration is written in config.org using org-babel blocks, e.g:
+All of the configration is written in *config.org* using [[http://orgmode.org/worg/org-contrib/babel/][org-babel]] blocks, e.g:
 
 #+BEGIN_SRC emacs-lisp
   (require 'cl)
@@ -14,6 +20,6 @@ All of the configration is written in config.org using org-babel blocks, e.g:
 
 * How it works
 
-Using org-babel, which is part of org-mode.
+Using [[http://orgmode.org/worg/org-contrib/babel/][org-babel]], which is part of [[http://orgmode.org/][org-mode]].
 
-The code in init.el invokes org-babel functiion org-babel-load-file, which will generate a config.el file and executes it immediately.
+The code in init.el invokes [[http://orgmode.org/worg/org-contrib/babel/][org-babel]] functiion org-babel-load-file, which will generate a config.el file and executes it immediately.
