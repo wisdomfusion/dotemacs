@@ -13,3 +13,4 @@ config.el
 ac-comphist.dat
 recentf
 saved-places
+ido.last
