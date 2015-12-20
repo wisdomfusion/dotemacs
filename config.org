@@ -675,19 +675,41 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
     (beginning-of-line 0))
 
   ;; cut, copy, yank
-  (defun wf-kill-ring-save (beg end flash)
-    (interactive (if (use-region-p)
-                     (list (region-beginning) (region-end) nil)
-                   (list (line-beginning-position)
-                         (line-beginning-position 2) 'flash)))
-        (kill-ring-save beg end)
-        (when flash
-          (save-excursion
-            (if (equal (current-column) 0)
-                (goto-char end)
-              (goto-char beg))
-            (sit-for blink-matching-delay))))
-  (global-set-key [remap kill-ring-save] 'wf-kill-ring-save)
+
+  ;;(defadvice kill-region (before slick-cut activate compile)
+  ;;  "When called interactively with no active region, kill a single line instead."
+  ;;  (interactive
+  ;;   (if mark-active
+  ;;       (list (region-beginning) (region-end))
+  ;;     (list (line-beginning-position) (line-beginning-position 2)))))
+
+  ;;(defadvice kill-ring-save (before slick-copy activate compile)
+  ;;  "When called interactively with no active region, copy a single line instead."
+  ;;  (interactive
+  ;;   (if mark-active
+  ;;       (list (region-beginning) (region-end))
+  ;;     (message "Copied line")
+  ;;     (list (line-beginning-position) (line-beginning-position 2)))))
+
+  ;; Emacs 24.4 introduces a new advice system. While defadvice still works,
+  ;; there is a chance that it might be deprecated in favor of the new system
+  ;; in future versions of Emacs. To prepare for that, you might want to use
+  ;; updated versions of slick-cut and slick-copy:
+
+  (defun slick-cut (beg end)
+    (interactive
+     (if mark-active
+         (list (region-beginning) (region-end))
+       (list (line-beginning-position) (line-beginning-position 2)))))
+  (advice-add 'kill-region :before #'slick-cut)
+
+  (defun slick-copy (beg end)
+    (interactive
+     (if mark-active
+         (list (region-beginning) (region-end))
+       (message "Copied line")
+       (list (line-beginning-position) (line-beginning-position 2)))))
+  (advice-add 'kill-ring-save :before #'slick-copy)
 
   (defun yank-line (string)
     "Insert STRING above the current line."
