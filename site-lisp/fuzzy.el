@@ -1,11 +1,10 @@
 ;;; fuzzy.el --- Fuzzy Matching
 
-;; Copyright (C) 2010, 2011, 2012  Tomohiro Matsuyama
+;; Copyright (C) 2010-2015  Tomohiro Matsuyama
 
-;; Author: Tomohiro Matsuyama <tomo@cx4a.org>
+;; Author: Tomohiro Matsuyama <m2ym.pub@gmail.com>
 ;; Keywords: convenience
-;; Version: 20120323.1044
-;; X-Original-Version: 0.2
+;; Version: 0.2
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -22,7 +21,7 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
 
@@ -50,7 +49,7 @@
   (declare (indent 1))
   (let ((start (gensym "START")))
     `(let ((,start (fuzzy-current-time-float)))
-       (flet ((,elapsed-name () (- (fuzzy-current-time-float) ,start)))
+       (cl-flet ((,elapsed-name () (- (fuzzy-current-time-float) ,start)))
          ,@body))))
 
 (defun* fuzzy-add-to-list-as-sorted (list-var value &key (test '<) (key 'identity))
@@ -73,7 +72,7 @@
   (let ((elapsed (gensym "ELAPSED")))
     `(catch 'timeout
        (fuzzy-with-stopwatch (,elapsed)
-         (flet ((,tick-name ()
+         (cl-flet ((,tick-name ()
                   (when (and ,timeout (< ,timeout (,elapsed)))
                     (throw 'timeout ,timeout-result))))
            ,@body)))))
@@ -134,7 +133,8 @@ http://en.wikipedia.org/wiki/Jaro-Winkler_distance."
         dw))))
 
 ;; Make sure byte-compiled.
-(byte-compile 'fuzzy-jaro-winkler-distance)
+(eval-when (eval)
+  (byte-compile 'fuzzy-jaro-winkler-distance))
 
 (defalias 'fuzzy-jaro-winkler-score 'fuzzy-jaro-winkler-distance)
 
@@ -196,7 +196,7 @@ scoring between S1 and S2. The score must be between 0.0 and
   (format ".\\{0,%s\\}" fuzzy-match-accept-length-difference))
 
 (defun fuzzy-search-regexp-compile (string)
-  (flet ((opt (n)
+  (cl-flet ((opt (n)
            (regexp-opt-charset
             (append (substring string
                                (max 0 (- n 1))
@@ -268,10 +268,8 @@ scoring between S1 and S2. The score must be between 0.0 and
   (setq fuzzy-isearch-failed-count 0))
 
 (defun fuzzy-isearch ()
-  (cond (isearch-word
-         (if isearch-forward 'word-search-forward 'word-search-backward))
-        (isearch-regexp
-         (if isearch-forward 're-search-forward 're-search-backward))
+  (cond ((or isearch-word isearch-regexp)
+         (isearch-search-fun-default))
         ((or fuzzy-isearch
              (eq fuzzy-isearch-enabled 'always)
              (and (eq fuzzy-isearch-enabled 'on-failed)
@@ -351,7 +349,8 @@ scoring between S1 and S2. The score must be between 0.0 and
    (t 0.0)))
 
 ;; Make sure byte-compiled.
-(byte-compile 'fuzzy-quicksilver-abbrev-score-nocache)
+(eval-when (eval)
+  (byte-compile 'fuzzy-quicksilver-abbrev-score-nocache))
 
 (defvar fuzzy-quicksilver-abbrev-score-cache
   (make-hash-table :test 'equal :weakness t))

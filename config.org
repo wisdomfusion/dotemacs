@@ -1,7 +1,7 @@
 # -*- mode: org; coding: utf-8 -*-
 #+TITLE: Emacs config using org-mode
 #+AUTHOR: WisdomFusion <WisdomFusion[at]gmail[dot]com>
-#+DATE: 2013-08-15
+#+DATE: 2015年12年20日
 
 #+STARTUP: hidestars
 
@@ -47,7 +47,7 @@ The variable `load-path' lists all the directories where Emacs should look for E
 
 #+begin_src emacs-lisp
   ;; unicad -  Universal Charset Auto Detector
-  ;; http://www.emacswiki.org/emacs/Unicad
+  ;; Http://www.emacswiki.org/emacs/Unicad
   (require 'unicad nil 'noerror)
   
   ;; enforce utf-8 as the default coding system
@@ -164,30 +164,6 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (set-frame-size-according-to-resolution)
   ;; frame postition
   (setq initial-frame-alist '((top . 30) (left . 100)))
-  
-  ;; Maximize emacs frames vertically or horizontally
-  (when window-system
-    (require 'maximize nil 'noerror)
-    (global-set-key [f9]  'maximize-toggle-frame-vmax)
-    (global-set-key [f11] 'maximize-toggle-frame-hmax))
-  
-  ;; alpha of frame
-  ;;(when window-system
-  ;;  (setq alpha-list '((95 75) (100 100)))
-  ;;  (defun wf-toggle-alpha ()
-  ;;    "Toggle alpha of frame"
-  ;;    (interactive)
-  ;;    (let ((h (car alpha-list)))
-  ;;      ((lambda (a ab)
-  ;;         (set-frame-parameter (selected-frame) 'alpha (list a ab))
-  ;;         (add-to-list 'default-frame-alist (cons 'alpha (list a ab)))
-  ;;         ) (car h) (car (cdr h)))
-  ;;      (setq alpha-list (cdr (append alpha-list (list h))))))
-  ;;  (wf-toggle-alpha))
-  
-  
-  
-  
 #+end_src
 
 ** Tab Bar Mode
@@ -430,35 +406,26 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
     '(define-key viper-vi-global-user-map (kbd "SPC") 'ace-jump-mode))
 #+end_src
 
-*** many others
+*** other el tools
 
 #+begin_src emacs-lisp
   ;; save cursor place
   (when (require 'saveplace nil 'noerror)
     (setq-default save-place t)
     (setq save-place-file "~/.emacs.d/saved-places"))
-  
+
   ;; to prevent error like:
   ;; "help-setup-xref: Symbol's value as variable is void: help-xref-following"
   (require 'help-mode nil 'noerror)
-  
+
+  ;; https://github.com/auto-complete/fuzzy-el
   (require 'fuzzy nil 'noerror)
-  
+
   (require 'htmlize nil 'noerror)
-  
+
   (when (require 'uniquify nil 'noerror)
     (setq uniquify-buffer-name-style 'reverse))
-  
-  (when (require 'bs nil 'noerror)
-    (global-set-key (kbd "C-x C-b") 'bs-show))
-  
-  ;; iswitchb
-  (iswitchb-mode 1)
-  (setq iswitchb-buffer-ignore '("^ " "*Buffer"))
-  
-  ;; same window switch
-  (setq iswitchb-default-method 'samewindow)
-  
+
   (setq make-backup-files nil)  ;; stop creating those backup~ files
   (setq auto-save-default nil)  ;; stop creating those #auto-save# files
   (setq backup-by-copying t)
@@ -466,17 +433,17 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   (setq dired-recursive-copies  'top)
   ;; delete to trach
   (setq delete-by-moving-to-trash t)
-  
+
   (eval-after-load "diff-mode"
     '(progn
        (set-face-foreground 'diff-added "green4")
        (set-face-foreground 'diff-removed "red3")))
-  
+
   (eval-after-load "magit"
     '(progn
        (set-face-foreground 'magit-diff-add "green4")
        (set-face-foreground 'magit-diff-del "red3")))
-  
+
   ;; Get around the emacswiki spam protection
   (eval-after-load "oddmuse"
     '(add-hook 'oddmuse-mode-hook
@@ -598,36 +565,36 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   (defun wf-local-comment-auto-fill ()
     (set (make-local-variable 'comment-auto-fill-only-comments) t)
     (auto-fill-mode t))
-  
+
   (defun wf-pretty-lambdas ()
     (font-lock-add-keywords
      nil `(("(?\\(lambda\\>\\)"
             (0 (progn (compose-region (match-beginning 1) (match-end 1)
                                       ,(make-char 'greek-iso8859-7 107))
                       nil))))))
-  
+
   (add-hook 'prog-mode-hook 'wf-local-comment-auto-fill)
   (add-hook 'prog-mode-hook 'wf-pretty-lambdas)
   (add-hook 'prog-mode-hook 'idle-highlight-mode)
-  
+
   (defun wf-prog-mode-hook ()
     (run-hooks 'prog-mode-hook))
-  
+
   (defun wf-untabify-buffer ()
     (interactive)
     (untabify (point-min) (point-max)))
-  
+
   (defun wf-indent-buffer ()
     (interactive)
     (indent-region (point-min) (point-max)))
-  
+
   (defun wf-cleanup-buffer ()
     "Perform a bunch of operations on the whitespace content of a buffer."
     (interactive)
     (wf-indent-buffer)
     (wf-untabify-buffer)
     (delete-trailing-whitespace))
-  
+
   (defun wf-eol-conversion (new-eol)
     "Specify new end-of-line conversion NEW-EOL for the buffer's file
      coding system. This marks the buffer as modified.
@@ -648,7 +615,7 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
     (message "EOL conversion now %s" new-eol))
     
   ;; Commands
-  
+
   (defun wf-eval-and-replace ()
     "Replace the preceding sexp with its value."
     (interactive)
@@ -658,7 +625,7 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
                (current-buffer))
       (error (message "Invalid expression")
              (insert (current-kill 0)))))
-  
+
   (defun wf-lorem ()
     "Insert a lorem ipsum."
     (interactive)
@@ -669,30 +636,30 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
             "reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla "
             "pariatur. Excepteur sint occaecat cupidatat non proident, sunt in "
             "culpa qui officia deserunt mollit anim id est laborum."))
-  
+
   (defun wf-insert-date ()
     "Insert a time-stamp according to locale's date and time format."
     (interactive)
     (insert (format-time-string "%c" (current-time))))
-  
+
   (defun wf-pairing-bot ()
     "If you can't pair program with a human, use this instead."
     (interactive)
     (message (if (y-or-n-p "Do you have a test for that? ") "Good." "Bad!")))
-  
+
   (defun wf-paredit-nonlisp ()
     "Turn on paredit mode for non-lisps."
     (interactive)
     (set (make-local-variable 'paredit-space-for-delimiter-predicates)
          '((lambda (endp delimiter) nil)))
     (paredit-mode 1))
-  
+
   (defun wf-align-repeat (start end regexp)
     "Repeat alignment with respect to the given regular expression."
     (interactive "r\nsAlign regexp: ")
     (align-regexp start end
                   (concat "\\(\\s-*\\)" regexp) 1 1 t))
-  
+
   ;; swap lines
   ;; just like org-metaup/org-metadown
   (defun wf-swap-line-up ()
@@ -706,51 +673,29 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
     (beginning-of-line 2)
     (transpose-lines 1)
     (beginning-of-line 0))
-  
-  ;; http://www.emacswiki.org/emacs/WholeLineOrRegion#toc2
+
   ;; cut, copy, yank
-  (defadvice kill-ring-save (around slick-copy activate)
-    "When called interactively with no active region, copy a single line instead."
-    (if (or (use-region-p) (not (called-interactively-p)))
-        ad-do-it
-      (kill-new (buffer-substring (line-beginning-position)
-                                  (line-beginning-position 2))
-                nil '(yank-line))
-      (message "Copied line")))
-  (defadvice kill-region (around slick-copy activate)
-    "When called interactively with no active region, kill a single line instead."
-    (if (or (use-region-p) (not (called-interactively-p)))
-        ad-do-it
-      (kill-new (filter-buffer-substring (line-beginning-position)
-                                         (line-beginning-position 2) t)
-                nil '(yank-line))))
+  (defun wf-kill-ring-save (beg end flash)
+    (interactive (if (use-region-p)
+                     (list (region-beginning) (region-end) nil)
+                   (list (line-beginning-position)
+                         (line-beginning-position 2) 'flash)))
+        (kill-ring-save beg end)
+        (when flash
+          (save-excursion
+            (if (equal (current-column) 0)
+                (goto-char end)
+              (goto-char beg))
+            (sit-for blink-matching-delay))))
+  (global-set-key [remap kill-ring-save] 'wf-kill-ring-save)
+
   (defun yank-line (string)
     "Insert STRING above the current line."
     (beginning-of-line)
     (unless (= (elt string (1- (length string))) ?\n)
       (save-excursion (insert "\n")))
     (insert string))
-  
-  ;; registers - multiple clipboards
-  (defun copy-to-register-1 ()
-    "Copy current line or text selection to register 1.
-     See also: `paste-from-register-1', `copy-to-register'."
-    (interactive)
-    (let* (
-           (bds (get-selection-or-unit 'line ))
-           (inputStr (elt bds 0) )
-           (p1 (elt bds 1) )
-           (p2 (elt bds 2) )
-           )
-      (copy-to-register ?1 p1 p2)
-      (message "copied to register 1: 「%s」." inputStr)
-      ))
-  
-  (defun paste-from-register-1 ()
-    "Paste text from register 1.
-     See also: `copy-to-register-1', `insert-register'."
-    (interactive)
-    (insert-register ?1))
+
 #+end_src
 
 * coding
