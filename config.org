@@ -1161,15 +1161,14 @@ Define some words abbreviation.
   ;; my personal abbreviations
   (define-abbrev-table 'global-abbrev-table
     '(
-  
       ;; my info
       ("8eml" "WisdomFusion@gmail.com")
-  
+
       ;; math/unicode symbols
       ("8inf"  "∞")
       ("8luv"  "♥")
       ("8smly" "☺")
-  
+
       ;; tech
       ("8wp" "Wikipedia")
       ("8ms" "Microsoft")
@@ -1186,7 +1185,7 @@ Define some words abbreviation.
       ("8yt" "YouTube")
       ("8ge" "Google Earth")
       ("8ff" "Firefox")
-  
+
       ;; normal english words
       ("8alt" "alternative")
       ("8char" "character")
@@ -1199,16 +1198,16 @@ Define some words abbreviation.
       ("8var" "variable")
       ("8ev" "environment variable")
       ("8cp" "computer")
-  
+
       ;; emacs regex
       ("8num" "\\([0-9]+?\\)")
       ("8str" "\\([^\"]+?\\)\"")
       ("8curly" "“\\([^”]+?\\)”")
       ))
-  
+
   ;; stop asking whether to save newly added abbrev when quitting emacs
   (setq save-abbrevs nil)
-  
+
   ;; turn on abbrev mode
   (abbrev-mode 1)
 #+end_src
@@ -1218,6 +1217,10 @@ Define some words abbreviation.
 Use some alias to shorten commands.
 #+begin_src emacs-lisp
   ; shortening of often used commands
+
+  (defalias 'ff 'toggle-frame-fullscreen)
+  (defalias 'fm 'toggle-frame-maximized) 
+
   (defalias 'qrr 'query-replace-regexp)
   (defalias 'rebq 'reb-query-replace)
   (defalias 'lml 'list-matching-lines)
@@ -1227,13 +1230,13 @@ Use some alias to shorten commands.
   (defalias 'sl 'sort-lines)
   (defalias 'rr 'reverse-region)
   (defalias 'rs 'replace-string)
-  
+
   (defalias 'g 'grep)
   (defalias 'gf 'grep-find)
   (defalias 'fd 'find-dired)
-  
+
   (defalias 'rb 'revert-buffer)
-  
+
   (defalias 'sb 'speedbar)
   (defalias 'cc 'calc)
   (defalias 'sh 'shell)
@@ -1242,21 +1245,21 @@ Use some alias to shorten commands.
   (defalias 'sbc 'set-background-color)
   (defalias 'rof 'recentf-open-files)
   (defalias 'lcd 'list-colors-display)
-  
+
   ; elisp
   (defalias 'eb 'eval-buffer)
   (defalias 'er 'eval-region)
   (defalias 'ed 'eval-defun)
   (defalias 'lf 'load-file)
   (defalias 'eis 'elisp-index-search)
-  
+
   ; major modes
   (defalias 'hm 'html-mode)
   (defalias 'tm 'text-mode)
   (defalias 'om 'org-mode)
   (defalias 'elm 'emacs-lisp-mode)
   (defalias 'ssm 'shell-script-mode)
-  
+
   ; minor modes
   (defalias 'wsm 'whitespace-mode)
   (defalias 'gwsm 'global-whitespace-mode)
