@@ -710,14 +710,6 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
        (message "Copied line")
        (list (line-beginning-position) (line-beginning-position 2)))))
   (advice-add 'kill-ring-save :before #'slick-copy)
-
-  (defun yank-line (string)
-    "Insert STRING above the current line."
-    (beginning-of-line)
-    (unless (= (elt string (1- (length string))) ?\n)
-      (save-excursion (insert "\n")))
-    (insert string))
-
 #+end_src
 
 * coding
