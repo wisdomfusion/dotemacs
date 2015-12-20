@@ -4,7 +4,7 @@ My .emacs.d configration, structured as an [[http://orgmode.org/][org-mode]] fil
 
 * Requirement
 
-- GNU Emacs 23 or later
+- GNU Emacs 24 or later
 - Mac OS X; *nix; Windows XP or later
 - install CLISP and slime before turn on slime on in init.el
 
