@@ -5,7 +5,6 @@
 
 #+STARTUP: hidestars
 
-
 * Global Settings
 
 ** Common Lisp for Emacs
@@ -559,7 +558,7 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   ;;   (setq mac-option-modifier nil))
 #+end_src
 
-* defun - user defined functions
+* User Defined Functions
 
 #+begin_src emacs-lisp
   (defun wf-local-comment-auto-fill ()
@@ -712,7 +711,7 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   (advice-add 'kill-ring-save :before #'slick-copy)
 #+end_src
 
-* coding
+* Lang
 
 All major mode for coding and IT things: lisp, elisp, f2e, php, perl, etc.
 
