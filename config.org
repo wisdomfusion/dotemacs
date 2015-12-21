@@ -320,7 +320,6 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
 #+begin_src emacs-lisp
   ;; ido-mode is like magic pixie dust!
   (ido-mode t)
-  (require 'ido-ubiquitous nil 'noerror) ;; Does what you expected ido-everywhere to do
   (setq ido-enable-prefix nil
         ido-enable-flex-matching t
         ido-auto-merge-work-directories-length nil
@@ -394,17 +393,6 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   ;; end of re-builder
 #+end_src
 
-*** ace-jump-mode
-
-#+begin_src emacs-lisp
-  (autoload 'ace-jump-mode "ace-jump-mode" nil t)
-  (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-  (eval-after-load "ace-jump-mode"
-    '(set-face-background 'ace-jump-face-foreground "yellow"))
-  (eval-after-load "viper-keym"
-    '(define-key viper-vi-global-user-map (kbd "SPC") 'ace-jump-mode))
-#+end_src
-
 *** other el tools
 
 #+begin_src emacs-lisp
@@ -416,9 +404,6 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   ;; to prevent error like:
   ;; "help-setup-xref: Symbol's value as variable is void: help-xref-following"
   (require 'help-mode nil 'noerror)
-
-  ;; https://github.com/auto-complete/fuzzy-el
-  (require 'fuzzy nil 'noerror)
 
   (require 'htmlize nil 'noerror)
 
@@ -783,23 +768,6 @@ All major mode for coding and IT things: lisp, elisp, f2e, php, perl, etc.
   (global-set-key (kbd "RET") 'electrify-return-if-match)
 #+end_src
 
-** auto-complete
-
-#+begin_src emacs-lisp
-  ;;; auto-complete
-  ;;; http://cx4a.org/software/auto-complete/
-  (require 'auto-complete-config)
-  (add-to-list 'ac-dictionary-directories "~/.emacs.d/misc/ac-dict")
-  (ac-config-default)
-  ;; Use dictionaries by default
-  (setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
-  (global-auto-complete-mode t)
-  ;; Start auto-completion after 2 characters of a word
-  (setq ac-auto-start 2)
-  ;; case sensitivity is important when finding matches
-  (setq ac-ignore-case nil)
-#+end_src
-
 ** css-mode
 
 Major mode for editing css files.
@@ -854,23 +822,18 @@ Major mode for editing PHP files.
   (add-hook 'php-mode-hook 'wf-php-mode-init)
 #+end_src
 
-** multi web mode
+** web-mode
 
-Multi Web Mode is a minor mode which makes web editing in Emacs much easier.   
 #+begin_src emacs-lisp
-  ;;; multi-web-mode, mweb
-  ;;; https://github.com/fgallina/multi-web-mode
-  (require 'multi-web-mode)
-  (setq mweb-default-major-mode 'html-mode)
-  (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
-                    (js-mode "<script[^>]*>" "</script>")
-                    (css-mode "<style[^>]*>" "</style>")))
-  (setq mweb-filename-extensions '("php" "htm" "html" "php4" "php5"))
-  (multi-web-global-mode 1)
-  ;; Multi Web Mode binds the following keystrokes:
-  ;; M-<f11> : Prompts the user to override the default major mode.
-  ;; M-<f12> : Prompts the user to override the calculated extra indentation.
-  ;; Useful when the automatic calculation is not good enough.
+  (require 'web-mode)
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 #+end_src
 
 ** cperl-mode
@@ -911,138 +874,6 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
   (add-hook 'cperl-mode-hook 'wf-cperl-mode-init)
 #+end_src
 
-** ruby-mode
-
-Major mode for editing Ruby files.
-#+begin_src emacs-lisp
-  ;;; ruby-mode
-  (autoload 'ruby-mode "ruby-mode"
-    "Mode for editing ruby source files" t)
-  (setq auto-mode-alist
-        (append '(("\\.rb$" . ruby-mode)) auto-mode-alist))
-  (setq interpreter-mode-alist (append '(("ruby" . ruby-mode))
-                                       interpreter-mode-alist))
-#+end_src
-
-** c & cpp
-
-Major mode for editing c and cpp files.
-#+begin_src emacs-lisp
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              (turn-on-auto-fill)
-              (setq comment-column 60)
-              (modify-syntax-entry ?_ "w")     ; now '_' is not considered a word-delimiter
-              (c-set-style "ellemtel")         ; set indentation style
-              (local-set-key [(control tab)]   ; move to next tempo mark
-                             'tempo-forward-mark)))
-  (setq auto-mode-alist
-        (append '(("\\.h$" . c++-mode)) auto-mode-alist))
-#+end_src
-
-** lua-mode
-
-Major mode for editing Lua files.
-#+begin_src emacs-lisp
-  ;;; lua-mode
-  (autoload 'lua-mode "lua-mode" "Major mode for editing lua code." t)
-  (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
-  (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
-#+end_src
-
-** LaTeX
-
-AUCTEX is an extensible package for writing and formatting TEX files in GNU Emacs.
-#+begin_src emacs-lisp
-  ;;; text-mode
-  (add-hook 'text-mode-hook
-            '(lambda ()
-               (turn-on-auto-fill)
-               (auto-fill-mode 1)))
-  
-  ;;; tex-mode
-  (setq tex-mode-hook   '(lambda () (auto-fill-mode 1)))
-  (setq latex-mode-hook '(lambda () (auto-fill-mode 1)))
-  
-  (autoload 'reftex-mode    "reftex" "RefTeX Minor Mode" t)
-  (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" t)
-  
-  (load "auctex.el" nil t t)
-  (load "preview-latex.el" nil t t)
-  (if (string-equal system-type "windows-nt")
-      (require 'tex-mik))
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (setq-default TeX-master nil)
-  
-  (mapc (lambda (mode)
-          (add-hook 'LaTeX-mode-hook mode))
-        (list 'auto-fill-mode
-              'LaTeX-math-mode
-              ;; 'linum-mode
-              'turn-on-reftex))
-  
-  ;; /usr/texbin
-  (when (string-equal system-type "darwin")
-    (setenv "PATH" (concat "/usr/texbin:/usr/local/bin:" (getenv "PATH")))
-    (setq exec-path (append '("/usr/texbin" "/usr/local/bin") exec-path)))
-  
-  (add-hook 'LaTeX-mode-hook
-            (lambda ()
-              (setq TeX-auto-untabify t       ; remove all tabs before saving
-                    TeX-engine 'xetex         ; use xelatex default
-                    TeX-global-PDF-mode t)    ; PDF mode enable, not plain
-              (add-to-list 'TeX-command-list
-                           '("XeLaTeX" "%'xelatex --synctex=1%(mode)%' %t"
-                             TeX-run-TeX nil t))
-              (setq TeX-command-default "XeLaTeX")
-              (setq LaTeX-command "latex -synctex=1")
-              (setq TeX-source-correlate-method 'synctex)
-              (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
-              (add-to-list 'TeX-expand-list '("%u" skim-make-url))
-              (setq TeX-view-program-list
-                    '(("SumatraPDF" "SumatraPDF %o")
-                      ("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %u")))
-              (when (string-equal system-type "windows-nt")
-                (setq TeX-view-program-selection
-                      '((output-pdf "SumatraPDF"))))
-              (when (string-equal system-type "darwin")
-                (setq TeX-view-program-selection
-                      '((output-pdf "Skim"))))
-              (setq TeX-clean-confirm nil)
-              (setq TeX-save-query nil)
-              (imenu-add-menubar-index)
-              (auto-composition-mode 1)
-              (outline-minor-mode 1)
-              (setq TeX-show-compilation nil)
-              (define-key LaTeX-mode-map (kbd "TAB") 'TeX-complete-symbol)))
-  ;; http://www.cs.berkeley.edu/~prmohan/emacs/latex.html
-  (defun skim-make-url ()
-    "Skim PDF Viewer"
-    (concat
-     (TeX-current-line)
-     " "
-     (expand-file-name (funcall file (TeX-output-extension) t)
-               (file-name-directory (TeX-master-file)))
-     " "
-     (buffer-file-name)))
-  
-  (require 'reftex)
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-  (setq reftex-plug-into-AUCTeX t)
-  (setq reftex-enable-partial-scans t)
-  (setq reftex-save-parse-info t)
-  (setq reftex-use-multiple-selection-buffers t)
-  (autoload 'reftex-mode "reftex"
-    "RefTeX Minor Mode" t)
-  (autoload 'turn-on-reftex "reftex"
-    "RefTeX Minor Mode" nil)
-  (autoload 'reftex-citation "reftex-cite"
-    "Make citation" nil)
-  (autoload 'reftex-index-phrase-mode
-    "reftex-index" "Phrase mode" t)
-#+end_src
-   
 * Key Bindings
 
 #+begin_src emacs-lisp
