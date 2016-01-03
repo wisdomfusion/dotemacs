@@ -442,20 +442,20 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   ;; quiet, please! No dinging!
   (setq visible-bell t)
   (setq ring-bell-function (lambda () t))
-  
+
   ;; get rid of the default messages on startup
   (setq initial-scratch-message nil)
   (setq inhibit-startup-message t)
   (setq inhibit-startup-echo-area-message t)
-  
+
   ;; make the last line end in a carriage return
   (setq require-final-newline t)
   ;; will disallow creation of new lines when you press the "arrow-down key"
   ;; at end of the buffer
   (setq next-line-add-newlines t)
-  
+
   (setq x-select-enable-clipboard t) ;; use clipboard
-  
+
   ;; kill-ring and other settings
   (setq kill-ring-max 1024)
   (setq max-lisp-eval-depth 40000)
@@ -471,36 +471,39 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   (setq-default indent-tabs-mode nil)     ;; use space instead of tab
   (setq default-tab-width 4)
   (setq-default major-mode 'text-mode)
-  
+
+  ;; search whitespace regexp
+  (setq search-whitespace-regexp ".*?")
+
   ;; disable line wrap
   (setq default-truncate-lines t)
   ;; make side by side buffers function the same as the main window
   (setq truncate-partial-width-windows nil)
   ;; Add F12 to toggle line wrap
   (global-set-key (kbd "<f12>") 'toggle-truncate-lines)
-  
+
   ;; get rid of yes-or-no questions - y or n is enough
   (fset 'yes-or-no-p 'y-or-n-p)
   ;; confirm on quitting emacs
   (setq confirm-kill-emacs 'yes-or-no-p)
-  
+
   ;; sentence-end
   (setq sentence-end
         "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[ \t]\\)\\)[ \t\n]*")
   (setq sentence-end-double-space nil)
-  
+
   ;; recursive minibuffers
   (setq enable-recursive-minibuffers t)
-  
+
   (setq scroll-step 1
         scroll-conservatively 10000)
-  
+
   ;; text-mode default
   (setq default-major-mode 'text-mode)
-  
+
   ;; follow-mode allows easier editing of long files
   (follow-mode t)
-  
+
   ;; show matched parentheses
   (show-paren-mode t)
   ;; highlight just brackets
@@ -516,7 +519,7 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
                               (?\" . ?\")
                               (?\{ . ?\})
                               ))
-  
+
   ;; mouse avoidance
   ;; banish, exile, jump, animate,
   ;; cat-and-mouse, proteus
@@ -526,13 +529,13 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   (transient-mark-mode t)                 ;; highlight mark area
   (setq shift-select-mode t)              ;; hold shift to mark area
   (delete-selection-mode 1)               ;; overwrite selection
-  
+
   ;; enable some figures
   (put 'set-goal-column 'disabled nil)
   (put 'narrow-to-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
   (put 'downcase-region 'disabled nil)
-  
+
   ;; when in Mac OS X, alt is alt, command is meta
   ;; however, qq and some apps use command key frequently
   ;; drop it...
