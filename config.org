@@ -713,7 +713,7 @@ All major mode for coding and IT things: lisp, elisp, f2e, php, perl, etc.
   (when *hack-slime-p*
     (if *is-mac-p*
       (progn
-       (setq inferior-lisp-program "/opt/local/bin/sbcl")
+       (setq inferior-lisp-program "sbcl")
        (load (expand-file-name "~/quicklisp/slime-helper.el"))))
     (if *is-win-p*
       (progn
