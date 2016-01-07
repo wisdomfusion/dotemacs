@@ -697,6 +697,7 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
        (message "Copied line")
        (list (line-beginning-position) (line-beginning-position 2)))))
   (advice-add 'kill-ring-save :before #'slick-copy)
+
 #+end_src
 
 * Lang
@@ -712,11 +713,11 @@ All major mode for coding and IT things: lisp, elisp, f2e, php, perl, etc.
   (when *hack-slime-p*
     (if *is-mac-p*
       (progn
-       (setq inferior-lisp-program "sbcl")
+       (setq inferior-lisp-program "/opt/local/bin/sbcl")
        (load (expand-file-name "~/quicklisp/slime-helper.el"))))
     (if *is-win-p*
       (progn
-        (setq inferior-lisp-program "clisp.exe")
+        (setq inferior-lisp-program "clisp.exe -K full")
         (load "C:\\quicklisp\\slime-helper.el"))))
 #+end_src
 
