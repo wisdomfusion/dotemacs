@@ -48,7 +48,7 @@ The variable `load-path' lists all the directories where Emacs should look for E
   ;; unicad -  Universal Charset Auto Detector
   ;; Http://www.emacswiki.org/emacs/Unicad
   (require 'unicad nil 'noerror)
-  
+
   ;; enforce utf-8 as the default coding system
   (prefer-coding-system 'utf-8)
   (set-default-coding-systems 'utf-8)
@@ -62,21 +62,28 @@ The variable `load-path' lists all the directories where Emacs should look for E
     (setq default-buffer-file-coding-system 'utf-8))
   ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-  
+
   (setq system-time-locale "C")
-  
+
+  ;; fonts settings
   (when window-system
-    ;; Setting English Font
     (if *is-mac-p*
-        (set-face-attribute 'default nil :font "Monaco 14"))
+        (progn
+          ; English Font
+          (set-face-attribute 'default nil :font "Monaco 14")
+          ; Chinese Font
+          (dolist (charset '(kana han symbol cjk-misc bopomofo))
+            (set-fontset-font (frame-parameter nil 'font)
+                              charset
+                              (font-spec :family "PingFang SC" :size 16)))))
     (if *is-win-p*
-        (set-face-attribute 'default nil :font "Monaco 10"))
-    ;; Chinese Font
-    (dolist (charset '(kana han symbol cjk-misc bopomofo))
-      (set-fontset-font (frame-parameter nil 'font)
-                        charset
-                        (font-spec :family "Microsoft YaHei" :size 14))))
-  
+        (progn
+          (set-face-attribute 'default nil :font "Monaco 10")
+          (dolist (charset '(kana han symbol cjk-misc bopomofo))
+            (set-fontset-font (frame-parameter nil 'font)
+                              charset
+                              (font-spec :family "Microsoft YaHei" :size 16))))))
+
   (mapc
    (lambda (face)
      (set-face-attribute face nil :weight 'normal :underline nil))
