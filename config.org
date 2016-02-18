@@ -75,14 +75,14 @@ The variable `load-path' lists all the directories where Emacs should look for E
           (dolist (charset '(kana han symbol cjk-misc bopomofo))
             (set-fontset-font (frame-parameter nil 'font)
                               charset
-                              (font-spec :family "PingFang SC" :size 16)))))
+                              (font-spec :family "PingFang SC" :size 14)))))
     (if *is-win-p*
         (progn
           (set-face-attribute 'default nil :font "Monaco 10")
           (dolist (charset '(kana han symbol cjk-misc bopomofo))
             (set-fontset-font (frame-parameter nil 'font)
                               charset
-                              (font-spec :family "Microsoft YaHei" :size 16))))))
+                              (font-spec :family "Microsoft YaHei" :size 14))))))
 
   (mapc
    (lambda (face)
@@ -954,43 +954,63 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (require 'org)
   (require 'remember)
   (require 'org-mouse)
-  
+
   ;; I want files with the extension ".org" to open in org-mode.
   (add-to-list 'auto-mode-alist
                '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
-  
+
   ;; Some basic keybindings.
   (global-set-key "\C-cl" 'org-store-link)
   (global-set-key "\C-ca" 'org-agenda)
   (global-set-key "\C-cr" 'org-remember)
-  
+
+  (add-hook 'org-mode-hook
+            (lambda ()
+              ;; fonts adjustment for org-mode tables
+              (when window-system
+                (if *is-mac-p*
+                    (progn
+                                          ; English Font
+                      (set-face-attribute 'default nil :font "Monaco 14")
+                                          ; Chinese Font
+                      (dolist (charset '(kana han symbol cjk-misc bopomofo))
+                        (set-fontset-font (frame-parameter nil 'font)
+                                          charset
+                                          (font-spec :family "PingFang SC" :size 16)))))
+                (if *is-win-p*
+                    (progn
+                      (set-face-attribute 'default nil :font "Monaco 10")
+                      (dolist (charset '(kana han symbol cjk-misc bopomofo))
+                        (set-fontset-font (frame-parameter nil 'font)
+                                          charset
+                                          (font-spec :family "Microsoft YaHei" :size 16))))))))
+
   ;; a basic set of keywords to start out
   (setq org-todo-keywords
         '((sequence "TODO(t)" "STRT(s)" "|" "DONE(d)")
           (sequencep "WAIT(w@/!)" "|" "CANL(c@/!)")))
-  
+
   (setq org-todo-keyword-faces
         '(("TODO" :foreground "red" :weight bold)
           ("DONE" :foreground "forest green" :weight bold)
           ("WAIT" :foreground "orange" :weight bold)
           ("CANL" :foreground "forest green" :weight bold)))
-  
+
   ;; I use org's tag feature to implement contexts.
   (setq org-tag-alist '(("OFFICE"  . ?o)
                         ("HOME"    . ?h)
                         ("SERVER"  . ?s)
                         ("PROJECT" . ?p)))
-  
+
   ;; I put the archive in a separate file, because the gtd file will
   ;; probably already get pretty big just with current tasks.
   (setq org-archive-location "%s_archive::")
-  
+
   (defun org-summary-todo (n-done n-not-done)
     "Switch entry to DONE when all subentries are done, to TODO otherwise."
     (let (org-log-done org-log-states)   ; turn off logging
       (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
   (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-  
 #+end_src
 
 * Misc and Others
