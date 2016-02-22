@@ -1077,15 +1077,22 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
               (setq TeX-source-correlate-method 'synctex)
               (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
               (add-to-list 'TeX-expand-list '("%u" skim-make-url))
-              (setq TeX-view-program-list
-                    '(("SumatraPDF" "SumatraPDF %o")
-                      ("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %u")))
+
               (when *is-win-p*
-                  (setq TeX-view-program-selection
-                        '((output-pdf "SumatraPDF"))))
-                (when *is-mac-p*
-                  (setq TeX-view-program-selection
-                        '((output-pdf "Skim"))))
+                (setq TeX-view-program-list
+                      '(("SumatraPDF" ("\"C:/emacs/bin/SumatraPDF.exe\" -reuse-instance"
+                                       (mode-io-correlate
+                                        " -forward-search %b %n -inverse-search \"emacsclientw --no-wait +%%l \\\"%%f\\\"\" ")
+                                       " %o"))))
+                (setq TeX-view-program-selection
+                      '((output-pdf "SumatraPDF"))))
+
+              (when *is-mac-p*
+                (setq TeX-view-program-list
+                      '(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %u")))
+                (setq TeX-view-program-selection
+                      '((output-pdf "Skim"))))
+              
                 (setq TeX-clean-confirm nil)
                 (setq TeX-save-query nil)
                 (imenu-add-menubar-index)
