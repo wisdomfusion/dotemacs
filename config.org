@@ -22,6 +22,14 @@ My full name and mail address
   (setq user-mail-address "WisdomFusion@gmail.com")
 #+end_src
 
+** Declare global variables
+
+#+begin_src emacs-lisp
+  ;; global variables
+  (defconst *is-mac-p* (eq system-type 'darwin))
+  (defconst *is-win-p* (eq system-type 'windows-nt))
+#+end_src
+
 ** Set load-path
 
 The variable `load-path' lists all the directories where Emacs should look for Elisp files.
@@ -32,14 +40,24 @@ The variable `load-path' lists all the directories where Emacs should look for E
          (default-directory my-lisp-dir))
     (setq load-path (cons my-lisp-dir load-path))
     (normal-top-level-add-subdirs-to-load-path))
-#+end_src
 
-** Declare global variables
+  (when *is-mac-p*
+    ;; PATH env and exec-path
+    ;; difference between exec-path and PATH.
+    ;; The value of environment variable “PATH” is used by emacs
+    ;; when you are running a shell in emacs, similar to when you
+    ;; are using a shell in a terminal.
+    ;; The exec-path is used by emacs itself to find programs it
+    ;; needs for its features, such as spell checking, file
+    ;; compression, compiling, grep, diff, etc. Original from
+    ;; http://ergoemacs.org/emacs/emacs_env_var_paths.html
+    (setenv "PATH"
+            (concat (getenv "PATH")
+             ":/opt/local/bin:/usr/local/bin:/Library/TeX/texbin"))
+    (setq exec-path
+          (append exec-path
+           '("/opt/local/bin" "/usr/local/bin" "Library/TeX/texbin"))))
 
-#+begin_src emacs-lisp
-  ;; global variables
-  (defconst *is-mac-p* (eq system-type 'darwin))
-  (defconst *is-win-p* (eq system-type 'windows-nt))
 #+end_src
 
 ** Fonts and Encoding
@@ -62,6 +80,8 @@ The variable `load-path' lists all the directories where Emacs should look for E
     (setq default-buffer-file-coding-system 'utf-8))
   ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+
+  (define-coding-system-alias 'UTF-8 'utf-8)
 
   (setq system-time-locale "C")
 
@@ -1012,6 +1032,94 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
       (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
   (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
 #+end_src
+
+* modes
+
+** LaTeX and AUCTEX
+
+#+BEGIN_SRC emacs-lisp
+  ;; AucTeX
+
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil)
+  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq reftex-plug-into-AUCTeX t)
+  (setq TeX-PDF-mode t)
+
+  (add-hook 'text-mode-hook
+            '(lambda ()
+               (turn-on-auto-fill)
+               (auto-fill-mode 1)))
+
+  (setq tex-mode-hook   '(lambda () (auto-fill-mode 1)))
+  (setq latex-mode-hook '(lambda () (auto-fill-mode 1)))
+    
+  (autoload 'reftex-mode    "reftex" "RefTeX Minor Mode" t)
+  (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" t)
+    
+  (if *is-win-p*
+      (require 'tex-mik))
+
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (setq TeX-auto-untabify t       ; remove all tabs before saving
+                    TeX-engine 'xetex         ; use xelatex default
+                    TeX-global-PDF-mode t)    ; PDF mode enable, not plain
+              (add-to-list 'TeX-command-list
+                           '("XeLaTeX" "%'xelatex --synctex=1%(mode)%' %t"
+                             TeX-run-TeX nil t))
+              (setq TeX-command-default "XeLaTeX")
+              (setq LaTeX-command "latex -synctex=1")
+              (setq TeX-source-correlate-method 'synctex)
+              (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+              (add-to-list 'TeX-expand-list '("%u" skim-make-url))
+              (setq TeX-view-program-list
+                    '(("SumatraPDF" "SumatraPDF %o")
+                      ("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %u")))
+              (when *is-win-p*
+                  (setq TeX-view-program-selection
+                        '((output-pdf "SumatraPDF"))))
+                (when *is-mac-p*
+                  (setq TeX-view-program-selection
+                        '((output-pdf "Skim"))))
+                (setq TeX-clean-confirm nil)
+                (setq TeX-save-query nil)
+                (imenu-add-menubar-index)
+                (auto-composition-mode 1)
+                (outline-minor-mode 1)
+                (setq TeX-show-compilation nil)
+                (define-key LaTeX-mode-map (kbd "TAB") 'TeX-complete-symbol)))
+
+  ;; http://www.cs.berkeley.edu/~prmohan/emacs/latex.html
+  (defun skim-make-url ()
+    "Skim PDF Viewer"
+    (concat
+     (TeX-current-line)
+     " "
+     (expand-file-name (funcall file (TeX-output-extension) t)
+                       (file-name-directory (TeX-master-file)))
+     " "
+     (buffer-file-name)))
+
+  (require 'reftex)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq reftex-plug-into-AUCTeX t)
+  (setq reftex-enable-partial-scans t)
+  (setq reftex-save-parse-info t)
+  (setq reftex-use-multiple-selection-buffers t)
+  (autoload 'reftex-mode "reftex"
+    "RefTeX Minor Mode" t)
+  (autoload 'turn-on-reftex "reftex"
+    "RefTeX Minor Mode" nil)
+  (autoload 'reftex-citation "reftex-cite"
+    "Make citation" nil)
+  (autoload 'reftex-index-phrase-mode
+    "reftex-index" "Phrase mode" t)
+#+END_SRC
 
 * Misc and Others
 
