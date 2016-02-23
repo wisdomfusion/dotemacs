@@ -135,7 +135,7 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
     ;;(set-scroll-bar-mode 'left)
     (mouse-wheel-mode t)
     (blink-cursor-mode -1))
-  
+
   ;; clean mode line
   (defvar mode-line-cleaner-alist
     `((abbrev-mode    . "")
@@ -160,20 +160,22 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
                (when (eq mode major-mode)
                  (setq mode-name mode-str)))))
   (add-hook 'after-change-major-mode-hook 'clean-mode-line)
-  
+
   ;; display time on mode-line
   (setq display-time-day-and-date t)
   (setq display-time-format "%m/%d %H:%M")          ;; 11/10 15:26
   ;; (setq display-time-format "%a %d %b %I:%M %p") ;; Fri 10 Nov 3:26 PM
   ;; (setq display-time-format "%a %d %b %H:%M")    ;; Fri 10 Nov 15:26
   (display-time)
-  
+
   (setq column-number-mode t)        ;; display column number
   (global-hl-line-mode t)            ;; highlight current line
-  
+
+  (global-linum-mode t)
+
   ;; color-theme
   ;;(load-theme 'deeper-blue)
-  
+
 #+end_src
 
 ** Window and Frame
@@ -219,7 +221,7 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
       (update-tabbar-modified-state))
     (add-hook 'first-change-hook 'update-tabbar-modified-state)
     (add-hook 'after-save-hook 'update-tabbar-modified-state))
-  
+
   (setq tabbar-ruler-invert-deselected nil)
   (eval-after-load "tabbar"
     '(when (require 'tabbar-ruler nil 'noerror)
@@ -303,6 +305,9 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
                            :foreground "blue")
        (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
        (setq tabbar-ruler-excluded-buffers '())))
+
+  (global-set-key [M-left] 'tabbar-backward-tab)
+  (global-set-key [M-right] 'tabbar-forward-tab)
 #+end_src
 
 ** Usefull Packages
@@ -1044,7 +1049,6 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (setq TeX-parse-self t)
   (setq-default TeX-master nil)
   (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
   (setq reftex-plug-into-AUCTeX t)
@@ -1127,6 +1131,9 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (autoload 'reftex-index-phrase-mode
     "reftex-index" "Phrase mode" t)
 #+END_SRC
+
+#+RESULTS:
+: reftex-index-phrase-mode
 
 * Misc and Others
 
