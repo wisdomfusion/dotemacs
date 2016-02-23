@@ -13,5 +13,6 @@ config.el
 .smex-items
 ac-comphist.dat
 recentf
+bookmarks
 saved-places
 ido.last

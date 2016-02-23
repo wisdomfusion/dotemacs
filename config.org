@@ -174,8 +174,10 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (global-linum-mode t)
 
   ;; color-theme
-  ;;(load-theme 'deeper-blue)
+  ;;(load-theme 'zenburn t)
 
+  ;;(require 'solarized)
+  ;;(load-theme 'solarized-light t)
 #+end_src
 
 ** Window and Frame
@@ -306,8 +308,8 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
        (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
        (setq tabbar-ruler-excluded-buffers '())))
 
-  (global-set-key [M-left] 'tabbar-backward-tab)
-  (global-set-key [M-right] 'tabbar-forward-tab)
+  (global-set-key [C-M-left] 'tabbar-backward-tab)
+  (global-set-key [C-M-right] 'tabbar-forward-tab)
 #+end_src
 
 ** Usefull Packages
@@ -1056,11 +1058,12 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
 
   (add-hook 'text-mode-hook
             '(lambda ()
-               (turn-on-auto-fill)
-               (auto-fill-mode 1)))
+               ;;(turn-on-auto-fill)
+               (turn-off-auto-fill)
+               (auto-fill-mode nil)))
 
-  (setq tex-mode-hook   '(lambda () (auto-fill-mode 1)))
-  (setq latex-mode-hook '(lambda () (auto-fill-mode 1)))
+  (setq tex-mode-hook   '(lambda () (auto-fill-mode nil)))
+  (setq latex-mode-hook '(lambda () (auto-fill-mode nil)))
     
   (autoload 'reftex-mode    "reftex" "RefTeX Minor Mode" t)
   (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" t)
