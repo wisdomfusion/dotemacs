@@ -120,8 +120,7 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
     (setq package-archives
           '(("gnu"       . "http://elpa.gnu.org/packages/")
             ("marmalade" . "http://marmalade-repo.org/packages/")
-            ("melpa"     . "http://melpa.milkbox.net/packages/")
-            ("org"       . "http://orgmode.org/elpa/")))
+            ("melpa"     . "http://melpa.milkbox.net/packages/")))
     (package-initialize))
 #+end_src
 
@@ -978,6 +977,12 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
       (let ((case-fold-search isearch-case-fold-search))
         (occur (if isearch-regexp isearch-string
                  (regexp-quote isearch-string))))))
+
+  ;; multiple-cursors
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-liks-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 #+end_src
    
 * org-mode
