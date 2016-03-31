@@ -130,10 +130,12 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 #+begin_src emacs-lisp
   (when window-system
     (setq frame-title-format '(buffer-file-name "%f" ("%b")))
-    (tool-bar-mode -1)
-    ;;(menu-bar-mode -1)
+    (menu-bar-mode -1)
     (tooltip-mode -1)
-    ;;(set-scroll-bar-mode 'left)
+    (when (fboundp 'tool-bar-mode)
+       (tool-bar-mode -1))
+    (when (fboundp 'scroll-bar-mode)
+      (scroll-bar-mode -1))
     (mouse-wheel-mode t)
     (blink-cursor-mode -1))
 
@@ -441,7 +443,7 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   (require 'htmlize nil 'noerror)
 
   (when (require 'uniquify nil 'noerror)
-    (setq uniquify-buffer-name-style 'reverse))
+    (setq uniquify-buffer-name-style 'forward))
 
   (setq make-backup-files nil)  ;; stop creating those backup~ files
   (setq auto-save-default nil)  ;; stop creating those #auto-save# files
@@ -572,6 +574,9 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   (put 'narrow-to-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
   (put 'downcase-region 'disabled nil)
+
+  (autoload 'zap-up-to-char "misc"
+    "Kill up to, but not including ARGth occurrence of CHAR." t)
 
   ;; when in Mac OS X, alt is alt, command is meta
   ;; however, qq and some apps use command key frequently
@@ -921,54 +926,52 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
   ;; resolve conflict with Windows IME
   (when window-system
     (global-set-key (kbd "M-SPC") 'set-mark-command))
-  
+
   ;; (global-set-key (kbd "<f2>") 'kill-region)
   ;; (global-set-key (kbd "<f3>") 'kill-ring-save)
   ;; (global-set-key (kbd "<f4>") 'yank)
-  
+
   ;; (global-set-key (kbd "C-M-h") 'backward-kill-word)
-  
+
   ;; C-k               kill-line
   ;; C-0 C-k           kill line backword
   ;; C-a, C-k, C-k     kill-whole-line in another way
   ;; kill-whole-line
   (global-set-key (kbd "M-9") 'kill-whole-line)
-  
+
   (global-set-key (kbd "C-c q") 'join-line)
-  
+
   ;; Completion that uses many different methods to find options.
   (global-set-key (kbd "M-/") 'hippie-expand)
-  
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (global-set-key (kbd "M-z") 'zap-up-to-char)
   (global-set-key (kbd "C-c n") 'wf-cleanup-buffer)
-  
   (global-set-key (kbd "C-<f10>") 'menu-bar-mode)
-  
+
   ;; Use regex searches by default.
-  ;; (global-set-key (kbd "C-s")   'isearch-forward-regexp)
-  ;; (global-set-key (kbd "C-r")   'isearch-backward-regexp)
-  ;; (global-set-key (kbd "M-%")   'query-replace-regexp)
-  ;; (global-set-key (kbd "C-M-s") 'isearch-forward)
-  ;; (global-set-key (kbd "C-M-r") 'isearch-backward)
-  ;; (global-set-key (kbd "C-M-%") 'query-replace)
-  
-  ;; recentf
+  (global-set-key (kbd "C-s") 'isearch-forward-regexp)
+  (global-set-key (kbd "C-r") 'isearch-backward-regexp)
+  (global-set-key (kbd "M-%") 'query-replace-regexp)
+  (global-set-key (kbd "C-M-s") 'isearch-forward)
+  (global-set-key (kbd "C-M-r") 'isearch-backward)
+  (global-set-key (kbd "C-M-%") 'query-replace)
   (global-set-key (kbd "M-<f12>") 'recentf-open-files)
-  
+
   ;; Jump to a definition in the current file. (Protip: this is awesome.)
   (global-set-key (kbd "C-x C-i") 'imenu)
-  
+
   ;; Make the sequence "C-c g" execute the 'goto-line' command,
   ;; which prompts for a line number to jump to.
   (global-set-key (kbd "C-c C-g") 'goto-line)
-  
+
   ;; Make the sequence "C-x w" execute the 'what-line' command,
   ;; which prints the current line number in the echo area.
   (global-set-key (kbd "C-c C-w") 'what-line)
-  
+
   (global-set-key (kbd "C-c e")    'wf-eval-and-replace)
   (global-set-key (kbd "<M-up>")   'wf-swap-line-up)
   (global-set-key (kbd "<M-down>") 'wf-swap-line-down)
-  
+
   ;; Activate occur easily inside isearch
   (define-key isearch-mode-map (kbd "C-o")
     (lambda () (interactive)
