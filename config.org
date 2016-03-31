@@ -1,7 +1,8 @@
 # -*- mode: org; coding: utf-8 -*-
 #+TITLE: Emacs config using org-mode
 #+AUTHOR: WisdomFusion <WisdomFusion[at]gmail[dot]com>
-#+DATE: 2015年12年20日
+#+DATE: 2015年12月20日
+#+MODIFIED: 2016年3月31日
 
 #+STARTUP: hidestars
 
