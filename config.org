@@ -2,7 +2,6 @@
 #+TITLE: Emacs config using org-mode
 #+AUTHOR: WisdomFusion <WisdomFusion[at]gmail[dot]com>
 #+DATE: 2015年12月20日
-#+MODIFIED: 2016年3月31日
 
 #+STARTUP: hidestars
 
@@ -105,10 +104,10 @@ The variable `load-path' lists all the directories where Emacs should look for E
                               charset
                               (font-spec :family "Microsoft YaHei" :size 14))))))
 
-  (mapc
-   (lambda (face)
-     (set-face-attribute face nil :weight 'normal :underline nil))
-   (face-list))
+  (mapc (lambda (face)
+          (set-face-attribute face nil :weight 'normal :underline nil))
+        (face-list))
+
 #+end_src
 
 ** ELPA
@@ -695,6 +694,7 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
     (interactive)
     (transpose-lines 1)
     (beginning-of-line -1))
+
   (defun wf-swap-line-down ()
     "Swap current line with the line below."
     (interactive)
