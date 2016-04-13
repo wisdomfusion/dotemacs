@@ -886,16 +886,15 @@ Major mode for editing PHP files.
 cperl-mode is a more advanced mode for programming Perl than the default Perl Mode.
 #+begin_src emacs-lisp
   ;;; cperl-mode
-  ;;; http://www.emacswiki.org/emacs/CPerlMode
   (mapc (lambda (pair)
           (if (eq (cdr pair) 'perl-mode)
               (setcdr pair 'cperl-mode)))
         (append auto-mode-alist interpreter-mode-alist))
+
   ;; customizing cperl-mode
   (defun wf-cperl-mode-init ()
     (setq cperl-font-lock t
           cperl-electric-keywords t
-          ;; http://www.emacswiki.org/emacs/IndentingPerl
           cperl-indent-level 4
           cperl-indent-parens-as-block t
           cperl-close-paren-offset -4
@@ -907,6 +906,7 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
           cperl-tab-always-indent nil
           cperl-extra-newline-before-brace nil
           cperl-extra-newline-before-brace-multiline nil)
+    
     (local-set-key (kbd "C-h f") 'cperl-perldoc)
     (define-abbrev-table 'global-abbrev-table
       '(("pdbg"   "use Data::Dumper qw( Dumper );\nwarn Dumper[];" nil 1)
@@ -917,6 +917,8 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
      '(cperl-array-face ((t (:background nil :weight normal))))
      '(cperl-hash-face  ((t (:background nil :weight normal))))))
   (add-hook 'cperl-mode-hook 'wf-cperl-mode-init)
+
+
 #+end_src
 
 * Key Bindings
