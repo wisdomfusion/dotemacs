@@ -502,12 +502,10 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
   (setq tab-always-indent t)
   (setq-default indent-tabs-mode nil)     ;; use space instead of tab
   (setq default-tab-width 4)
-  (setq-default major-mode 'text-mode)
 
   ;; set fill-column
   (setq default-fill-column 78)
   (turn-off-auto-fill)
-  (auto-fill-mode nil)
 
   ;; search whitespace regexp
   (setq search-whitespace-regexp ".*?")
@@ -886,6 +884,7 @@ Major mode for editing PHP files.
 cperl-mode is a more advanced mode for programming Perl than the default Perl Mode.
 #+begin_src emacs-lisp
   ;;; cperl-mode
+
   (mapc (lambda (pair)
           (if (eq (cdr pair) 'perl-mode)
               (setcdr pair 'cperl-mode)))
@@ -906,7 +905,6 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
           cperl-tab-always-indent nil
           cperl-extra-newline-before-brace nil
           cperl-extra-newline-before-brace-multiline nil)
-    
     (local-set-key (kbd "C-h f") 'cperl-perldoc)
     (define-abbrev-table 'global-abbrev-table
       '(("pdbg"   "use Data::Dumper qw( Dumper );\nwarn Dumper[];" nil 1)
@@ -917,7 +915,6 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
      '(cperl-array-face ((t (:background nil :weight normal))))
      '(cperl-hash-face  ((t (:background nil :weight normal))))))
   (add-hook 'cperl-mode-hook 'wf-cperl-mode-init)
-
 
 #+end_src
 
@@ -1069,14 +1066,9 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (setq reftex-plug-into-AUCTeX t)
   (setq TeX-PDF-mode t)
 
-  (setq tex-mode-hook
-        '(lambda ()
-           (turn-off-auto-fill)
-           (auto-fill-mode nil)))
   (setq latex-mode-hook
         '(lambda ()
-           (turn-off-auto-fill)
-           (auto-fill-mode nil)))
+           (turn-off-auto-fill)))
     
   (autoload 'reftex-mode    "reftex" "RefTeX Minor Mode" t)
   (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" t)
@@ -1275,3 +1267,4 @@ Allow access form emacsclient.
   (unless (server-running-p)
     (server-start))
 #+end_src
+
