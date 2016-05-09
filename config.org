@@ -1150,6 +1150,14 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 #+END_SRC
 
+** Helm
+
+#+BEGIN_SRC emacs-lisp
+  (require 'helm-config)
+  (helm-mode 1)
+#+END_SRC
+   
+
 * Misc and Others
 
 ** Abbrev
