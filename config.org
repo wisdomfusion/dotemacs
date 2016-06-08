@@ -587,6 +587,20 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
 * User Defined Functions
 
 #+begin_src emacs-lisp
+  (defun wf-kill-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (mapc 'kill-buffer
+          (delq (current-buffer) (buffer-list))))
+
+  (defun wf-kill-dired-buffers ()
+    "Kill all dired buffers."
+    (interactive)
+    (mapc (lambda (buffer) 
+            (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+              (kill-buffer buffer)))
+          (buffer-list)))
+
   (defun wf-local-comment-auto-fill ()
     (set (make-local-variable 'comment-auto-fill-only-comments) t)
     (auto-fill-mode t))
@@ -944,6 +958,8 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
   (global-set-key (kbd "C-x C-b") 'ibuffer)
   (global-set-key (kbd "M-z") 'zap-up-to-char)
   (global-set-key (kbd "C-c n") 'wf-cleanup-buffer)
+  (global-set-key (kbd "C-c C-k") 'wf-kill-other-buffers)
+  (global-set-key (kbd "C-c C-d") 'wf-kill-dired-buffers)
   (global-set-key (kbd "C-<f10>") 'menu-bar-mode)
 
   ;; Use regex searches by default.
@@ -982,6 +998,8 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
   (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") 'mc/mark-previous-liks-this)
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+
 #+end_src
    
 * org-mode
