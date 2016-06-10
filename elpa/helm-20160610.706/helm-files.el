@@ -1592,35 +1592,41 @@ or when `helm-pattern' is equal to \"~/\"."
 
 (defun helm-ff-auto-expand-to-home-or-root ()
   "Allow expanding to home/user directory or root or text yanked after pattern."
-  (when (and (helm-file-completion-source-p)
-             (string-match
-              "/?\\$.*/\\|/\\./\\|/\\.\\./\\|/~.*/\\|//\\|\\(/[[:alpha:]]:/\\|\\s\\+\\)"
-              helm-pattern)
-             (with-current-buffer (window-buffer (minibuffer-window)) (eolp))
-             (not (string-match helm-ff-url-regexp helm-pattern)))
-    (let* ((match (match-string 0 helm-pattern))
-           (input (cond ((string= match "/./")
-                         (expand-file-name default-directory))
-                        ((string= helm-pattern "/../") "/")
-                        ((string-match-p "\\`/\\$" match)
-                         (let ((sub (substitute-in-file-name match)))
-                           (if (file-directory-p sub)
-                               sub (replace-regexp-in-string "/\\'" "" sub))))
-                        (t (expand-file-name
-                            (helm-substitute-in-filename helm-pattern)
-                            ;; [Windows] On UNC paths "/" expand to current machine,
-                            ;; so use the root of current Drive. (i.e "C:/")
-                            (and (memq system-type '(windows-nt ms-dos))
-                                 (getenv "SystemDrive")) ; nil on Unix.
-                            )))))
-      (if (file-directory-p input)
-          (setq helm-ff-default-directory
-                (setq input (file-name-as-directory input)))
-        (setq helm-ff-default-directory (file-name-as-directory
-                                         (file-name-directory input))))
-      (with-helm-window
-        (helm-set-pattern input)
-        (helm-check-minibuffer-input)))))
+  (when (helm-file-completion-source-p)
+    (cond ((and (null (file-exists-p helm-pattern))
+                (string-match-p
+                 "\\`\\([.]\\|\\s-\\)\\{2\\}[^/]+"
+                 (helm-basename helm-pattern))
+                (string-match-p "/\\'" helm-pattern))
+           (helm-ff-recursive-dirs helm-pattern))
+          ((and (string-match
+                 "/?\\$.*/\\|/\\./\\|/\\.\\./\\|/~.*/\\|//\\|\\(/[[:alpha:]]:/\\|\\s\\+\\)"
+                 helm-pattern)
+                (with-current-buffer (window-buffer (minibuffer-window)) (eolp))
+                (not (string-match helm-ff-url-regexp helm-pattern)))
+           (let* ((match (match-string 0 helm-pattern))
+                  (input (cond ((string= match "/./")
+                                (expand-file-name default-directory))
+                               ((string= helm-pattern "/../") "/")
+                               ((string-match-p "\\`/\\$" match)
+                                (let ((sub (substitute-in-file-name match)))
+                                  (if (file-directory-p sub)
+                                      sub (replace-regexp-in-string "/\\'" "" sub))))
+                               (t (expand-file-name
+                                   (helm-substitute-in-filename helm-pattern)
+                                   ;; [Windows] On UNC paths "/" expand to current machine,
+                                   ;; so use the root of current Drive. (i.e "C:/")
+                                   (and (memq system-type '(windows-nt ms-dos))
+                                        (getenv "SystemDrive")) ; nil on Unix.
+                                   )))))
+             (if (file-directory-p input)
+                 (setq helm-ff-default-directory
+                       (setq input (file-name-as-directory input)))
+                 (setq helm-ff-default-directory (file-name-as-directory
+                                                  (file-name-directory input))))
+             (with-helm-window
+               (helm-set-pattern input)))))
+    (helm-check-minibuffer-input)))
 
 (defun helm-substitute-in-filename (fname)
   "Substitute all parts of FNAME from start up to \"~/\" or \"/\".
@@ -2235,12 +2241,10 @@ Return candidates prefixed with basename of `helm-input' first."
              (eq major-mode 'message-mode))
            (append actions
                    '(("Gnus attach file(s)" . helm-ff-gnus-attach-files))))
-          ((save-match-data
-             (and ffap-url-regexp
-                  (not (string-match-p ffap-url-regexp str-at-point))
-                  (not (with-helm-current-buffer (eq major-mode 'dired-mode)))
-                  (string-match ":\\([0-9]+:?\\)" str-at-point)
-                  ))
+          ((and ffap-url-regexp
+                (not (string-match-p ffap-url-regexp str-at-point))
+                (not (with-helm-current-buffer (eq major-mode 'dired-mode)))
+                (string-match-p ":\\([0-9]+:?\\)" str-at-point))
            (append '(("Find file to line number" . helm-ff-goto-linum))
                    actions))
           ((string-match (image-file-name-regexp) candidate)
@@ -2414,8 +2418,9 @@ If a prefix arg is given or `helm-follow-mode' is on open file."
           ;; Start a recursive search for directories.
           ((and (not (file-exists-p candidate))
                 (not (file-remote-p candidate))
-                (string-match-p "/\\'" candidate))
-           (helm-ff-recursive-dirs candidate))
+                (string-match-p "\\`\\([.]\\|\\s-\\)\\{2\\}[^/]+"
+                                (helm-basename candidate)))
+           (funcall insert-in-minibuffer (concat candidate "/")))
           ;; On second hit we open file.
           ;; On Third hit we kill it's buffer maybe.
           (t
@@ -2425,7 +2430,7 @@ If a prefix arg is given or `helm-follow-mode' is on open file."
 ;;; Recursive dirs completion
 ;;
 (defun helm-find-files-recursive-dirs (directory &optional input)
-  (when (string-match "\\s-+\\|[.]\\{2\\}" input)
+  (when (string-match "\\(\\s-+\\|[.]\\)\\{2\\}" input)
     (setq input (replace-match "" nil t input)))
   (message "Recursively searching %s from %s ..."
            input (abbreviate-file-name directory))
