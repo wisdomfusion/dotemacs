@@ -365,6 +365,9 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (setq inhibit-startup-message t)
   (setq inhibit-startup-echo-area-message t)
 
+  ;; text-mode default
+  (setq initial-major-mode 'text-mode)
+
   ;; make the last line end in a carriage return
   (setq require-final-newline t)
   ;; will disallow creation of new lines when you press the "arrow-down key"
@@ -416,9 +419,6 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 
   (setq scroll-step 1
         scroll-conservatively 10000)
-
-  ;; text-mode default
-  (setq default-major-mode 'text-mode)
 
   ;; follow-mode allows easier editing of long files
   (follow-mode t)
