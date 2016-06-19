@@ -1,4 +1,4 @@
-(define-package "chinese-pyim" "20160615.1958" "Chinese pinyin input method"
+(define-package "chinese-pyim" "20160617.2235" "Chinese pinyin input method"
   '((cl-lib "0.5")
     (pos-tip "0.4")
     (popup "0.1")

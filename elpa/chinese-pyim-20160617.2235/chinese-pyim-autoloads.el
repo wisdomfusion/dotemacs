@@ -4,7 +4,7 @@
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
 ;;;### (autoloads nil "chinese-pyim-dictools" "chinese-pyim-dictools.el"
-;;;;;;  (22371 21288 0 0))
+;;;;;;  (22373 61977 0 0))
 ;;; Generated autoloads from chinese-pyim-dictools.el
 
 (autoload 'pyim-hanzi2pinyin "chinese-pyim-dictools" "\
@@ -103,7 +103,7 @@ Chinese-pyim 词库管理器。
 ;;;### (autoloads nil nil ("chinese-pyim-company.el" "chinese-pyim-core.el"
 ;;;;;;  "chinese-pyim-devtools.el" "chinese-pyim-pkg.el" "chinese-pyim-probe.el"
 ;;;;;;  "chinese-pyim-pymap.el" "chinese-pyim-utils.el" "chinese-pyim.el")
-;;;;;;  (22371 21288 854000 0))
+;;;;;;  (22373 61977 658238 0))
 
 ;;;***
 

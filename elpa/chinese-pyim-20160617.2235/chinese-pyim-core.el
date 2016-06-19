@@ -555,6 +555,7 @@ If you don't like this funciton, set the variable to nil")
     (pyim-kill-buffers)
     (setq pyim-buffer-list nil))
   (unless (and pyim-buffer-list
+               pyim-dict-cache-create-p
                (pyim-check-buffers)
                (not restart))
     (pyim-cchar2pinyin-cache-create)
@@ -788,36 +789,40 @@ you need to install gzip (http://www.gzip.org/) and make sure system PATH set pr
   (interactive)
   (when (or force (not pyim-dict-cache-create-p))
     (setq pyim-dict-cache-create-p t)
-    (let* ((sleep-time 1))
+    (let ((cache-directory pyim-cache-directory)
+          (sleep-time 1))
       (dolist (item pyim-buffer-list)
         (async-start
          `(lambda ()
             (sleep-for ,sleep-time)
             ,(async-inject-variables "^load-path$")
             (require 'chinese-pyim-core)
-            (pyim-generate-dict-cache-file (quote ,item)))
+            (pyim-generate-dict-cache-file
+             (quote ,item) ,cache-directory))
          `(lambda (result)
-            (pyim-load-dict-cache-file (quote ,item) t)))
-        (setq sleep-time (+ sleep-time 3))))))
+            (pyim-load-dict-cache-file
+             (quote ,item) ,cache-directory t)))
+        (setq sleep-time (+ sleep-time 1))))))
 
-(defun pyim-get-dict-cache-file (dict-file)
+(defun pyim-return-dict-cache-filename (dict-file cache-directory)
   "返回词库文件 `dict-file' 对应的 cache 文件。"
-  (concat (file-name-as-directory pyim-cache-directory)
-          "v4/"
-          (file-name-base dict-file)
-          "-"
-          (md5 file)
+  (concat (file-name-as-directory cache-directory)
+          "v5/"
+          ;; Deal with .pyim and pyim.gz
+          (file-name-base (file-name-base dict-file))
+          "/"
+          (md5 dict-file)
           ".el"))
 
-(defun pyim-load-dict-cache-file (item &optional erase-buffer)
+(defun pyim-load-dict-cache-file (item cache-directory &optional erase-buffer)
   "加载 `item' 对应的 cache file.
 `item' 是 `pyim-buffer-list' 的任意一个子列表."
   (let* ((buffer (cdr (assoc "buffer" item)))
          (file (cdr (assoc "file" item)))
-         (cache-file (pyim-get-dict-cache-file file)))
+         (cache-file (pyim-return-dict-cache-filename file cache-directory)))
     (with-current-buffer buffer
       (when (file-exists-p cache-file)
-        (message "正在加载 pyim 词库缓存: %S ..." (file-name-nondirectory cache-file))
+        (message "词库 %S 缓存加载中 ..." (file-name-nondirectory file))
         (setq pyim-dict-cache
               (with-temp-buffer
                 (insert-file-contents cache-file)
@@ -829,15 +834,15 @@ you need to install gzip (http://www.gzip.org/) and make sure system PATH set pr
           (goto-char (point-min))
           (insert (concat ";; `pyim-dict-cache' has been created by `pyim-load-dict-cache-file', "
                           "the buffer content is useless, clean it.")))
-        (message "加载 pyim 词库缓存: %S 完成！" (file-name-nondirectory cache-file))))))
+        (message "词库 %S 缓存加载完成!" (file-name-nondirectory file))))))
 
-(defun pyim-generate-dict-cache-file (item)
+(defun pyim-generate-dict-cache-file (item cache-directory)
   "根据 `item' 创建对应的 cache file.
 `item' 是 `pyim-buffer-list' 的任意一个子列表。"
   (let* ((file (cdr (assoc "file" item)))
          (coding (cdr (assoc "coding" item)))
          (dict-type (cdr (assoc "dict-type" item)))
-         (cache-file (pyim-get-dict-cache-file file))
+         (cache-file (pyim-return-dict-cache-filename file cache-directory))
          (return-plist (if (eq dict-type 'property-file) t nil))
          (hastable (make-hash-table :size 1000000 :test #'equal)))
     (when (or (not (file-exists-p cache-file))
@@ -888,7 +893,7 @@ you need to install gzip (http://www.gzip.org/) and make sure system PATH set pr
   (let ((items (pyim-subseq pyim-buffer-list 0 2)))
     (dolist (item items)
       (pyim-generate-dict-file item)
-      (pyim-generate-dict-cache-file item))))
+      (pyim-generate-dict-cache-file item pyim-cache-directory))))
 
 (defun pyim-generate-dict-file (item)
   "根据 `item' 更新对应的 dict 文件.

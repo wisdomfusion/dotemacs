@@ -9,7 +9,7 @@
 ;;       Bozhidar Batsov <bozhidar@batsov.com>
 ;;       Artur Malabarba <bruce.connor.am@gmail.com>
 ;; URL: http://github.com/clojure-emacs/clojure-mode
-;; Package-Version: 20160615.1546
+;; Package-Version: 20160617.1350
 ;; Keywords: languages clojure clojurescript lisp
 ;; Version: 5.5.0-cvs
 ;; Package-Requires: ((emacs "24.3"))
@@ -343,6 +343,13 @@ instead of to `clojure-mode-map'."
     (add-to-list 'paredit-space-for-delimiter-predicates
                  #'clojure-no-space-after-tag)))
 
+(defun clojure-smartparens-setup ()
+  "Make \"smartparens-mode\" play nicely with `clojure-mode'."
+  (when (and (fboundp 'sp-with-modes) (fboundp 'sp-local-pair))
+    (sp-with-modes '(clojure-mode)
+      (sp-local-pair "#{" "}")
+      (sp-local-pair "#(" ")"))))
+
 (defun clojure-mode-variables ()
   "Set up initial buffer-local variables for Clojure mode."
   (setq-local imenu-create-index-function
@@ -381,7 +388,8 @@ instead of to `clojure-mode-map'."
 \\{clojure-mode-map}"
   (clojure-mode-variables)
   (clojure-font-lock-setup)
-  (add-hook 'paredit-mode-hook #'clojure-paredit-setup))
+  (add-hook 'paredit-mode-hook #'clojure-paredit-setup)
+  (add-hook 'smartparens-mode-hook #'clojure-smartparens-setup))
 
 (defcustom clojure-verify-major-mode t
   "If non-nil, warn when activating the wrong major-mode."
