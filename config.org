@@ -1,6 +1,7 @@
 # -*- mode: org; coding: utf-8 -*-
 #+TITLE: Emacs config using org-mode
 #+AUTHOR: WisdomFusion <WisdomFusion[at]gmail[dot]com>
+
 #+DATE: 2015年12月20日
 
 #+STARTUP: hidestars
@@ -57,6 +58,7 @@ The variable `load-path' lists all the directories where Emacs should look for E
     (setq exec-path
           (append exec-path
            '("/opt/local/bin" "/usr/local/bin" "Library/TeX/texbin"))))
+
 
 #+end_src
 
