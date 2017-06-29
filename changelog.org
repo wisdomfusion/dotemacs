@@ -1,6 +1,9 @@
 # -*- mode: org; coding: utf-8 -*-
 #+STARTUP: showall
 
+* 2017-06-29
+- enable helm-mode by default
+
 * 2015-12-21
 - clean old modes and tools
 - change multi-web-mode to web-mode.el

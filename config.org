@@ -144,7 +144,6 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (defvar mode-line-cleaner-alist
     `((abbrev-mode    . "")
       (undo-tree-mode . "")
-      (paredit-mode   . " Pa")
       ;; Major modes
       (lisp-interaction-mode . "λ")
       (cperl-mode            . "pl")
@@ -589,13 +588,6 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
     (interactive)
     (message (if (y-or-n-p "Do you have a test for that? ") "Good." "Bad!")))
 
-  (defun wf-paredit-nonlisp ()
-    "Turn on paredit mode for non-lisps."
-    (interactive)
-    (set (make-local-variable 'paredit-space-for-delimiter-predicates)
-         '((lambda (endp delimiter) nil)))
-    (paredit-mode 1))
-
   (defun wf-align-repeat (start end regexp)
     "Repeat alignment with respect to the given regular expression."
     (interactive "r\nsAlign regexp: ")
@@ -685,47 +677,6 @@ All major mode for coding and IT things: lisp, elisp, f2e, php, perl, etc.
   (add-hook 'emacs-lisp-mode-hook
             '(lambda ()
                (modify-syntax-entry ?- "w")))
-#+end_src
-
-*** paredit
-
-#+begin_src emacs-lisp
-  ;;; paredit
-  ;;; http://pub.gajendra.net/src/paredit-refcard.pdf
-  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-  (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-  (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
-  (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-  (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
-  
-  (add-hook 'slime-repl-mode-hook
-            (lambda ()
-              (paredit-mode +1)))
-  ;; Stop SLIME's REPL from grabbing DEL,
-  ;; which is annoying when backspacing over a '('
-  (defun override-slime-repl-bindings-with-paredit ()
-    (define-key slime-repl-mode-map
-        (read-kbd-macro paredit-backward-delete-key) nil))
-  (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
-  
-  (defvar electrify-return-match
-      "[\]}\)\"]"
-      "If this regexp matches the text after the cursor, do an \"electric\"
-    return.")
-  (defun electrify-return-if-match (arg)
-    "If the text after the cursor matches `electrify-return-match' then
-  open and indent an empty line between the cursor and the text.  Move the
-  cursor to the new line."
-    (interactive "P")
-    (let ((case-fold-search nil))
-      (if (looking-at electrify-return-match)
-      (save-excursion (newline-and-indent)))
-      (newline arg)
-      (indent-according-to-mode)))
-  ;; Using local-set-key in a mode-hook is a better idea.
-  (global-set-key (kbd "RET") 'electrify-return-if-match)
 #+end_src
 
 ** css-mode
