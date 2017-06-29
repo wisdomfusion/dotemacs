@@ -359,6 +359,22 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 ** Misc Settings
 
 #+begin_src emacs-lisp
+  ;; helm
+  (require 'helm-config)
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (setq helm-recentf-fuzzy-match t)
+  (setq helm-buffers-fuzzy-matching t)
+  (setq helm-buffers-fuzzy-matching t)
+  (setq helm-locate-fuzzy-match t)
+  (setq helm-M-x-fuzzy-match t)
+  (setq helm-semantic-fuzzy-match t)
+  (setq helm-imenu-fuzzy-match t)
+  (setq helm-apropos-fuzzy-match t)
+  (setq helm-lisp-fuzzy-completion t)
+  ;; (setq helm-mode-fuzzy-match t)
+  ;; (setq helm-completion-in-region-fuzzy-match t)
+  (setq helm-candidate-number-limit 50)
+
   ;; quiet, please! No dinging!
   (setq visible-bell t)
   (setq ring-bell-function (lambda () t))
