@@ -477,13 +477,12 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
     "Kill up to, but not including ARGth occurrence of CHAR." t)
 
   ;; when in Mac OS X, alt is alt, command is meta
-  ;; however, qq and some apps use command key frequently
-  ;; drop it...
-  ;; (when (string-equal system-type 'darwin)
-  ;;   (setq mac-option-key-is-meta nil)
-  ;;   (setq mac-command-key-is-meta t)
-  ;;   (setq mac-command-modifier 'meta)
-  ;;   (setq mac-option-modifier nil))
+  (when (string-equal system-type 'darwin)
+    (setq mac-option-key-is-meta nil)
+    (setq mac-command-key-is-meta t)
+    (setq mac-command-modifier 'meta)
+    (setq mac-option-modifier nil))
+
 #+end_src
 
 * User Defined Functions
