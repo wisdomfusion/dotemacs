@@ -664,7 +664,7 @@ All major mode for coding and IT things: lisp, elisp, f2e, php, perl, etc.
        (load (expand-file-name "~/quicklisp/slime-helper.el"))))
     (if *is-win-p*
       (progn
-        (setq inferior-lisp-program "clisp.exe -K full")
+        (setq inferior-lisp-program "sbcl")
         (load "C:\\quicklisp\\slime-helper.el"))))
 #+end_src
 
