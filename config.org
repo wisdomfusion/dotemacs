@@ -944,9 +944,6 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (autoload 'reftex-mode    "reftex" "RefTeX Minor Mode" t)
   (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" t)
     
-  (if *is-win-p*
-      (require 'tex-mik))
-
   (add-hook 'LaTeX-mode-hook
             (lambda ()
               (setq TeX-auto-untabify t       ; remove all tabs before saving
