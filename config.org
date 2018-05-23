@@ -2,7 +2,7 @@
 #+TITLE: Emacs config using org-mode
 #+AUTHOR: WisdomFusion <WisdomFusion[at]gmail[dot]com>
 
-#+DATE: 2015年12月20日
+#+DATE: May 23, 2018
 
 #+STARTUP: hidestars
 
@@ -92,7 +92,7 @@ The variable `load-path' lists all the directories where Emacs should look for E
     (if *is-mac-p*
         (progn
           ; English Font
-          (set-face-attribute 'default nil :font "Monaco 14")
+          (set-face-attribute 'default nil :font "Menlo 14")
           ; Chinese Font
           (dolist (charset '(kana han symbol cjk-misc bopomofo))
             (set-fontset-font (frame-parameter nil 'font)
@@ -100,11 +100,11 @@ The variable `load-path' lists all the directories where Emacs should look for E
                               (font-spec :family "PingFang SC" :size 14)))))
     (if *is-win-p*
         (progn
-          (set-face-attribute 'default nil :font "Monaco 10")
+          (set-face-attribute 'default nil :font "Consolas 12")
           (dolist (charset '(kana han symbol cjk-misc bopomofo))
             (set-fontset-font (frame-parameter nil 'font)
                               charset
-                              (font-spec :family "Microsoft YaHei" :size 14))))))
+                              (font-spec :family "YaHei Consolas Hybrid" :size 16))))))
 
   (mapc (lambda (face)
           (set-face-attribute face nil :weight 'normal :underline nil))
