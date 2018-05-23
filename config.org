@@ -872,27 +872,6 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (global-set-key "\C-ca" 'org-agenda)
   (global-set-key "\C-cr" 'org-remember)
 
-  (add-hook 'org-mode-hook
-            (lambda ()
-              ;; fonts adjustment for org-mode tables
-              (when window-system
-                (if *is-mac-p*
-                    (progn
-                                          ; English Font
-                      (set-face-attribute 'default nil :font "Monaco 14")
-                                          ; Chinese Font
-                      (dolist (charset '(kana han symbol cjk-misc bopomofo))
-                        (set-fontset-font (frame-parameter nil 'font)
-                                          charset
-                                          (font-spec :family "PingFang SC" :size 16)))))
-                (if *is-win-p*
-                    (progn
-                      (set-face-attribute 'default nil :font "Monaco 10")
-                      (dolist (charset '(kana han symbol cjk-misc bopomofo))
-                        (set-fontset-font (frame-parameter nil 'font)
-                                          charset
-                                          (font-spec :family "Microsoft YaHei" :size 16))))))))
-
   ;; a basic set of keywords to start out
   (setq org-todo-keywords
         '((sequence "TODO(t)" "STRT(s)" "|" "DONE(d)")
