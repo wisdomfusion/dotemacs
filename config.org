@@ -106,6 +106,8 @@ The variable `load-path' lists all the directories where Emacs should look for E
                               charset
                               (font-spec :family "YaHei Consolas Hybrid" :size 16))))))
 
+  (setq-default line-spacing 4)
+
   (mapc (lambda (face)
           (set-face-attribute face nil :weight 'normal :underline nil))
         (face-list))
