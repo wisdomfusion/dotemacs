@@ -25,7 +25,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (typescript-mode web-mode undo-tree tabbar-ruler rainbow-mode python-mode perl6-mode paredit multiple-cursors markdown-mode magit-gitflow js2-mode idle-highlight-mode helm go-mode flycheck-perl6 flycheck-haskell flycheck-clojure emmet-mode company-auctex chinese-pyim auto-complete-auctex ace-jump-mode ac-php ac-html-bootstrap ac-html ac-clang))))
+    (yasnippet zop-to-char yaml-mode rainbow-mode xcscope web-mode web-completion-data volatile-highlights undo-tree tabbar smex scss-mode sass-mode python-mode powerline pos-tip php-mode perl6-mode paredit multiple-cursors mode-icons markdown-mode magit js2-mode helm-projectile haskell-mode go-mode f expand-region emmet-mode cider auctex))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

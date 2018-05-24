@@ -8,6 +8,7 @@
 
 elpa/archives/*
 elpa/*.txt
+elpa/
 config.el
 
 .smex-items

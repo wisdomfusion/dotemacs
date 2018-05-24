@@ -58,7 +58,61 @@ The variable `load-path' lists all the directories where Emacs should look for E
     (setq exec-path
           (append exec-path
            '("/opt/local/bin" "/usr/local/bin" "Library/TeX/texbin"))))
+#+end_src
 
+** ELPA
+
+ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
+#+begin_src emacs-lisp
+  (require 'package)
+
+  (setq package-archives '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                           ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+                           ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
+                           ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/")
+                           ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
+
+  (package-initialize)
+
+  (defvar wf-packages
+    '(js2-mode
+      php-mode
+      go-mode
+      python-mode
+      auctex
+      clojure-mode
+      expand-region
+      undo-tree
+      volatile-highlights
+      helm
+      helm-projectile
+      projectile
+      magit
+      markdown-mode
+      paredit
+      sass-mode
+      scss-mode
+      emmet-mode
+      web-mode
+      rainbow-mode
+      yaml-mode
+      zop-to-char
+      yasnippet)
+    "A list of packages to ensure are installed at launch.")
+
+  (defun wf-packages-installed-p ()
+    "Check if all packages are installed."
+    (every #'package-installed-p wf-packages))
+
+  (unless (wf-packages-installed-p)
+    ;; check for new packages
+    (message "%s" "Refreshing packages...")
+    (package-refresh-contents)
+    (message "%s" " done.")
+    ;; install the missing packages
+    (dolist (package wf-packages)
+      (when (not (package-installed-p package))
+        (package-install package))))
 
 #+end_src
 
@@ -111,20 +165,6 @@ The variable `load-path' lists all the directories where Emacs should look for E
   (mapc (lambda (face)
           (set-face-attribute face nil :weight 'normal :underline nil))
         (face-list))
-
-#+end_src
-
-** ELPA
-
-ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
-#+begin_src emacs-lisp
-  (when (> emacs-major-version 23)
-    (require 'package)
-    (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                           ("marmalade" . "https://marmalade-repo.org/packages/")
-                           ("melpa" . "https://melpa.org/packages/")))
-    (package-initialize))
-
 
 #+end_src
 
@@ -517,7 +557,6 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 
   (add-hook 'prog-mode-hook 'wf-local-comment-auto-fill)
   (add-hook 'prog-mode-hook 'wf-pretty-lambdas)
-  (add-hook 'prog-mode-hook 'idle-highlight-mode)
 
   (defun wf-prog-mode-hook ()
     (run-hooks 'prog-mode-hook))
