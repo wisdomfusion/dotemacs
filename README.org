@@ -5,13 +5,13 @@
 
 * About
 
-My .emacs.d configration, structured as an [[http://orgmode.org/][org-mode]] file. You can preview the configurations on the web at [config.org](./config.org), cause GitHub parses org-mode files perfectly.
+My .emacs.d configration, structured as an [[http://orgmode.org/][org-mode]] file. You can preview the configurations on the web at [[./config.org][config.org]], cause GitHub parses org-mode files perfectly.
 
 * Requirement
 
 - GNU Emacs 24.4 or later
 - Mac OS X; *nix; Windows XP or later
-- install CLISP and slime before turn on slime on in `init.el`
+- Install CLISP and slime before turn on slime on in init.el
 
 #+BEGIN_SRC emacs-lisp
   (defconst *hack-slime-p* t)
