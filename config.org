@@ -2,7 +2,6 @@
 #+TITLE: Emacs config using org-mode
 #+AUTHOR: WisdomFusion <WisdomFusion[at]gmail[dot]com>
 #+DATE: May 23, 2018
-
 #+STARTUP: hidestars
 #+STARTUP: showeverything
 
@@ -116,6 +115,14 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 
   (wf-install-packages)
 
+  ;; config changes made through the customize UI will be stored here
+  (setq custom-file (expand-file-name "custom.el" wf-my-dir))
+
+  ;; load the personal settings (this includes `custom-file')
+  (when (file-exists-p wf-my-dir)
+    (message "Loading personal configuration files in %s..." wf-my-dir)
+    (mapc 'load (directory-files wf-my-dir 't "^[^#\.].*el$")))
+
   ;; diminish keeps the modeline tidy
   (require 'diminish)
 
@@ -177,17 +184,30 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 ** UI Settings
 
 #+begin_src emacs-lisp
-  (when window-system
-    (setq frame-title-format '(buffer-file-name "%f" ("%b")))
-    (menu-bar-mode -1)
-    (tooltip-mode -1)
-    (when (fboundp 'tool-bar-mode)
+  (when (fboundp 'tool-bar-mode)
        (tool-bar-mode -1))
-    (when (fboundp 'scroll-bar-mode)
-      (scroll-bar-mode -1))
-    (mouse-wheel-mode t)
-    ;; disable annoying blink-matching-paren
-    (blink-cursor-mode nil))
+
+  (menu-bar-mode -1)
+  (tooltip-mode -1)
+
+  ;; the blinking cursor is nothing, but an annoyance
+  (blink-cursor-mode -1)
+
+  ;; disable the annoying bell ring
+  (setq ring-bell-function 'ignore)
+
+  ;; disable startup screen
+  (setq inhibit-startup-screen t)
+
+  (setq frame-title-format
+        '(buffer-file-name "%f" ("%b")))
+    
+  (mouse-wheel-mode t)
+
+  ;; nice scrolling
+  (setq scroll-margin 0
+        scroll-conservatively 100000
+        scroll-preserve-screen-position 1)
 
   ;; clean mode line
   (defvar mode-line-cleaner-alist
@@ -198,8 +218,8 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
       (cperl-mode            . "pl")
       (python-mode           . "py")
       (ruby-mode             . "rb")
-      (emacs-lisp-mode       . "El")
-      (js2-mode              . "js2")))
+      (emacs-lisp-mode       . "el")
+      (js2-mode              . "js")))
   (defun clean-mode-line ()
     (interactive)
     (loop for cleaner in mode-line-cleaner-alist
@@ -215,23 +235,34 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 
   ;; display time on mode-line
   (setq display-time-day-and-date t)
-  (setq display-time-format "%m/%d %H:%M")          ;; 11/10 15:26
-  ;; (setq display-time-format "%a %d %b %I:%M %p") ;; Fri 10 Nov 3:26 PM
-  ;; (setq display-time-format "%a %d %b %H:%M")    ;; Fri 10 Nov 15:26
+  (setq display-time-format "%m/%d %H:%M")           ; 11/10 15:26
+  ;; (setq display-time-format "%a %d %b %I:%M %p")  ; Fri 10 Nov 3:26 PM
+  ;; (setq display-time-format "%a %d %b %H:%M")     ; Fri 10 Nov 15:26
   (display-time)
 
-  (setq column-number-mode t)        ;; display column number
-  (global-hl-line-mode t)            ;; highlight current line
+  ;; mode line settings
+  (line-number-mode t)
+  (column-number-mode t)
+  (size-indication-mode t)
+  (global-hl-line-mode t) ; highlight current line
 
   (require 'volatile-highlights)
   (volatile-highlights-mode t)
   (diminish 'volatile-highlights-mode)
 
-  (global-linum-mode t)
+  (require 'smart-mode-line)
+  (setq sml/no-confirm-load-theme t)
+  ;; delegate theming to the currently active theme
+  (setq sml/theme nil)
+  (add-hook 'after-init-hook #'sml/setup)
 
-  ;; color-theme
-  ;;(load-theme 'zenburn t)
+  ;; show the cursor when moving after big movements in the window
+  (require 'beacon)
+  (beacon-mode 1)
 
+  ;; show available keybindings after you start typing
+  (require 'which-key)
+  (which-key-mode 1)
 
 #+end_src
 
@@ -528,9 +559,6 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 
   ;; recursive minibuffers
   (setq enable-recursive-minibuffers t)
-
-  (setq scroll-step 1
-        scroll-conservatively 10000)
 
   ;; follow-mode allows easier editing of long files
   (follow-mode t)
