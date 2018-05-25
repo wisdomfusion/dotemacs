@@ -7,7 +7,7 @@
 
 * Global Settings
 
-** Common Lisp for Emacs
+** cl
 
 Some Common Lisp functions and macros can be used in Emacs Lisp programs.
 #+begin_src emacs-lisp
@@ -30,7 +30,7 @@ My full name and mail address
   (defconst *is-win-p* (eq system-type 'windows-nt))
 #+end_src
 
-** Set load-path
+** load-path
 
 The variable `load-path' lists all the directories where Emacs should look for Elisp files.
 #+begin_src emacs-lisp
@@ -181,7 +181,7 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 
 #+end_src
 
-** UI Settings
+* UI Settings
 
 #+begin_src emacs-lisp
   (when (fboundp 'tool-bar-mode)
@@ -264,11 +264,6 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (require 'which-key)
   (which-key-mode 1)
 
-#+end_src
-
-** Window and Frame
-
-#+begin_src emacs-lisp
   ;; frame demostration
   (defun set-frame-size-according-to-resolution ()
     (interactive)
@@ -280,207 +275,11 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (set-frame-size-according-to-resolution)
   ;; frame postition
   (setq initial-frame-alist '((top . 30) (left . 100)))
+
+
 #+end_src
 
-** Usefull Packages
-
-*** ibuffer
-
-#+begin_src emacs-lisp
-  ;; ibuffer
-  (when (require 'ibuffer nil 'noerror)
-    (global-set-key (kbd "C-x C-b") 'ibuffer)
-    (setq ibuffer-saved-filter-groups
-          (quote (("default"
-                   ("dired" (mode . dired-mode))
-                   ("perl"  (mode . cperl-mode))
-                   ("erc"   (mode . erc-mode))
-                   ("planner"
-                    (or
-                     (name . "^\\*Calendar\\*$")
-                     (name . "^diary$")
-                     (mode . muse-mode)))
-                   ("emacs"
-                    (or
-                     (name . "^\\*scratch\\*$")
-                     (name . "^\\*Messages\\*$")))
-                   ("gnus"
-                    (or
-                     (mode . message-mode)
-                     (mode . bbdb-mode)
-                     (mode . mail-mode)
-                     (mode . gnus-group-mode)
-                     (mode . gnus-summary-mode)
-                     (mode . gnus-article-mode)
-                     (name . "^\\.bbdb$")
-                     (name . "^\\.newsrc-dribble"))))))))
-  (add-hook 'ibuffer-mode-hook
-            (lambda ()
-              (ibuffer-switch-to-saved-filter-groups "default")))
-#+end_src
-
-*** ido
-
-#+begin_src emacs-lisp
-  ;; ido-mode is like magic pixie dust!
-  (ido-mode t)
-  (setq ido-enable-prefix nil
-        ido-enable-flex-matching t
-        ido-auto-merge-work-directories-length nil
-        ido-create-new-buffer 'always
-        ido-use-filename-at-point 'guess
-        ido-use-virtual-buffers t
-        ido-handle-duplicate-virtual-buffers 2
-        ido-max-prospects 10
-        ido-save-directory-list-file (expand-file-name "idohist" wf-my-savefile-dir))
-#+end_src
-
-*** undo-tree
-
-#+begin_src emacs-lisp
-  ;; undo-tree
-  (when (require 'undo-tree nil 'noerror)
-       (global-undo-tree-mode 1)
-       (defalias 'redo 'undo-tree-redo)
-       (global-set-key (kbd "C-z") 'undo)
-       (global-set-key (kbd "C-S-z") 'redo))
-#+end_src
-
-*** re-builder
-
-#+begin_src emacs-lisp
-  ;; re-builder
-  (require 're-builder)
-  (setq reb-re-syntax 'string)
-  
-  (defun reb-query-replace (to-string)
-    "Replace current RE from point with `query-replace-regexp'."
-    (interactive
-     (progn (barf-if-buffer-read-only)
-            (list (query-replace-read-to (reb-target-binding reb-regexp)
-                                         "Query replace"  t))))
-    (with-current-buffer reb-target-buffer
-      (query-replace-regexp (reb-target-binding reb-regexp) to-string)))
-
-  (defun reb-beginning-of-buffer ()
-    "In re-builder, move target buffer point position back to beginning."
-    (interactive)
-    (set-window-point (get-buffer-window reb-target-buffer)
-                      (with-current-buffer reb-target-buffer (point-min))))
-
-  (defun reb-end-of-buffer ()
-    "In re-builder, move target buffer point position back to beginning."
-    (interactive)
-    (set-window-point (get-buffer-window reb-target-buffer)
-                      (with-current-buffer reb-target-buffer (point-max))))
-  ;; end of re-builder
-#+end_src
-
-*** other el tools
-
-#+begin_src emacs-lisp
-  ;; saveplace remembers your location in a file when saving files
-  (setq save-place-file (expand-file-name "saveplace" wf-my-savefile-dir))
-  ;; activate it for all buffers
-  (if (< emacs-major-version 25)
-      (progn (require 'saveplace)
-             (setq-default save-place t))
-    (save-place-mode 1))
-
-  ;; savehist keeps track of some history
-  (require 'savehist)
-  (setq savehist-additional-variables
-        ;; search entries
-        '(search-ring regexp-search-ring)
-        ;; save every minute
-        savehist-autosave-interval 60
-        savehist-file (expand-file-name "savehist" wf-my-savefile-dir))
-  (savehist-mode 1)
-
-  ;; recent files
-  (require 'recentf)
-  (setq recentf-save-file (expand-file-name "recentf" wf-my-savefile-dir)
-        recentf-max-saved-items 500
-        recentf-max-menu-items 60
-        ;; disable recentf-cleanup on Emacs start, because it can cause
-        ;; problems with remote files
-        recentf-auto-cleanup 'never)
-
-  ;; bookmarks
-  (require 'bookmark)
-  (setq bookmark-default-file (expand-file-name "bookmarks" wf-my-savefile-dir)
-        bookmark-save-flag 1)
-
-  ;; projectile is a project management mode
-  (require 'projectile)
-  (setq projectile-cache-file (expand-file-name "projectile.cache" wf-my-savefile-dir))
-  (projectile-global-mode t)
-
-  ;; avy allows us to effectively navigate to visible things
-  (require 'avy)
-  (setq avy-background t)
-  (setq avy-style 'at-full)
-
-  ;; anzu-mode enhances isearch & query-replace by showing total matches and current match position
-  (require 'anzu)
-  (diminish 'anzu-mode)
-  (global-anzu-mode)
-
-  (global-set-key (kbd "M-%") 'anzu-query-replace)
-  (global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
-
-  ;; use shift + arrow keys to switch between visible buffers
-  (require 'windmove)
-  (windmove-default-keybindings)
-
-  ;; to prevent error like:
-  ;; "help-setup-xref: Symbol's value as variable is void: help-xref-following"
-  (require 'help-mode nil 'noerror)
-
-  (require 'htmlize nil 'noerror)
-
-  ;; diminish keeps the modeline tidy
-  (require 'diminish nil 'noerror)
-
-  (when (require 'uniquify nil 'noerror)
-    (setq uniquify-buffer-name-style 'forward)
-    (setq uniquify-separator "/")
-    ; rename after killing uniquified
-    (setq uniquify-after-kill-buffer-p t)
-    ; don't muck with special buffers
-    (setq uniquify-ignore-buffers-re "^\\*"))
-
-  (setq make-backup-files nil)  ; stop creating those backup~ files
-  (setq auto-save-default nil)  ; stop creating those #auto-save# files
-  (setq backup-by-copying t)
-  (setq dired-recursive-deletes 'always)
-  (setq dired-recursive-copies  'top)
-  (setq delete-by-moving-to-trash t)  ; delete to trach
-
-  ;; revert buffers automatically when underlying files are changed externally
-  (global-auto-revert-mode t)
-
-  (require 'expand-region)
-
-  (eval-after-load "diff-mode"
-    '(progn
-       (set-face-foreground 'diff-added "green4")
-       (set-face-foreground 'diff-removed "red3")))
-
-  (eval-after-load "magit"
-    '(progn
-       (set-face-foreground 'magit-diff-add "green4")
-       (set-face-foreground 'magit-diff-del "red3")))
-
-  ;; Get around the emacswiki spam protection
-  (eval-after-load "oddmuse"
-    '(add-hook 'oddmuse-mode-hook
-              (lambda ()
-                (unless (string-match "question" oddmuse-post)
-                  (setq oddmuse-post (concat "uihnscuskc=1;" oddmuse-post))))))
-#+end_src
-
-** Editor Settings
+* Editor Settings
 
 #+begin_src emacs-lisp
   ;; helm
@@ -604,17 +403,192 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (put 'upcase-region 'disabled nil)
   (put 'downcase-region 'disabled nil)
 
-  (autoload 'zap-up-to-char "misc"
-    "Kill up to, but not including ARGth occurrence of CHAR." t)
+  ;; store all backup and autosave files in the tmp dir
+  (setq backup-directory-alist
+        `((".*" . ,temporary-file-directory)))
+  (setq auto-save-file-name-transforms
+        `((".*" ,temporary-file-directory t)))
 
-  ;; when in Mac OS X, alt is alt, command is meta
-  (when (string-equal system-type 'darwin)
-    (setq mac-option-key-is-meta nil)
-    (setq mac-command-key-is-meta t)
-    (setq mac-command-modifier 'meta)
-    (setq mac-option-modifier nil))
+  ;; autosave the undo-tree history
+  (setq undo-tree-history-directory-alist
+        `((".*" . ,temporary-file-directory)))
+  (setq undo-tree-auto-save-history t)
 
+  ;; undo-tree
+  (when (require 'undo-tree nil 'noerror)
+       (global-undo-tree-mode 1)
+       (defalias 'redo 'undo-tree-redo)
+       (global-set-key (kbd "C-z") 'undo)
+       (global-set-key (kbd "C-S-z") 'redo))
 
+  ;; saveplace remembers your location in a file when saving files
+  (setq save-place-file (expand-file-name "saveplace" wf-my-savefile-dir))
+  ;; activate it for all buffers
+  (if (< emacs-major-version 25)
+      (progn (require 'saveplace)
+             (setq-default save-place t))
+    (save-place-mode 1))
+
+  ;; savehist keeps track of some history
+  (require 'savehist)
+  (setq savehist-additional-variables
+        ;; search entries
+        '(search-ring regexp-search-ring)
+        ;; save every minute
+        savehist-autosave-interval 60
+        savehist-file (expand-file-name "savehist" wf-my-savefile-dir))
+  (savehist-mode 1)
+
+  ;; recent files
+  (require 'recentf)
+  (setq recentf-save-file (expand-file-name "recentf" wf-my-savefile-dir)
+        recentf-max-saved-items 500
+        recentf-max-menu-items 60
+        ;; disable recentf-cleanup on Emacs start, because it can cause
+        ;; problems with remote files
+        recentf-auto-cleanup 'never)
+
+  ;; bookmarks
+  (require 'bookmark)
+  (setq bookmark-default-file (expand-file-name "bookmarks" wf-my-savefile-dir)
+        bookmark-save-flag 1)
+
+  ;; ido-mode is like magic pixie dust!
+  (ido-mode t)
+  (setq ido-enable-prefix nil
+        ido-enable-flex-matching t
+        ido-auto-merge-work-directories-length nil
+        ido-create-new-buffer 'always
+        ido-use-filename-at-point 'guess
+        ido-use-virtual-buffers t
+        ido-handle-duplicate-virtual-buffers 2
+        ido-max-prospects 10
+        ido-save-directory-list-file (expand-file-name "idohist" wf-my-savefile-dir))
+
+  ;; projectile is a project management mode
+  (require 'projectile)
+  (setq projectile-cache-file (expand-file-name "projectile.cache" wf-my-savefile-dir))
+  (projectile-global-mode t)
+
+  ;; avy allows us to effectively navigate to visible things
+  (require 'avy)
+  (setq avy-background t)
+  (setq avy-style 'at-full)
+
+  ;; anzu-mode enhances isearch & query-replace by showing total matches and current match position
+  (require 'anzu)
+  (diminish 'anzu-mode)
+  (global-anzu-mode)
+
+  (global-set-key (kbd "M-%") 'anzu-query-replace)
+  (global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
+
+  ;; use shift + arrow keys to switch between visible buffers
+  (require 'windmove)
+  (windmove-default-keybindings)
+
+  ;; to prevent error like:
+  ;; "help-setup-xref: Symbol's value as variable is void: help-xref-following"
+  (require 'help-mode nil 'noerror)
+
+  (require 'htmlize nil 'noerror)
+
+  ;; diminish keeps the modeline tidy
+  (require 'diminish nil 'noerror)
+
+  (when (require 'uniquify nil 'noerror)
+    (setq uniquify-buffer-name-style 'forward)
+    (setq uniquify-separator "/")
+    ; rename after killing uniquified
+    (setq uniquify-after-kill-buffer-p t)
+    ; don't muck with special buffers
+    (setq uniquify-ignore-buffers-re "^\\*"))
+
+  (setq make-backup-files nil)  ; stop creating those backup~ files
+  (setq auto-save-default nil)  ; stop creating those #auto-save# files
+  (setq backup-by-copying t)
+  (setq dired-recursive-deletes 'always)
+  (setq dired-recursive-copies  'top)
+  (setq delete-by-moving-to-trash t)  ; delete to trach
+
+  ;; revert buffers automatically when underlying files are changed externally
+  (global-auto-revert-mode t)
+
+  (require 'expand-region)
+
+  ;; re-builder
+  (require 're-builder)
+  (setq reb-re-syntax 'string)
+
+  (defun reb-query-replace (to-string)
+    "Replace current RE from point with `query-replace-regexp'."
+    (interactive
+     (progn (barf-if-buffer-read-only)
+            (list (query-replace-read-to (reb-target-binding reb-regexp)
+                                         "Query replace"  t))))
+    (with-current-buffer reb-target-buffer
+      (query-replace-regexp (reb-target-binding reb-regexp) to-string)))
+
+  (defun reb-beginning-of-buffer ()
+    "In re-builder, move target buffer point position back to beginning."
+    (interactive)
+    (set-window-point (get-buffer-window reb-target-buffer)
+                      (with-current-buffer reb-target-buffer (point-min))))
+
+  (defun reb-end-of-buffer ()
+    "In re-builder, move target buffer point position back to beginning."
+    (interactive)
+    (set-window-point (get-buffer-window reb-target-buffer)
+                      (with-current-buffer reb-target-buffer (point-max))))
+  ;; end of re-builder
+
+  ;; ibuffer
+  (when (require 'ibuffer nil 'noerror)
+    (global-set-key (kbd "C-x C-b") 'ibuffer)
+    (setq ibuffer-saved-filter-groups
+          (quote (("default"
+                   ("dired" (mode . dired-mode))
+                   ("perl"  (mode . cperl-mode))
+                   ("erc"   (mode . erc-mode))
+                   ("planner"
+                    (or
+                     (name . "^\\*Calendar\\*$")
+                     (name . "^diary$")
+                     (mode . muse-mode)))
+                   ("emacs"
+                    (or
+                     (name . "^\\*scratch\\*$")
+                     (name . "^\\*Messages\\*$")))
+                   ("gnus"
+                    (or
+                     (mode . message-mode)
+                     (mode . bbdb-mode)
+                     (mode . mail-mode)
+                     (mode . gnus-group-mode)
+                     (mode . gnus-summary-mode)
+                     (mode . gnus-article-mode)
+                     (name . "^\\.bbdb$")
+                     (name . "^\\.newsrc-dribble"))))))))
+  (add-hook 'ibuffer-mode-hook
+            (lambda ()
+              (ibuffer-switch-to-saved-filter-groups "default")))
+
+  (eval-after-load "diff-mode"
+    '(progn
+       (set-face-foreground 'diff-added "green4")
+       (set-face-foreground 'diff-removed "red3")))
+
+  (eval-after-load "magit"
+    '(progn
+       (set-face-foreground 'magit-diff-add "green4")
+       (set-face-foreground 'magit-diff-del "red3")))
+
+  ;; Get around the emacswiki spam protection
+  (eval-after-load "oddmuse"
+    '(add-hook 'oddmuse-mode-hook
+              (lambda ()
+                (unless (string-match "question" oddmuse-post)
+                  (setq oddmuse-post (concat "uihnscuskc=1;" oddmuse-post))))))
 #+end_src
 
 * User Defined Functions
@@ -778,7 +752,7 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 
 #+end_src
 
-* Lang
+* Modes
 
 All major mode for coding and IT things: lisp, elisp, f2e, php, perl, etc.
 
@@ -923,6 +897,33 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
   (when window-system
     (global-set-key (kbd "M-SPC") 'set-mark-command))
 
+  ;; when in macOS, alt is alt, command is meta
+  (when (string-equal system-type 'darwin)
+    (setq mac-option-key-is-meta nil)
+    (setq mac-command-key-is-meta t)
+    (setq mac-command-modifier 'meta)
+    (setq mac-option-modifier nil))
+
+  ;; Align your code in a pretty way.
+  (global-set-key (kbd "C-x \\") 'align-regexp)
+
+  ;; Increase and decrease font size
+  (global-set-key (kbd "C-+") 'text-scale-increase)
+  (global-set-key (kbd "C--") 'text-scale-decrease)
+
+  ;; Start eshell or switch to it if it's active
+  (global-set-key (kbd "C-x m") 'eshell)
+
+  ;; Start a new eshell even if one is active
+  (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
+
+  ;; Start a regular shell
+  (global-set-key (kbd "C-x M-m") 'shell)
+
+  ;; replace zap-to-char functionality with the more powerful zop-to-char
+  (global-set-key (kbd "M-z") 'zop-up-to-char)
+  (global-set-key (kbd "M-Z") 'zop-to-char)
+
   ;; (global-set-key (kbd "<f2>") 'kill-region)
   ;; (global-set-key (kbd "<f3>") 'kill-ring-save)
   ;; (global-set-key (kbd "<f4>") 'yank)
@@ -935,12 +936,24 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
   ;; kill-whole-line
   (global-set-key (kbd "M-9") 'kill-whole-line)
 
+  ;; kill lines backward
+  (global-set-key (kbd "C-<backspace>") (lambda ()
+                                          (interactive)
+                                          (kill-line 0)
+                                          (indent-according-to-mode)))
+
   (global-set-key (kbd "C-c q") 'join-line)
+
+  ;; Activate occur easily inside isearch
+  (define-key isearch-mode-map (kbd "C-o")
+    (lambda () (interactive)
+      (let ((case-fold-search isearch-case-fold-search))
+        (occur (if isearch-regexp isearch-string
+                 (regexp-quote isearch-string))))))
 
   ;; Completion that uses many different methods to find options.
   (global-set-key (kbd "M-/") 'hippie-expand)
   (global-set-key (kbd "C-x C-b") 'ibuffer)
-  (global-set-key (kbd "M-z") 'zap-up-to-char)
   (global-set-key (kbd "C-c n") 'wf-cleanup-buffer)
   (global-set-key (kbd "C-c C-k") 'wf-kill-other-buffers)
   (global-set-key (kbd "C-c C-d") 'wf-kill-dired-buffers)
@@ -955,6 +968,11 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
   (global-set-key (kbd "C-M-%") 'query-replace)
   (global-set-key (kbd "M-<f12>") 'recentf-open-files)
 
+  (global-set-key (kbd "C-x g") 'magit-status)
+  (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+
+  (global-set-key (kbd "C-=") 'er/expand-region)
+
   ;; Jump to a definition in the current file. (Protip: this is awesome.)
   (global-set-key (kbd "C-x C-i") 'imenu)
 
@@ -966,16 +984,16 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
   ;; which prints the current line number in the echo area.
   (global-set-key (kbd "C-c C-w") 'what-line)
 
+  (global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
+  (global-set-key (kbd "s-.") 'avy-goto-word-or-subword-1)
+
+  ;; improved window navigation with ace-window
+  (global-set-key (kbd "s-w") 'ace-window)
+  (global-set-key [remap other-window] 'ace-window)
+
   (global-set-key (kbd "C-c e")    'wf-eval-and-replace)
   (global-set-key (kbd "<M-up>")   'wf-swap-line-up)
   (global-set-key (kbd "<M-down>") 'wf-swap-line-down)
-
-  ;; Activate occur easily inside isearch
-  (define-key isearch-mode-map (kbd "C-o")
-    (lambda () (interactive)
-      (let ((case-fold-search isearch-case-fold-search))
-        (occur (if isearch-regexp isearch-string
-                 (regexp-quote isearch-string))))))
 
   ;; multiple-cursors
   (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
