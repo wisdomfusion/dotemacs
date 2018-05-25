@@ -1,10 +1,10 @@
 # -*- mode: org; coding: utf-8 -*-
 #+TITLE: Emacs config using org-mode
 #+AUTHOR: WisdomFusion <WisdomFusion[at]gmail[dot]com>
-
 #+DATE: May 23, 2018
 
 #+STARTUP: hidestars
+#+STARTUP: showeverything
 
 * Global Settings
 
@@ -42,22 +42,6 @@ The variable `load-path' lists all the directories where Emacs should look for E
     (setq load-path (cons my-lisp-dir load-path))
     (normal-top-level-add-subdirs-to-load-path))
 
-  (when *is-mac-p*
-    ;; PATH env and exec-path
-    ;; difference between exec-path and PATH.
-    ;; The value of environment variable “PATH” is used by emacs
-    ;; when you are running a shell in emacs, similar to when you
-    ;; are using a shell in a terminal.
-    ;; The exec-path is used by emacs itself to find programs it
-    ;; needs for its features, such as spell checking, file
-    ;; compression, compiling, grep, diff, etc. Original from
-    ;; http://ergoemacs.org/emacs/emacs_env_var_paths.html
-    (setenv "PATH"
-            (concat (getenv "PATH")
-             ":/opt/local/bin:/usr/local/bin:/Library/TeX/texbin"))
-    (setq exec-path
-          (append exec-path
-           '("/opt/local/bin" "/usr/local/bin" "Library/TeX/texbin"))))
 #+end_src
 
 ** ELPA
@@ -75,25 +59,39 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (package-initialize)
 
   (defvar wf-packages
-    '(js2-mode
+    '(ace-window
+      anzu
+      avy
+      beacon
+      js2-mode
       php-mode
+      emmet-mode
       go-mode
       python-mode
       auctex
       clojure-mode
+      diminish
       expand-region
       undo-tree
       volatile-highlights
       helm
       helm-projectile
       projectile
+      flycheck
+      git-timemachine
+      gitconfig-mode
+      gitignore-mode
       magit
       markdown-mode
+      move-text
+      hl-todo
       paredit
       sass-mode
       scss-mode
-      emmet-mode
+      smart-mode-line
+      smartparens
       web-mode
+      which-key
       rainbow-mode
       yaml-mode
       zop-to-char
@@ -104,15 +102,23 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
     "Check if all packages are installed."
     (every #'package-installed-p wf-packages))
 
-  (unless (wf-packages-installed-p)
-    ;; check for new packages
-    (message "%s" "Refreshing packages...")
-    (package-refresh-contents)
-    (message "%s" " done.")
-    ;; install the missing packages
-    (dolist (package wf-packages)
-      (when (not (package-installed-p package))
-        (package-install package))))
+  (defun wf-install-packages ()
+    "Install all packages listed in `wf-packages'."
+    (unless (wf-packages-installed-p)
+      ;; Check for new packages
+      (message "%s" "Refreshing packages...")
+      (package-refresh-contents)
+      (message "%s" "DONE")
+      ;; Install the missing packages
+      (dolist (package wf-packages)
+        (when (not (package-installed-p package))
+          (package-install package)))))
+
+  (wf-install-packages)
+
+  ;; diminish keeps the modeline tidy
+  (require 'diminish)
+
 
 #+end_src
 
@@ -168,7 +174,7 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 
 #+end_src
 
-** Basic UI Settings
+** UI Settings
 
 #+begin_src emacs-lisp
   (when window-system
@@ -180,7 +186,8 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
     (when (fboundp 'scroll-bar-mode)
       (scroll-bar-mode -1))
     (mouse-wheel-mode t)
-    (blink-cursor-mode -1))
+    ;; disable annoying blink-matching-paren
+    (blink-cursor-mode nil))
 
   ;; clean mode line
   (defvar mode-line-cleaner-alist
@@ -216,10 +223,15 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (setq column-number-mode t)        ;; display column number
   (global-hl-line-mode t)            ;; highlight current line
 
+  (require 'volatile-highlights)
+  (volatile-highlights-mode t)
+  (diminish 'volatile-highlights-mode)
+
   (global-linum-mode t)
 
   ;; color-theme
   ;;(load-theme 'zenburn t)
+
 
 #+end_src
 
@@ -289,28 +301,7 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
         ido-use-virtual-buffers t
         ido-handle-duplicate-virtual-buffers 2
         ido-max-prospects 10
-        ido-save-directory-list-file "~/.emacs.d/ido.last")
-#+end_src
-
-*** smex
-
-#+begin_src emacs-lisp
-  ;; smex
-  (when (require 'smex nil 'noerror)
-       (setq smex-save-file (concat user-emacs-directory ".smex-items"))
-       (smex-initialize)
-       (global-set-key (kbd "M-x") 'smex))
-#+end_src
-
-*** recentf
-
-#+begin_src emacs-lisp
-  ;; recent files
-  (when (require 'recentf nil 'noerror)
-    (recentf-mode 1)
-    (setq recentf-max-saved-items 500)
-    (setq recentf-max-menu-items 60)
-    (setq recentf-save-file "~/.emacs.d/recentf"))
+        ido-save-directory-list-file (expand-file-name "idohist" wf-my-savefile-dir))
 #+end_src
 
 *** undo-tree
@@ -357,10 +348,60 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 *** other el tools
 
 #+begin_src emacs-lisp
-  ;; save cursor place
-  (when (require 'saveplace nil 'noerror)
-    (setq-default save-place t)
-    (setq save-place-file "~/.emacs.d/saved-places"))
+  ;; saveplace remembers your location in a file when saving files
+  (setq save-place-file (expand-file-name "saveplace" wf-my-savefile-dir))
+  ;; activate it for all buffers
+  (if (< emacs-major-version 25)
+      (progn (require 'saveplace)
+             (setq-default save-place t))
+    (save-place-mode 1))
+
+  ;; savehist keeps track of some history
+  (require 'savehist)
+  (setq savehist-additional-variables
+        ;; search entries
+        '(search-ring regexp-search-ring)
+        ;; save every minute
+        savehist-autosave-interval 60
+        ;; keep the home clean
+        savehist-file (expand-file-name "savehist" wf-my-savefile-dir))
+  (savehist-mode +1)
+
+  ;; recent files
+  (require 'recentf)
+  (setq recentf-save-file (expand-file-name "recentf" wf-my-savefile-dir)
+        recentf-max-saved-items 500
+        recentf-max-menu-items 60
+        ;; disable recentf-cleanup on Emacs start, because it can cause
+        ;; problems with remote files
+        recentf-auto-cleanup 'never)
+
+  ;; bookmarks
+  (require 'bookmark)
+  (setq bookmark-default-file (expand-file-name "bookmarks" wf-my-savefile-dir)
+        bookmark-save-flag 1)
+
+  ;; projectile is a project management mode
+  (require 'projectile)
+  (setq projectile-cache-file (expand-file-name "projectile.cache" wf-my-savefile-dir))
+  (projectile-global-mode t)
+
+  ;; avy allows us to effectively navigate to visible things
+  (require 'avy)
+  (setq avy-background t)
+  (setq avy-style 'at-full)
+
+  ;; anzu-mode enhances isearch & query-replace by showing total matches and current match position
+  (require 'anzu)
+  (diminish 'anzu-mode)
+  (global-anzu-mode)
+
+  (global-set-key (kbd "M-%") 'anzu-query-replace)
+  (global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
+
+  ;; use shift + arrow keys to switch between visible buffers
+  (require 'windmove)
+  (windmove-default-keybindings)
 
   ;; to prevent error like:
   ;; "help-setup-xref: Symbol's value as variable is void: help-xref-following"
@@ -368,16 +409,28 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
 
   (require 'htmlize nil 'noerror)
 
-  (when (require 'uniquify nil 'noerror)
-    (setq uniquify-buffer-name-style 'forward))
+  ;; diminish keeps the modeline tidy
+  (require 'diminish nil 'noerror)
 
-  (setq make-backup-files nil)  ;; stop creating those backup~ files
-  (setq auto-save-default nil)  ;; stop creating those #auto-save# files
+  (when (require 'uniquify nil 'noerror)
+    (setq uniquify-buffer-name-style 'forward)
+    (setq uniquify-separator "/")
+    ; rename after killing uniquified
+    (setq uniquify-after-kill-buffer-p t)
+    ; don't muck with special buffers
+    (setq uniquify-ignore-buffers-re "^\\*"))
+
+  (setq make-backup-files nil)  ; stop creating those backup~ files
+  (setq auto-save-default nil)  ; stop creating those #auto-save# files
   (setq backup-by-copying t)
   (setq dired-recursive-deletes 'always)
   (setq dired-recursive-copies  'top)
-  ;; delete to trach
-  (setq delete-by-moving-to-trash t)
+  (setq delete-by-moving-to-trash t)  ; delete to trach
+
+  ;; revert buffers automatically when underlying files are changed externally
+  (global-auto-revert-mode t)
+
+  (require 'expand-region)
 
   (eval-after-load "diff-mode"
     '(progn
@@ -397,7 +450,7 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
                   (setq oddmuse-post (concat "uihnscuskc=1;" oddmuse-post))))))
 #+end_src
 
-** Misc Settings
+** Editor Settings
 
 #+begin_src emacs-lisp
   ;; helm
@@ -412,9 +465,9 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (setq helm-imenu-fuzzy-match t)
   (setq helm-apropos-fuzzy-match t)
   (setq helm-lisp-fuzzy-completion t)
-  ;; (setq helm-mode-fuzzy-match t)
-  ;; (setq helm-completion-in-region-fuzzy-match t)
-  (setq helm-candidate-number-limit 50)
+  (setq helm-mode-fuzzy-match t)
+  (setq helm-completion-in-region-fuzzy-match t)
+  (setq helm-candidate-number-limit 20)
 
   ;; quiet, please! No dinging!
   (setq visible-bell t)
@@ -434,7 +487,7 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   ;; at end of the buffer
   (setq next-line-add-newlines t)
 
-  (setq x-select-enable-clipboard t) ;; use clipboard
+  (setq x-select-enable-clipboard t)  ; use clipboard
 
   ;; kill-ring and other settings
   (setq kill-ring-max 1024)
@@ -446,8 +499,8 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (setq eval-expression-print-level nil)
   (setq global-mark-ring-max 1024)
   (setq history-delete-duplicates t)
-  (setq tab-always-indent t)
-  (setq-default indent-tabs-mode nil)     ;; use space instead of tab
+  (setq tab-always-indent 'complete)   ; smart tab behaviar - indent or complete
+  (setq-default indent-tabs-mode nil)  ; use space instead of tab
   (setq default-tab-width 4)
 
   ;; set fill-column
@@ -488,7 +541,7 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   ;; highlight just brackets
   (setq show-paren-style 'parenthesis)
   ;; highlight entire bracket expression
-  ;; (setq show-paren-style 'expression)
+  (setq show-paren-style 'expression)
   ;; typing any left bracket automatically insert the right matching bracket
   ;; new feature in Emacs 24
   (electric-pair-mode t)
@@ -499,15 +552,24 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
                               (?\{ . ?\})
                               ))
 
+  ;; smart pairing for all
+  (require 'smartparens-config)
+  (setq sp-base-key-bindings 'paredit)
+  (setq sp-autoskip-closing-pair 'always)
+  (setq sp-hybrid-kill-entire-symbol nil)
+  (sp-use-paredit-bindings)
+
+  (show-smartparens-global-mode +1)
+
   ;; mouse avoidance
   ;; banish, exile, jump, animate,
   ;; cat-and-mouse, proteus
   (mouse-avoidance-mode 'animate)
   (auto-image-file-mode)
-  (global-font-lock-mode t)               ;; syntax
-  (transient-mark-mode t)                 ;; highlight mark area
-  (setq shift-select-mode t)              ;; hold shift to mark area
-  (delete-selection-mode 1)               ;; overwrite selection
+  (global-font-lock-mode t)   ; syntax
+  (transient-mark-mode t)     ; highlight mark area
+  (setq shift-select-mode t)  ; hold shift to mark area
+  (delete-selection-mode t)   ; overwrite selection
 
   ;; enable some figures
   (put 'set-goal-column 'disabled nil)
@@ -524,6 +586,7 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
     (setq mac-command-key-is-meta t)
     (setq mac-command-modifier 'meta)
     (setq mac-option-modifier nil))
+
 
 #+end_src
 
@@ -948,6 +1011,23 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
 #+BEGIN_SRC emacs-lisp
   ;; AucTeX
 
+  (when *is-mac-p*
+    ;; PATH env and exec-path
+    ;; difference between exec-path and PATH.
+    ;; The value of environment variable “PATH” is used by emacs
+    ;; when you are running a shell in emacs, similar to when you
+    ;; are using a shell in a terminal.
+    ;; The exec-path is used by emacs itself to find programs it
+    ;; needs for its features, such as spell checking, file
+    ;; compression, compiling, grep, diff, etc. Original from
+    ;; http://ergoemacs.org/emacs/emacs_env_var_paths.html
+    (setenv "PATH"
+            (concat (getenv "PATH")
+             ":/opt/local/bin:/usr/local/bin:/Library/TeX/texbin"))
+    (setq exec-path
+          (append exec-path
+           '("/opt/local/bin" "/usr/local/bin" "Library/TeX/texbin"))))
+
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq-default TeX-master nil)
@@ -1026,6 +1106,7 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
     "Make citation" nil)
   (autoload 'reftex-index-phrase-mode
     "reftex-index" "Phrase mode" t)
+
 #+END_SRC
 
 ** Markdown mode

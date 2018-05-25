@@ -1,6 +1,13 @@
 ;;; -*- mode: emacs-lisp; coding: utf-8 -*-
+;;; init.el --- config entry point
+;;
+;; Copyright (c) 2010-2018 WisdomFusion
+;;
+;; @author: WisdomFusion <WisdomFusion@gmail.com>
+;; @url: https://github.com/WisdomFusion/dotemacs
+;; Version: 1.0.0
+;;
 
-;; require packages
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -8,27 +15,32 @@
 ;; You may delete these explanatory comments.
 (package-initialize)
 
-(require 'org-install)
-(require 'ob-tangle)
+(message "GNU Emacs is powering up... Be patient plz.")
+
+(when (version< emacs-version "24.4")
+  (error "This dotemacs requires at least GNU Emacs 24.4, but you're running %s" emacs-version))
+
+;; Always load newest byte code
+(setq load-prefer-newer t)
+
+;; define dirs to store personal files or data
+(defvar wf-root-dir (file-name-directory load-file-name)
+  "The root dir of the GNU Emacs.")
+(defvar wf-my-dir (expand-file-name "my" wf-root-dir)
+  "This directory is for my personal configs, files or data.")
+(defvar wf-my-savefile-dir (expand-file-name "save" wf-my-dir)
+  "This folder stores all the automatically generated save, history, ... files.")
+
+(unless (file-exists-p wf-my-savefile-dir)
+  (make-directory wf-my-savefile-dir))
 
 ;; turn on slime when lisp and slime working
-(defconst *hack-slime-p* 1)
+(defconst *hack-slime-p* t)
 
 ;; load config.org
+(require 'org-install)
+(require 'ob-tangle)
 (org-babel-load-file "~/.emacs.d/config.org")
 
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (yasnippet zop-to-char yaml-mode rainbow-mode xcscope web-mode web-completion-data volatile-highlights undo-tree tabbar smex scss-mode sass-mode python-mode powerline pos-tip php-mode perl6-mode paredit multiple-cursors mode-icons markdown-mode magit js2-mode helm-projectile haskell-mode go-mode f expand-region emmet-mode cider auctex))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
