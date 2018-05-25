@@ -1,12 +1,21 @@
+# -*- mode: org; coding: utf-8 -*-
+
+#+STARTUP: hidestars
+#+STARTUP: showeverything
+
 * About
 
 My .emacs.d configration, structured as an [[http://orgmode.org/][org-mode]] file.
 
 * Requirement
 
-- GNU Emacs 24 or later
+- GNU Emacs 24.4 or later
 - Mac OS X; *nix; Windows XP or later
-- install CLISP and slime before turn on slime on in init.el
+- install CLISP and slime before turn on slime on in `init.el`
+
+#+BEGIN_SRC emacs-lisp
+  (defconst *hack-slime-p* t)
+#+END_SRC
 
 * Installation
 
@@ -16,6 +25,20 @@ All of the configration is written in *config.org* using [[http://orgmode.org/wo
 
 #+BEGIN_SRC emacs-lisp
   (require 'cl)
+#+END_SRC
+
+* Customization
+
+** Fonts
+
+My dotemacs use tsinghua.edu.cn as elpa source in China mainland, adjust those archive urls if you have faster or native ones.
+
+#+BEGIN_SRC emacs-lisp
+  (setq package-archives '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                           ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+                           ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
+                           ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/")
+                           ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
 #+END_SRC
 
 * How it works

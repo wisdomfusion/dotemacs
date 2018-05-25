@@ -35,7 +35,7 @@
   (make-directory wf-my-savefile-dir))
 
 ;; turn on slime when lisp and slime working
-(defconst *hack-slime-p* t)
+(defconst *hack-slime-p* nil)
 
 ;; load config.org
 (require 'org-install)
