@@ -34,6 +34,9 @@
 (unless (file-exists-p wf-my-savefile-dir)
   (make-directory wf-my-savefile-dir))
 
+;; config changes made through the customize UI will be stored here
+(setq custom-file (expand-file-name "custom.el" wf-my-dir))
+
 ;; turn on slime when lisp and slime working
 (defconst *hack-slime-p* nil)
 
@@ -41,3 +44,6 @@
 (require 'org-install)
 (require 'ob-tangle)
 (org-babel-load-file "~/.emacs.d/config.org")
+
+;;; init.el ends here
+
