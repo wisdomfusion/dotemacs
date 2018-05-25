@@ -205,7 +205,8 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (mouse-wheel-mode t)
 
   ;; nice scrolling
-  (setq scroll-margin 0
+  (setq scroll-margin 1
+        scroll-step 1
         scroll-conservatively 100000
         scroll-preserve-screen-position 1)
 
@@ -275,7 +276,6 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (set-frame-size-according-to-resolution)
   ;; frame postition
   (setq initial-frame-alist '((top . 30) (left . 100)))
-
 
 #+end_src
 
@@ -1004,7 +1004,9 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
 
 #+end_src
    
-* org-mode
+* modes
+
+** org-mode
 
 Org mode is for keeping notes, maintaining TODO lists, planning projects, and authoring documents with a fast and effective plain-text system.
 #+begin_src emacs-lisp
@@ -1048,8 +1050,6 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
       (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
   (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
 #+end_src
-
-* modes
 
 ** LaTeX and AUCTEX
 
@@ -1099,16 +1099,20 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
                              TeX-run-TeX nil t))
               (setq TeX-command-default "XeLaTeX")
               (setq LaTeX-command "latex -synctex=1")
+              (setq TeX-source-correlate-mode t)
               (setq TeX-source-correlate-method 'synctex)
-              (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
               (add-to-list 'TeX-expand-list '("%u" skim-make-url))
 
               (when *is-win-p*
+                ;; SumatraPDF Options:
+                ;; Set inverse search command-line
+                ;; "C:\emacs\bin\emacsclientw.exe" -n +%l "%f"
+                ;; formerly, I could set inverse search in emacs directly like this:
+                ;; (mode-io-correlate " -forward-search %b %n -inverse-search \"emacsclientw --no-wait +%%l \\\"%%f\\\"\" ")
+                ;; this does not work anymore :/
                 (setq TeX-view-program-list
                       '(("SumatraPDF" ("\"C:/emacs/bin/SumatraPDF.exe\" -reuse-instance"
-                                       (mode-io-correlate
-                                        " -forward-search %b %n -inverse-search \"emacsclientw --no-wait +%%l \\\"%%f\\\"\" ")
-                                       " %o"))))
+                                       (mode-io-correlate " -forward-search %b %n ") " %o"))))
                 (setq TeX-view-program-selection
                       '((output-pdf "SumatraPDF"))))
 
@@ -1164,7 +1168,7 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 #+END_SRC
 
-* Misc and Others
+* Misc
 
 ** Abbrev
 
@@ -1280,12 +1284,3 @@ Use some alias to shorten commands.
   (defalias 'vlm 'visual-line-mode)
   (defalias 'glm 'global-linum-mode)
 #+end_src
-   
-* emacs server
-Allow access form emacsclient.
-#+begin_src emacs-lisp
-  (require 'server)
-  (unless (server-running-p)
-    (server-start))
-#+end_src
-

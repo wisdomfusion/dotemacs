@@ -34,6 +34,10 @@
 (unless (file-exists-p wf-my-savefile-dir)
   (make-directory wf-my-savefile-dir))
 
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
 ;; turn on slime when lisp and slime working
 (defconst *hack-slime-p* nil)
 
