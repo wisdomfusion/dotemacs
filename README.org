@@ -10,8 +10,8 @@ My .emacs.d configration, structured as an [[http://orgmode.org/][org-mode]] fil
 * Requirement
 
 - GNU Emacs 24.4 or later
-- Mac OS X; *nix; Windows XP or later
-- Install CLISP and slime before turn on slime on in init.el
+- macOS, *nix, Windows XP/7/8/8.1/10
+- Install [[http://www.sbcl.org/][sbcl]] and [[https://common-lisp.net/project/slime/][slime]], before turn on slime on in init.el
 
 #+BEGIN_SRC emacs-lisp
   (defconst *hack-slime-p* t)
