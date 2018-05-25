@@ -31,6 +31,33 @@ All of the configration is written in *config.org* using [[http://orgmode.org/wo
 
 ** Fonts
 
+Because I use org-mode in my daily life, I adjust font size seperately with English and Chinese fonts, you can specify them to you own favorites.
+
+#+BEGIN_SRC emacs-lisp
+  ;; fonts settings
+  (when window-system
+    (if *is-mac-p*
+        (progn
+          ; English Font
+          (set-face-attribute 'default nil :font "Menlo 14")
+          ; Chinese Font
+          (dolist (charset '(kana han symbol cjk-misc bopomofo))
+            (set-fontset-font (frame-parameter nil 'font)
+                              charset
+                              (font-spec :family "PingFang SC" :size 16)))))
+    (if *is-win-p*
+        (progn
+          (set-face-attribute 'default nil :font "Consolas 12")
+          (dolist (charset '(kana han symbol cjk-misc bopomofo))
+            (set-fontset-font (frame-parameter nil 'font)
+                              charset
+                              (font-spec :family "YaHei Consolas Hybrid" :size 16))))))
+
+  (setq-default line-spacing 4)
+#+END_SRC
+
+** elpa
+   
 My dotemacs use tsinghua.edu.cn as elpa source in China mainland, adjust those archive urls if you have faster or native ones.
 
 #+BEGIN_SRC emacs-lisp
