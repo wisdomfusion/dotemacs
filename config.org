@@ -61,7 +61,6 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
     '(ace-window
       anzu
       avy
-      beacon
       js2-mode
       php-mode
       emmet-mode
@@ -247,6 +246,8 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (size-indication-mode t)
   (global-hl-line-mode t) ; highlight current line
 
+  (global-linum-mode t)
+
   (require 'volatile-highlights)
   (volatile-highlights-mode t)
   (diminish 'volatile-highlights-mode)
@@ -256,10 +257,6 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   ;; delegate theming to the currently active theme
   (setq sml/theme nil)
   (add-hook 'after-init-hook #'sml/setup)
-
-  ;; show the cursor when moving after big movements in the window
-  (require 'beacon)
-  (beacon-mode 1)
 
   ;; show available keybindings after you start typing
   (require 'which-key)
@@ -890,122 +887,6 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
 
 #+end_src
 
-* Key Bindings
-
-#+begin_src emacs-lisp
-  ;; resolve conflict with Windows IME
-  (when window-system
-    (global-set-key (kbd "M-SPC") 'set-mark-command))
-
-  ;; when in macOS, alt is alt, command is meta
-  (when (string-equal system-type 'darwin)
-    (setq mac-option-key-is-meta nil)
-    (setq mac-command-key-is-meta t)
-    (setq mac-command-modifier 'meta)
-    (setq mac-option-modifier nil))
-
-  ;; Align your code in a pretty way.
-  (global-set-key (kbd "C-x \\") 'align-regexp)
-
-  ;; Increase and decrease font size
-  (global-set-key (kbd "C-+") 'text-scale-increase)
-  (global-set-key (kbd "C--") 'text-scale-decrease)
-
-  ;; Start eshell or switch to it if it's active
-  (global-set-key (kbd "C-x m") 'eshell)
-
-  ;; Start a new eshell even if one is active
-  (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
-
-  ;; Start a regular shell
-  (global-set-key (kbd "C-x M-m") 'shell)
-
-  ;; replace zap-to-char functionality with the more powerful zop-to-char
-  (global-set-key (kbd "M-z") 'zop-up-to-char)
-  (global-set-key (kbd "M-Z") 'zop-to-char)
-
-  ;; (global-set-key (kbd "<f2>") 'kill-region)
-  ;; (global-set-key (kbd "<f3>") 'kill-ring-save)
-  ;; (global-set-key (kbd "<f4>") 'yank)
-
-  ;; (global-set-key (kbd "C-M-h") 'backward-kill-word)
-
-  ;; C-k               kill-line
-  ;; C-0 C-k           kill line backword
-  ;; C-a, C-k, C-k     kill-whole-line in another way
-  ;; kill-whole-line
-  (global-set-key (kbd "M-9") 'kill-whole-line)
-
-  ;; kill lines backward
-  (global-set-key (kbd "C-<backspace>") (lambda ()
-                                          (interactive)
-                                          (kill-line 0)
-                                          (indent-according-to-mode)))
-
-  (global-set-key (kbd "C-c q") 'join-line)
-
-  ;; Activate occur easily inside isearch
-  (define-key isearch-mode-map (kbd "C-o")
-    (lambda () (interactive)
-      (let ((case-fold-search isearch-case-fold-search))
-        (occur (if isearch-regexp isearch-string
-                 (regexp-quote isearch-string))))))
-
-  ;; Completion that uses many different methods to find options.
-  (global-set-key (kbd "M-/") 'hippie-expand)
-  (global-set-key (kbd "C-x C-b") 'ibuffer)
-  (global-set-key (kbd "C-c n") 'wf-cleanup-buffer)
-  (global-set-key (kbd "C-c C-k") 'wf-kill-other-buffers)
-  (global-set-key (kbd "C-c C-d") 'wf-kill-dired-buffers)
-  (global-set-key (kbd "C-<f10>") 'menu-bar-mode)
-
-  ;; Use regex searches by default.
-  (global-set-key (kbd "C-s") 'isearch-forward-regexp)
-  (global-set-key (kbd "C-r") 'isearch-backward-regexp)
-  (global-set-key (kbd "M-%") 'query-replace-regexp)
-  (global-set-key (kbd "C-M-s") 'isearch-forward)
-  (global-set-key (kbd "C-M-r") 'isearch-backward)
-  (global-set-key (kbd "C-M-%") 'query-replace)
-  (global-set-key (kbd "M-<f12>") 'recentf-open-files)
-
-  (global-set-key (kbd "C-x g") 'magit-status)
-  (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
-
-  (global-set-key (kbd "C-=") 'er/expand-region)
-
-  ;; Jump to a definition in the current file. (Protip: this is awesome.)
-  (global-set-key (kbd "C-x C-i") 'imenu)
-
-  ;; Make the sequence "C-c g" execute the 'goto-line' command,
-  ;; which prompts for a line number to jump to.
-  (global-set-key (kbd "C-c C-g") 'goto-line)
-
-  ;; Make the sequence "C-x w" execute the 'what-line' command,
-  ;; which prints the current line number in the echo area.
-  (global-set-key (kbd "C-c C-w") 'what-line)
-
-  (global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
-  (global-set-key (kbd "s-.") 'avy-goto-word-or-subword-1)
-
-  ;; improved window navigation with ace-window
-  (global-set-key (kbd "s-w") 'ace-window)
-  (global-set-key [remap other-window] 'ace-window)
-
-  (global-set-key (kbd "C-c e")    'wf-eval-and-replace)
-  (global-set-key (kbd "<M-up>")   'wf-swap-line-up)
-  (global-set-key (kbd "<M-down>") 'wf-swap-line-down)
-
-  ;; multiple-cursors
-  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") 'mc/mark-previous-liks-this)
-  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
-
-#+end_src
-   
-* modes
-
 ** org-mode
 
 Org mode is for keeping notes, maintaining TODO lists, planning projects, and authoring documents with a fast and effective plain-text system.
@@ -1169,7 +1050,7 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
 
 #+END_SRC
 
-** Markdown mode
+** markdown-mode
 
 #+BEGIN_SRC emacs-lisp
   (autoload 'markdown-mode "markdown-mode"
@@ -1179,6 +1060,120 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 #+END_SRC
 
+* Key Bindings
+
+#+begin_src emacs-lisp
+  ;; resolve conflict with Windows IME
+  (when window-system
+    (global-set-key (kbd "M-SPC") 'set-mark-command))
+
+  ;; when in macOS, alt is alt, command is meta
+  (when (string-equal system-type 'darwin)
+    (setq mac-option-key-is-meta nil)
+    (setq mac-command-key-is-meta t)
+    (setq mac-command-modifier 'meta)
+    (setq mac-option-modifier nil))
+
+  ;; Align your code in a pretty way.
+  (global-set-key (kbd "C-x \\") 'align-regexp)
+
+  ;; Increase and decrease font size
+  (global-set-key (kbd "C-+") 'text-scale-increase)
+  (global-set-key (kbd "C--") 'text-scale-decrease)
+
+  ;; Start eshell or switch to it if it's active
+  (global-set-key (kbd "C-x m") 'eshell)
+
+  ;; Start a new eshell even if one is active
+  (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
+
+  ;; Start a regular shell
+  (global-set-key (kbd "C-x M-m") 'shell)
+
+  ;; replace zap-to-char functionality with the more powerful zop-to-char
+  (global-set-key (kbd "M-z") 'zop-up-to-char)
+  (global-set-key (kbd "M-Z") 'zop-to-char)
+
+  ;; (global-set-key (kbd "<f2>") 'kill-region)
+  ;; (global-set-key (kbd "<f3>") 'kill-ring-save)
+  ;; (global-set-key (kbd "<f4>") 'yank)
+
+  ;; (global-set-key (kbd "C-M-h") 'backward-kill-word)
+
+  ;; C-k               kill-line
+  ;; C-0 C-k           kill line backword
+  ;; C-a, C-k, C-k     kill-whole-line in another way
+  ;; kill-whole-line
+  (global-set-key (kbd "M-9") 'kill-whole-line)
+
+  ;; kill lines backward
+  (global-set-key (kbd "C-<backspace>") (lambda ()
+                                          (interactive)
+                                          (kill-line 0)
+                                          (indent-according-to-mode)))
+
+  (global-set-key (kbd "C-c q") 'join-line)
+
+  ;; Activate occur easily inside isearch
+  (define-key isearch-mode-map (kbd "C-o")
+    (lambda () (interactive)
+      (let ((case-fold-search isearch-case-fold-search))
+        (occur (if isearch-regexp isearch-string
+                 (regexp-quote isearch-string))))))
+
+  ;; Completion that uses many different methods to find options.
+  (global-set-key (kbd "M-/") 'hippie-expand)
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (global-set-key (kbd "C-c n") 'wf-cleanup-buffer)
+  (global-set-key (kbd "C-c C-k") 'wf-kill-other-buffers)
+  (global-set-key (kbd "C-c C-d") 'wf-kill-dired-buffers)
+  (global-set-key (kbd "C-<f10>") 'menu-bar-mode)
+
+  ;; Use regex searches by default.
+  (global-set-key (kbd "C-s") 'isearch-forward-regexp)
+  (global-set-key (kbd "C-r") 'isearch-backward-regexp)
+  (global-set-key (kbd "M-%") 'query-replace-regexp)
+  (global-set-key (kbd "C-M-s") 'isearch-forward)
+  (global-set-key (kbd "C-M-r") 'isearch-backward)
+  (global-set-key (kbd "C-M-%") 'query-replace)
+  (global-set-key (kbd "M-<f12>") 'recentf-open-files)
+
+  (global-set-key (kbd "C-x g") 'magit-status)
+  (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+
+  (global-set-key (kbd "C-=") 'er/expand-region)
+
+  ;; Jump to a definition in the current file. (Protip: this is awesome.)
+  (global-set-key (kbd "C-x C-i") 'imenu)
+
+  ;; Make the sequence "C-c g" execute the 'goto-line' command,
+  ;; which prompts for a line number to jump to.
+  (global-set-key (kbd "C-c C-g") 'goto-line)
+
+  ;; Make the sequence "C-x w" execute the 'what-line' command,
+  ;; which prints the current line number in the echo area.
+  (global-set-key (kbd "C-c C-w") 'what-line)
+
+  (global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
+  (global-set-key (kbd "s-.") 'avy-goto-word-or-subword-1)
+
+  ;; improved window navigation with ace-window
+  (global-set-key (kbd "s-w") 'ace-window)
+  (global-set-key [remap other-window] 'ace-window)
+
+  (global-set-key (kbd "C-c e")    'wf-eval-and-replace)
+  (global-set-key (kbd "<M-up>")   'wf-swap-line-up)
+  (global-set-key (kbd "<M-down>") 'wf-swap-line-down)
+
+  ;; multiple-cursors
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-liks-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+
+#+end_src
+   
 * Misc
 
 ** Abbrev
