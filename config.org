@@ -364,7 +364,9 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   ;; highlight just brackets
   (setq show-paren-style 'parenthesis)
   ;; highlight entire bracket expression
-  (setq show-paren-style 'expression)
+  ;(setq show-paren-style 'expression)
+  ;; highlight brackets if visible, else entire expression
+  ;(setq show-paren-style 'mixed)
   ;; typing any left bracket automatically insert the right matching bracket
   ;; new feature in Emacs 24
   (electric-pair-mode t)
