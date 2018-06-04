@@ -9,31 +9,31 @@
 
 ** cl
 
-Some Common Lisp functions and macros can be used in Emacs Lisp programs.
-#+begin_src emacs-lisp
+   Some Common Lisp functions and macros can be used in Emacs Lisp programs.
+   #+begin_src emacs-lisp
   (require 'cl)
-#+end_src
+   #+end_src
 
 ** User Info
 
-My full name and mail address
-#+begin_src emacs-lisp
+   My full name and mail address
+   #+begin_src emacs-lisp
   (setq user-full-name    "WisdomFusion")
   (setq user-mail-address "WisdomFusion@gmail.com")
-#+end_src
+   #+end_src
 
 ** Declare global variables
 
-#+begin_src emacs-lisp
+   #+begin_src emacs-lisp
   ;; global variables
   (defconst *is-mac-p* (eq system-type 'darwin))
   (defconst *is-win-p* (eq system-type 'windows-nt))
-#+end_src
+   #+end_src
 
 ** load-path
 
-The variable `load-path' lists all the directories where Emacs should look for Elisp files.
-#+begin_src emacs-lisp
+   The variable `load-path' lists all the directories where Emacs should look for Elisp files.
+   #+begin_src emacs-lisp
   ;; load path
   (add-to-list 'load-path "~/.emacs.d/config.el")
   (let* ((my-lisp-dir "~/.emacs.d/site-lisp/")
@@ -41,12 +41,12 @@ The variable `load-path' lists all the directories where Emacs should look for E
     (setq load-path (cons my-lisp-dir load-path))
     (normal-top-level-add-subdirs-to-load-path))
 
-#+end_src
+   #+end_src
 
 ** ELPA
 
-ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
-#+begin_src emacs-lisp
+   ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
+   #+begin_src emacs-lisp
   (require 'package)
 
   (setq package-archives '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
@@ -126,11 +126,11 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (require 'diminish)
 
 
-#+end_src
+   #+end_src
 
 ** Fonts and Encoding
 
-#+begin_src emacs-lisp
+   #+begin_src emacs-lisp
   ;; unicad -  Universal Charset Auto Detector
   ;; Http://www.emacswiki.org/emacs/Unicad
   (require 'unicad nil 'noerror)
@@ -178,107 +178,110 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
           (set-face-attribute face nil :weight 'normal :underline nil))
         (face-list))
 
-#+end_src
+   #+end_src
 
 * UI Settings
 
-#+begin_src emacs-lisp
-  (when (fboundp 'tool-bar-mode)
-       (tool-bar-mode -1))
+  #+begin_src emacs-lisp
+    (when (fboundp 'tool-bar-mode)
+         (tool-bar-mode -1))
 
-  (menu-bar-mode -1)
-  (tooltip-mode -1)
+    (menu-bar-mode -1)
+    (tooltip-mode -1)
 
-  ;; the blinking cursor is nothing, but an annoyance
-  (blink-cursor-mode -1)
+    ;; the blinking cursor is nothing, but an annoyance
+    (blink-cursor-mode -1)
 
-  ;; disable the annoying bell ring
-  (setq ring-bell-function 'ignore)
+    ;; disable the annoying bell ring
+    (setq ring-bell-function 'ignore)
 
-  ;; disable startup screen
-  (setq inhibit-startup-screen t)
+    ;; disable startup screen
+    (setq inhibit-startup-screen t)
 
-  (setq frame-title-format
-        '(buffer-file-name "%f" ("%b")))
-    
-  (mouse-wheel-mode t)
+    (setq frame-title-format
+          '(buffer-file-name "%f" ("%b")))
 
-  ;; nice scrolling
-  (setq scroll-margin 1
-        scroll-step 1
-        scroll-conservatively 100000
-        scroll-preserve-screen-position 1)
+    (setq-default show-trailing-whitespace t)
+    (add-to-list 'write-file-functions 'delete-trailing-whitespace)
 
-  ;; clean mode line
-  (defvar mode-line-cleaner-alist
-    `((abbrev-mode    . "")
-      (undo-tree-mode . "")
-      ;; Major modes
-      (lisp-interaction-mode . "λ")
-      (cperl-mode            . "pl")
-      (python-mode           . "py")
-      (ruby-mode             . "rb")
-      (emacs-lisp-mode       . "el")
-      (js2-mode              . "js")))
-  (defun clean-mode-line ()
-    (interactive)
-    (loop for cleaner in mode-line-cleaner-alist
-          do (let* ((mode (car cleaner))
-                   (mode-str (cdr cleaner))
-                   (old-mode-str (cdr (assq mode minor-mode-alist))))
-               (when old-mode-str
-                   (setcar old-mode-str mode-str))
-                 ;; major mode
-               (when (eq mode major-mode)
-                 (setq mode-name mode-str)))))
-  (add-hook 'after-change-major-mode-hook 'clean-mode-line)
+    (mouse-wheel-mode t)
 
-  ;; display time on mode-line
-  (setq display-time-day-and-date t)
-  (setq display-time-format "%m/%d %H:%M")           ; 11/10 15:26
-  ;; (setq display-time-format "%a %d %b %I:%M %p")  ; Fri 10 Nov 3:26 PM
-  ;; (setq display-time-format "%a %d %b %H:%M")     ; Fri 10 Nov 15:26
-  (display-time)
+    ;; nice scrolling
+    (setq scroll-margin 1
+          scroll-step 1
+          scroll-conservatively 100000
+          scroll-preserve-screen-position 1)
 
-  ;; mode line settings
-  (line-number-mode t)
-  (column-number-mode t)
-  (size-indication-mode t)
-  (global-hl-line-mode t) ; highlight current line
+    ;; clean mode line
+    (defvar mode-line-cleaner-alist
+      `((abbrev-mode    . "")
+        (undo-tree-mode . "")
+        ;; Major modes
+        (lisp-interaction-mode . "λ")
+        (cperl-mode            . "pl")
+        (python-mode           . "py")
+        (ruby-mode             . "rb")
+        (emacs-lisp-mode       . "el")
+        (js2-mode              . "js")))
+    (defun clean-mode-line ()
+      (interactive)
+      (loop for cleaner in mode-line-cleaner-alist
+            do (let* ((mode (car cleaner))
+                     (mode-str (cdr cleaner))
+                     (old-mode-str (cdr (assq mode minor-mode-alist))))
+                 (when old-mode-str
+                     (setcar old-mode-str mode-str))
+                   ;; major mode
+                 (when (eq mode major-mode)
+                   (setq mode-name mode-str)))))
+    (add-hook 'after-change-major-mode-hook 'clean-mode-line)
 
-  (global-linum-mode t)
+    ;; display time on mode-line
+    (setq display-time-day-and-date t)
+    (setq display-time-format "%m/%d %H:%M")           ; 11/10 15:26
+    ;; (setq display-time-format "%a %d %b %I:%M %p")  ; Fri 10 Nov 3:26 PM
+    ;; (setq display-time-format "%a %d %b %H:%M")     ; Fri 10 Nov 15:26
+    (display-time)
 
-  (require 'volatile-highlights)
-  (volatile-highlights-mode t)
-  (diminish 'volatile-highlights-mode)
+    ;; mode line settings
+    (line-number-mode t)
+    (column-number-mode t)
+    (size-indication-mode t)
+    (global-hl-line-mode t) ; highlight current line
 
-  (require 'smart-mode-line)
-  (setq sml/no-confirm-load-theme t)
-  ;; delegate theming to the currently active theme
-  (setq sml/theme nil)
-  (add-hook 'after-init-hook #'sml/setup)
+    (global-linum-mode t)
 
-  ;; show available keybindings after you start typing
-  (require 'which-key)
-  (which-key-mode 1)
+    (require 'volatile-highlights)
+    (volatile-highlights-mode t)
+    (diminish 'volatile-highlights-mode)
 
-  ;; frame demostration
-  (defun set-frame-size-according-to-resolution ()
-    (interactive)
-    (when window-system
-      (if (> (x-display-pixel-width) 1280)
-          (add-to-list 'default-frame-alist (cons 'width 100))
-        (add-to-list 'default-frame-alist (cons 'width 80)))
-      (add-to-list 'default-frame-alist (cons 'height 35))))
-  (set-frame-size-according-to-resolution)
-  ;; frame postition
-  (setq initial-frame-alist '((top . 30) (left . 100)))
+    (require 'smart-mode-line)
+    (setq sml/no-confirm-load-theme t)
+    ;; delegate theming to the currently active theme
+    (setq sml/theme nil)
+    (add-hook 'after-init-hook #'sml/setup)
 
-#+end_src
+    ;; show available keybindings after you start typing
+    (require 'which-key)
+    (which-key-mode 1)
+
+    ;; frame demostration
+    (defun set-frame-size-according-to-resolution ()
+      (interactive)
+      (when window-system
+        (if (> (x-display-pixel-width) 1280)
+            (add-to-list 'default-frame-alist (cons 'width 100))
+          (add-to-list 'default-frame-alist (cons 'width 80)))
+        (add-to-list 'default-frame-alist (cons 'height 35))))
+    (set-frame-size-according-to-resolution)
+    ;; frame postition
+    (setq initial-frame-alist '((top . 30) (left . 100)))
+
+  #+end_src
 
 * Editor Settings
 
-#+begin_src emacs-lisp
+  #+begin_src emacs-lisp
   ;; helm
   (require 'helm-config)
   (global-set-key (kbd "M-x") 'helm-M-x)
@@ -588,11 +591,11 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
               (lambda ()
                 (unless (string-match "question" oddmuse-post)
                   (setq oddmuse-post (concat "uihnscuskc=1;" oddmuse-post))))))
-#+end_src
+  #+end_src
 
 * User Defined Functions
 
-#+begin_src emacs-lisp
+  #+begin_src emacs-lisp
   (defun wf-kill-other-buffers ()
     "Kill all other buffers."
     (interactive)
@@ -602,7 +605,7 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
   (defun wf-kill-dired-buffers ()
     "Kill all dired buffers."
     (interactive)
-    (mapc (lambda (buffer) 
+    (mapc (lambda (buffer)
             (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
               (kill-buffer buffer)))
           (buffer-list)))
@@ -657,7 +660,7 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
                                 'undecided new-eol)))
         (set-buffer-file-coding-system new-coding-system)))
     (message "EOL conversion now %s" new-eol))
-    
+
   ;; Commands
 
   (defun wf-eval-and-replace ()
@@ -749,64 +752,62 @@ ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
        (list (line-beginning-position) (line-beginning-position 2)))))
   (advice-add 'kill-ring-save :before #'slick-copy)
 
-#+end_src
+  #+end_src
 
 * Modes
 
-All major mode for coding and IT things: lisp, elisp, f2e, php, perl, etc.
+  Major modes for coding: lisp, elisp, f2e, php, perl, etc.
 
 ** Lisp
-
 *** slime
 
-#+begin_src emacs-lisp
-  ;; slime
-  (when *hack-slime-p*
-    (if *is-mac-p*
-      (progn
-       (setq inferior-lisp-program "sbcl")
-       (load (expand-file-name "~/quicklisp/slime-helper.el"))))
-    (if *is-win-p*
-      (progn
-        (setq inferior-lisp-program "sbcl")
-        (load "C:\\quicklisp\\slime-helper.el"))))
-#+end_src
+  #+begin_src emacs-lisp
+    ;; slime
+    (when *hack-slime-p*
+      (if *is-mac-p*
+        (progn
+         (setq inferior-lisp-program "sbcl")
+         (load (expand-file-name "~/quicklisp/slime-helper.el"))))
+      (if *is-win-p*
+        (progn
+          (setq inferior-lisp-program "sbcl")
+          (load "C:\\quicklisp\\slime-helper.el"))))
+  #+end_src
 
 *** emacs-lisp
 
-#+begin_src emacs-lisp
+    #+begin_src emacs-lisp
   ;;; emacs-lisp-mode
   ;; now '-' is not considered a word-delimiter
   (add-hook 'emacs-lisp-mode-hook
             '(lambda ()
                (modify-syntax-entry ?- "w")))
-#+end_src
+    #+end_src
 
 ** css-mode
 
-Major mode for editing css files.
-#+begin_src emacs-lisp
+   #+begin_src emacs-lisp
   ;;; css-mode
   (autoload 'css-mode "css-mode")
   ;; set the indentation style to the c-mode style
   (setq cssm-indent-function 'cssm-c-style-indenter)
   ;; use this mode when loading .css files
   (setq auto-mode-alist (cons '("\\.css\\'" . css-mode) auto-mode-alist))
-#+end_src
+   #+end_src
 
 ** js2-mode
 
-js2-mode by SteveYegge is arguably the best JavaScript mode available for emacs. It has very accurate syntax highlighting, supports newer JavaScript extensions implemented in SpiderMonkey, and highlights syntax errors as you type.
-#+begin_src emacs-lisp
+   js2-mode by SteveYegge is arguably the best JavaScript mode available for emacs. It has very accurate syntax highlighting, supports newer JavaScript extensions implemented in SpiderMonkey, and highlights syntax errors as you type.
+   #+begin_src emacs-lisp
   ;;; js2-mode --- Improved JavaScript editing mode
   (autoload 'js2-mode "js2-mode")
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-#+end_src
+   #+end_src
 
 ** php-mode
 
-Major mode for editing PHP files.
-#+begin_src emacs-lisp
+   Major mode for editing PHP files.
+   #+begin_src emacs-lisp
   ;;; php-mode
   (require 'php-mode)
   (autoload 'php-mode "php-mode" "Major mode for editing php code." t)
@@ -834,26 +835,42 @@ Major mode for editing PHP files.
     (c-set-offset 'arglist-cont 0)
     (c-set-offset 'arglist-close 0))
   (add-hook 'php-mode-hook 'wf-php-mode-init)
-#+end_src
+   #+end_src
 
 ** web-mode
 
-#+begin_src emacs-lisp
-  (require 'web-mode)
-  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-#+end_src
+   #+begin_src emacs-lisp
+     (require 'web-mode)
+     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+     (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+     (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+     (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+     (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+     (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+     (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+     (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+     (add-to-list 'auto-mode-alist
+                  '("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode))
+
+     ;; make web-mode play nice with smartparens
+     (setq web-mode-enable-auto-pairing nil)
+
+     (sp-with-modes '(web-mode)
+       (sp-local-pair "%" "%"
+                      :unless '(sp-in-string-p)
+                      :post-handlers '(((lambda (&rest _ignored)
+                                          (just-one-space)
+                                          (save-excursion (insert " ")))
+                                        "SPC" "=" "#")))
+       (sp-local-tag "%" "<% "  " %>")
+       (sp-local-tag "=" "<%= " " %>")
+       (sp-local-tag "#" "<%# " " %>"))
+   #+end_src
 
 ** cperl-mode
 
-cperl-mode is a more advanced mode for programming Perl than the default Perl Mode.
-#+begin_src emacs-lisp
+   cperl-mode is a more advanced mode for programming Perl than the default Perl Mode.
+   #+begin_src emacs-lisp
   ;;; cperl-mode
 
   (mapc (lambda (pair)
@@ -867,76 +884,95 @@ cperl-mode is a more advanced mode for programming Perl than the default Perl Mo
           cperl-electric-keywords t
           cperl-indent-level 4
           cperl-indent-parens-as-block t
+          cperl-clobber-lisp-bindings t
           cperl-close-paren-offset -4
           cperl-continued-brace-offset -4
-          cperl-continued-statement-offset 4
+          cperl-continued-statement-offset 8
           cperl-extra-newline-before-brace t
           cperl-brace-offset -4
           cperl-label-offset -2
+          cperl-lazy-help-time 3
           cperl-tab-always-indent nil
+          cperl-electric-lbrace-space t
+          cperl-electric-parens nil
+          cperl-electric-linefeed nil
+          cperl-electric-keywords nil
           cperl-extra-newline-before-brace nil
           cperl-extra-newline-before-brace-multiline nil)
-    (local-set-key (kbd "C-h f") 'cperl-perldoc)
-    (define-abbrev-table 'global-abbrev-table
-      '(("pdbg"   "use Data::Dumper qw( Dumper );\nwarn Dumper[];" nil 1)
-        ("phbp"   "#!/usr/bin/perl -w"                             nil 1)
-        ("pusc"   "use Smart::Comments;\n\n### "                   nil 1)
-        ("putm"   "use Test::More 'no_plan';"                      nil 1)))
-    (custom-set-faces
-     '(cperl-array-face ((t (:background nil :weight normal))))
-     '(cperl-hash-face  ((t (:background nil :weight normal))))))
+
+    ;; if you want all the bells and whistles
+    ;; (setq cperl-hairy)
+
+    (set-face-background 'cperl-array-face nil)
+    (set-face-background 'cperl-hash-face nil)
+    (setq cperl-invalid-face nil))
+
+  (local-set-key (kbd "C-h f") 'cperl-perldoc)
+
+  (define-abbrev-table 'global-abbrev-table
+    '(("pdbg"   "use Data::Dumper qw( Dumper );\nwarn Dumper[];" nil 1)
+      ("phbp"   "#!/usr/bin/perl -w"                             nil 1)
+      ("pusc"   "use Smart::Comments;\n\n### "                   nil 1)
+      ("putm"   "use Test::More 'no_plan';"                      nil 1)))
+
+  (custom-set-faces
+    '(cperl-array-face ((t (:background nil :weight normal))))
+    '(cperl-hash-face  ((t (:background nil :weight normal)))))
+
   (add-hook 'cperl-mode-hook 'wf-cperl-mode-init)
 
-#+end_src
+   #+end_src
 
 ** org-mode
 
 Org mode is for keeping notes, maintaining TODO lists, planning projects, and authoring documents with a fast and effective plain-text system.
-#+begin_src emacs-lisp
-  (require 'org)
-  (require 'remember)
-  (require 'org-mouse)
+   #+begin_src emacs-lisp
+     (require 'org)
+     (require 'remember)
+     (require 'org-mouse)
 
-  ;; I want files with the extension ".org" to open in org-mode.
-  (add-to-list 'auto-mode-alist
-               '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
+     (org-indent-mode -1)
 
-  ;; Some basic keybindings.
-  (global-set-key "\C-cl" 'org-store-link)
-  (global-set-key "\C-ca" 'org-agenda)
-  (global-set-key "\C-cr" 'org-remember)
+     ;; I want files with the extension ".org" to open in org-mode.
+     (add-to-list 'auto-mode-alist
+                  '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
-  ;; a basic set of keywords to start out
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "STRT(s)" "|" "DONE(d)")
-          (sequencep "WAIT(w@/!)" "|" "CANL(c@/!)")))
+     ;; Some basic keybindings.
+     (global-set-key "\C-cl" 'org-store-link)
+     (global-set-key "\C-ca" 'org-agenda)
+     (global-set-key "\C-cr" 'org-remember)
 
-  (setq org-todo-keyword-faces
-        '(("TODO" :foreground "red" :weight bold)
-          ("DONE" :foreground "forest green" :weight bold)
-          ("WAIT" :foreground "orange" :weight bold)
-          ("CANL" :foreground "forest green" :weight bold)))
+     ;; a basic set of keywords to start out
+     (setq org-todo-keywords
+           '((sequence "TODO(t)" "STRT(s)" "|" "DONE(d)")
+             (sequencep "WAIT(w@/!)" "|" "CANL(c@/!)")))
 
-  ;; I use org's tag feature to implement contexts.
-  (setq org-tag-alist '(("OFFICE"  . ?o)
-                        ("HOME"    . ?h)
-                        ("SERVER"  . ?s)
-                        ("PROJECT" . ?p)))
+     (setq org-todo-keyword-faces
+           '(("TODO" :foreground "red" :weight bold)
+             ("DONE" :foreground "forest green" :weight bold)
+             ("WAIT" :foreground "orange" :weight bold)
+             ("CANL" :foreground "forest green" :weight bold)))
 
-  ;; I put the archive in a separate file, because the gtd file will
-  ;; probably already get pretty big just with current tasks.
-  (setq org-archive-location "%s_archive::")
+     ;; I use org's tag feature to implement contexts.
+     (setq org-tag-alist '(("OFFICE"  . ?o)
+                           ("HOME"    . ?h)
+                           ("SERVER"  . ?s)
+                           ("PROJECT" . ?p)))
 
-  (defun org-summary-todo (n-done n-not-done)
-    "Switch entry to DONE when all subentries are done, to TODO otherwise."
-    (let (org-log-done org-log-states)   ; turn off logging
-      (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
-  (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-#+end_src
+     ;; I put the archive in a separate file, because the gtd file will
+     ;; probably already get pretty big just with current tasks.
+     (setq org-archive-location "%s_archive::")
+
+     (defun org-summary-todo (n-done n-not-done)
+       "Switch entry to DONE when all subentries are done, to TODO otherwise."
+       (let (org-log-done org-log-states)   ; turn off logging
+         (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+     (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+   #+end_src
 
 ** LaTeX and AUCTEX
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   ;; AucTeX
 
   (when *is-mac-p*
@@ -968,10 +1004,10 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (setq latex-mode-hook
         '(lambda ()
            (turn-off-auto-fill)))
-    
+
   (autoload 'reftex-mode    "reftex" "RefTeX Minor Mode" t)
   (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" t)
-    
+
   (add-hook 'LaTeX-mode-hook
             (lambda ()
               (setq TeX-auto-untabify t       ; remove all tabs before saving
@@ -1002,7 +1038,7 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
 
               (when *is-mac-p*
                 ;; cat ~/.latexmkrc
-                ;; 
+                ;;
                 ;; $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 %O %S';
                 ;; $pdf_previewer = 'open -a skim';
                 ;; $clean_ext = 'bbl rel %R-blx.bib %R.synctex.gz';
@@ -1010,7 +1046,7 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
                 ;; This perfectly allows to compile with latexmk as default on C-c C-c and C-c C-v opens Skim at the current line which is nicely highlighted.
                 ;; With CMD + shift + click in the .pdf, one can then jump back to the corresponding paragraph in the .tex file.
                 ;; Thanks to `(server-start)'.
-                ;; 
+                ;;
                 (setq TeX-view-program-list
                       '(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
                 (setq TeX-view-program-selection
@@ -1050,21 +1086,21 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (autoload 'reftex-index-phrase-mode
     "reftex-index" "Phrase mode" t)
 
-#+END_SRC
+   #+END_SRC
 
 ** markdown-mode
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (autoload 'markdown-mode "markdown-mode"
      "Major mode for editing Markdown files" t)
   (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-#+END_SRC
+   #+END_SRC
 
 * Key Bindings
 
-#+begin_src emacs-lisp
+  #+begin_src emacs-lisp
   ;; resolve conflict with Windows IME
   (when window-system
     (global-set-key (kbd "M-SPC") 'set-mark-command))
@@ -1174,14 +1210,14 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 
-#+end_src
-   
+  #+end_src
+
 * Misc
 
 ** Abbrev
 
-Define some words abbreviation.
-#+begin_src emacs-lisp
+   Define some words abbreviation.
+   #+begin_src emacs-lisp
   ;; my personal abbreviations
   (define-abbrev-table 'global-abbrev-table
     '(
@@ -1234,23 +1270,23 @@ Define some words abbreviation.
 
   ;; turn on abbrev mode
   (abbrev-mode 1)
-#+end_src
+   #+end_src
 
 ** Alias
 
-Use some alias to shorten commands.
-#+begin_src emacs-lisp
+   Use some alias to shorten commands.
+   #+begin_src emacs-lisp
   ; shortening of often used commands
 
   (defalias 'ff 'toggle-frame-fullscreen)
-  (defalias 'fm 'toggle-frame-maximized) 
+  (defalias 'fm 'toggle-frame-maximized)
 
   (defalias 'qrr 'query-replace-regexp)
   (defalias 'rebq 'reb-query-replace)
   (defalias 'lml 'list-matching-lines)
   (defalias 'dml 'delete-matching-lines)
   (defalias 'dnml 'delete-non-matching-lines)
-  (defalias 'dtw 'delete-trailing-whitespace)
+  (defalias 'dws 'delete-trailing-whitespace)
   (defalias 'sl 'sort-lines)
   (defalias 'rr 'reverse-region)
   (defalias 'rs 'replace-string)
@@ -1291,4 +1327,4 @@ Use some alias to shorten commands.
   (defalias 'acm 'auto-complete-mode)
   (defalias 'vlm 'visual-line-mode)
   (defalias 'glm 'global-linum-mode)
-#+end_src
+   #+end_src
