@@ -47,83 +47,84 @@
 
    ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
    #+begin_src emacs-lisp
-  (require 'package)
+     (require 'package)
 
-  (setq package-archives '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-                           ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-                           ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
-                           ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/")
-                           ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
+     (setq package-archives '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                              ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+                              ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
+                              ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/")
+                              ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
 
-  (package-initialize)
+     (package-initialize)
 
-  (defvar wf-packages
-    '(ace-window
-      anzu
-      avy
-      js2-mode
-      php-mode
-      emmet-mode
-      go-mode
-      python-mode
-      auctex
-      clojure-mode
-      diminish
-      expand-region
-      undo-tree
-      volatile-highlights
-      helm
-      helm-projectile
-      projectile
-      flycheck
-      git-timemachine
-      gitconfig-mode
-      gitignore-mode
-      magit
-      markdown-mode
-      move-text
-      hl-todo
-      paredit
-      sass-mode
-      scss-mode
-      smart-mode-line
-      smartparens
-      web-mode
-      which-key
-      rainbow-mode
-      yaml-mode
-      zop-to-char
-      yasnippet)
-    "A list of packages to ensure are installed at launch.")
+     (defvar wf-packages
+       '(ace-window
+         anzu
+         avy
+         js2-mode
+         php-mode
+         emmet-mode
+         go-mode
+         python-mode
+         auctex
+         clojure-mode
+         diminish
+         expand-region
+         undo-tree
+         volatile-highlights
+         helm
+         helm-projectile
+         htmlize
+         projectile
+         flycheck
+         git-timemachine
+         gitconfig-mode
+         gitignore-mode
+         magit
+         markdown-mode
+         move-text
+         hl-todo
+         paredit
+         sass-mode
+         scss-mode
+         smart-mode-line
+         smartparens
+         web-mode
+         which-key
+         rainbow-mode
+         yaml-mode
+         zop-to-char
+         yasnippet)
+       "A list of packages to ensure are installed at launch.")
 
-  (defun wf-packages-installed-p ()
-    "Check if all packages are installed."
-    (every #'package-installed-p wf-packages))
+     (defun wf-packages-installed-p ()
+       "Check if all packages are installed."
+       (every #'package-installed-p wf-packages))
 
-  (defun wf-install-packages ()
-    "Install all packages listed in `wf-packages'."
-    (unless (wf-packages-installed-p)
-      ;; Check for new packages
-      (message "%s" "Refreshing packages...")
-      (package-refresh-contents)
-      (message "%s" "DONE")
-      ;; Install the missing packages
-      (dolist (package wf-packages)
-        (when (not (package-installed-p package))
-          (package-install package)))))
+     (defun wf-install-packages ()
+       "Install all packages listed in `wf-packages'."
+       (unless (wf-packages-installed-p)
+         ;; Check for new packages
+         (message "%s" "Refreshing packages...")
+         (package-refresh-contents)
+         (message "%s" "DONE")
+         ;; Install the missing packages
+         (dolist (package wf-packages)
+           (when (not (package-installed-p package))
+             (package-install package)))))
 
-  (wf-install-packages)
+     (wf-install-packages)
 
-  ;; config changes made through the customize UI will be stored here
-  (setq custom-file (expand-file-name "custom.el" wf-my-dir))
+     ;; config changes made through the customize UI will be stored here
+     (setq custom-file (expand-file-name "custom.el" wf-my-dir))
 
-  ;; load the personal settings (this includes `custom-file')
-  (when (file-exists-p wf-my-dir)
-    (message "Loading personal configuration files in %s..." wf-my-dir)
-    (mapc 'load (directory-files wf-my-dir 't "^[^#\.].*el$")))
+     ;; load the personal settings (this includes `custom-file')
+     (when (file-exists-p wf-my-dir)
+       (message "Loading personal configuration files in %s..." wf-my-dir)
+       (mapc 'load (directory-files wf-my-dir 't "^[^#\.].*el$")))
 
-  ;; diminish keeps the modeline tidy
-  (require 'diminish)
+     ;; diminish keeps the modeline tidy
+     (require 'diminish)
 
 
    #+end_src
