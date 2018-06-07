@@ -10,128 +10,130 @@
 ** cl
 
    Some Common Lisp functions and macros can be used in Emacs Lisp programs.
-   #+begin_src emacs-lisp
+
+#+begin_src emacs-lisp
   (require 'cl)
-   #+end_src
+#+end_src
 
 ** User Info
 
    My full name and mail address
-   #+begin_src emacs-lisp
+
+#+begin_src emacs-lisp
   (setq user-full-name    "WisdomFusion")
   (setq user-mail-address "WisdomFusion@gmail.com")
-   #+end_src
+#+end_src
 
 ** Declare global variables
 
-   #+begin_src emacs-lisp
+#+begin_src emacs-lisp
   ;; global variables
   (defconst *is-mac-p* (eq system-type 'darwin))
   (defconst *is-win-p* (eq system-type 'windows-nt))
-   #+end_src
+#+end_src
 
 ** load-path
 
    The variable `load-path' lists all the directories where Emacs should look for Elisp files.
-   #+begin_src emacs-lisp
-     ;; load path
-     (add-to-list 'load-path "~/.emacs.d/config.el")
-     ;;(let* ((my-lisp-dir "~/.emacs.d/site-lisp/")
-     ;;       (default-directory my-lisp-dir))
-     ;;  (setq load-path (cons my-lisp-dir load-path))
-     ;;  (normal-top-level-add-subdirs-to-load-path))
 
-   #+end_src
+#+begin_src emacs-lisp
+  ;; load path
+  (add-to-list 'load-path "~/.emacs.d/config.el")
+  ;;(let* ((my-lisp-dir "~/.emacs.d/site-lisp/")
+  ;;       (default-directory my-lisp-dir))
+  ;;  (setq load-path (cons my-lisp-dir load-path))
+  ;;  (normal-top-level-add-subdirs-to-load-path))
+#+end_src
 
 ** ELPA
 
    ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
-   #+begin_src emacs-lisp
-     (require 'package)
 
-     (setq package-archives '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-                              ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-                              ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
-                              ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/")
-                              ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
+#+begin_src emacs-lisp
+  (require 'package)
 
-     (package-initialize)
+  (setq package-archives '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                           ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+                           ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
+                           ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/")
+                           ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
 
-     (defvar wf-packages
-       '(ace-window
-         anzu
-         avy
-         js2-mode
-         php-mode
-         emmet-mode
-         go-mode
-         python-mode
-         auctex
-         clojure-mode
-         diminish
-         expand-region
-         undo-tree
-         volatile-highlights
-         helm
-         helm-projectile
-         htmlize
-         projectile
-         flycheck
-         git-timemachine
-         gitconfig-mode
-         gitignore-mode
-         magit
-         markdown-mode
-         move-text
-         hl-todo
-         paredit
-         sass-mode
-         scss-mode
-         smart-mode-line
-         smartparens
-         web-mode
-         which-key
-         rainbow-mode
-         yaml-mode
-         zop-to-char
-         yasnippet)
-       "A list of packages to ensure are installed at launch.")
+  (package-initialize)
 
-     (defun wf-packages-installed-p ()
-       "Check if all packages are installed."
-       (every #'package-installed-p wf-packages))
+  (defvar wf-packages
+    '(ace-window
+      anzu
+      avy
+      js2-mode
+      php-mode
+      emmet-mode
+      go-mode
+      python-mode
+      auctex
+      clojure-mode
+      diminish
+      expand-region
+      undo-tree
+      volatile-highlights
+      helm
+      helm-projectile
+      htmlize
+      projectile
+      flycheck
+      git-timemachine
+      gitconfig-mode
+      gitignore-mode
+      magit
+      markdown-mode
+      move-text
+      hl-todo
+      paredit
+      sass-mode
+      scss-mode
+      smart-mode-line
+      smartparens
+      web-mode
+      which-key
+      rainbow-mode
+      yaml-mode
+      zop-to-char
+      yasnippet)
+    "A list of packages to ensure are installed at launch.")
 
-     (defun wf-install-packages ()
-       "Install all packages listed in `wf-packages'."
-       (unless (wf-packages-installed-p)
-         ;; Check for new packages
-         (message "%s" "Refreshing packages...")
-         (package-refresh-contents)
-         (message "%s" "DONE")
-         ;; Install the missing packages
-         (dolist (package wf-packages)
-           (when (not (package-installed-p package))
-             (package-install package)))))
+  (defun wf-packages-installed-p ()
+    "Check if all packages are installed."
+    (every #'package-installed-p wf-packages))
 
-     (wf-install-packages)
+  (defun wf-install-packages ()
+    "Install all packages listed in `wf-packages'."
+    (unless (wf-packages-installed-p)
+      ;; Check for new packages
+      (message "%s" "Refreshing packages...")
+      (package-refresh-contents)
+      (message "%s" "DONE")
+      ;; Install the missing packages
+      (dolist (package wf-packages)
+        (when (not (package-installed-p package))
+          (package-install package)))))
 
-     ;; config changes made through the customize UI will be stored here
-     (setq custom-file (expand-file-name "custom.el" wf-my-dir))
+  (wf-install-packages)
 
-     ;; load the personal settings (this includes `custom-file')
-     (when (file-exists-p wf-my-dir)
-       (message "Loading personal configuration files in %s..." wf-my-dir)
-       (mapc 'load (directory-files wf-my-dir 't "^[^#\.].*el$")))
+  ;; config changes made through the customize UI will be stored here
+  (setq custom-file (expand-file-name "custom.el" wf-my-dir))
 
-     ;; diminish keeps the modeline tidy
-     (require 'diminish)
+  ;; load the personal settings (this includes `custom-file')
+  (when (file-exists-p wf-my-dir)
+    (message "Loading personal configuration files in %s..." wf-my-dir)
+    (mapc 'load (directory-files wf-my-dir 't "^[^#\.].*el$")))
 
+  ;; diminish keeps the modeline tidy
+  (require 'diminish)
 
-   #+end_src
+#+end_src
 
 ** Fonts and Encoding
 
-   #+begin_src emacs-lisp
+#+begin_src emacs-lisp
   ;; unicad -  Universal Charset Auto Detector
   ;; Http://www.emacswiki.org/emacs/Unicad
   (require 'unicad nil 'noerror)
@@ -179,11 +181,11 @@
           (set-face-attribute face nil :weight 'normal :underline nil))
         (face-list))
 
-   #+end_src
+#+end_src
 
 * UI Settings
 
-  #+begin_src emacs-lisp
+#+begin_src emacs-lisp
     (when (fboundp 'tool-bar-mode)
          (tool-bar-mode -1))
 
@@ -278,11 +280,11 @@
     ;; frame postition
     (setq initial-frame-alist '((top . 30) (left . 100)))
 
-  #+end_src
+#+end_src
 
 * Editor Settings
 
-  #+begin_src emacs-lisp
+#+begin_src emacs-lisp
   ;; helm
   (require 'helm-config)
   (global-set-key (kbd "M-x") 'helm-M-x)
@@ -592,11 +594,11 @@
               (lambda ()
                 (unless (string-match "question" oddmuse-post)
                   (setq oddmuse-post (concat "uihnscuskc=1;" oddmuse-post))))))
-  #+end_src
+#+end_src
 
 * User Defined Functions
 
-  #+begin_src emacs-lisp
+#+begin_src emacs-lisp
   (defun wf-kill-other-buffers ()
     "Kill all other buffers."
     (interactive)
@@ -753,7 +755,7 @@
        (list (line-beginning-position) (line-beginning-position 2)))))
   (advice-add 'kill-ring-save :before #'slick-copy)
 
-  #+end_src
+#+end_src
 
 * Modes
 
@@ -762,53 +764,55 @@
 ** Lisp
 *** slime
 
-  #+begin_src emacs-lisp
-    ;; slime
-    (when *hack-slime-p*
-      (if *is-mac-p*
-        (progn
-         (setq inferior-lisp-program "sbcl")
-         (load (expand-file-name "~/quicklisp/slime-helper.el"))))
-      (if *is-win-p*
-        (progn
-          (setq inferior-lisp-program "sbcl")
-          (load "C:\\quicklisp\\slime-helper.el"))))
-  #+end_src
+#+begin_src emacs-lisp
+  ;; slime
+  (when *hack-slime-p*
+    (if *is-mac-p*
+      (progn
+       (setq inferior-lisp-program "sbcl")
+       (load (expand-file-name "~/quicklisp/slime-helper.el"))))
+    (if *is-win-p*
+      (progn
+        (setq inferior-lisp-program "sbcl")
+        (load "C:\\quicklisp\\slime-helper.el"))))
+#+end_src
 
 *** emacs-lisp
 
-    #+begin_src emacs-lisp
+#+begin_src emacs-lisp
   ;;; emacs-lisp-mode
   ;; now '-' is not considered a word-delimiter
   (add-hook 'emacs-lisp-mode-hook
             '(lambda ()
                (modify-syntax-entry ?- "w")))
-    #+end_src
+#+end_src
 
 ** css-mode
 
-   #+begin_src emacs-lisp
+#+begin_src emacs-lisp
   ;;; css-mode
   (autoload 'css-mode "css-mode")
   ;; set the indentation style to the c-mode style
   (setq cssm-indent-function 'cssm-c-style-indenter)
   ;; use this mode when loading .css files
   (setq auto-mode-alist (cons '("\\.css\\'" . css-mode) auto-mode-alist))
-   #+end_src
+#+end_src
 
 ** js2-mode
 
    js2-mode by SteveYegge is arguably the best JavaScript mode available for emacs. It has very accurate syntax highlighting, supports newer JavaScript extensions implemented in SpiderMonkey, and highlights syntax errors as you type.
-   #+begin_src emacs-lisp
+
+#+begin_src emacs-lisp
   ;;; js2-mode --- Improved JavaScript editing mode
   (autoload 'js2-mode "js2-mode")
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-   #+end_src
+#+end_src
 
 ** php-mode
 
    Major mode for editing PHP files.
-   #+begin_src emacs-lisp
+
+#+begin_src emacs-lisp
   ;;; php-mode
   (require 'php-mode)
   (autoload 'php-mode "php-mode" "Major mode for editing php code." t)
@@ -836,42 +840,43 @@
     (c-set-offset 'arglist-cont 0)
     (c-set-offset 'arglist-close 0))
   (add-hook 'php-mode-hook 'wf-php-mode-init)
-   #+end_src
+#+end_src
 
 ** web-mode
 
-   #+begin_src emacs-lisp
-     (require 'web-mode)
-     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-     (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-     (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-     (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-     (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-     (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-     (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-     (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-     (add-to-list 'auto-mode-alist
-                  '("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode))
+#+begin_src emacs-lisp
+  (require 'web-mode)
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist
+               '("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode))
 
-     ;; make web-mode play nice with smartparens
-     (setq web-mode-enable-auto-pairing nil)
+  ;; make web-mode play nice with smartparens
+  (setq web-mode-enable-auto-pairing nil)
 
-     (sp-with-modes '(web-mode)
-       (sp-local-pair "%" "%"
-                      :unless '(sp-in-string-p)
-                      :post-handlers '(((lambda (&rest _ignored)
-                                          (just-one-space)
-                                          (save-excursion (insert " ")))
-                                        "SPC" "=" "#")))
-       (sp-local-tag "%" "<% "  " %>")
-       (sp-local-tag "=" "<%= " " %>")
-       (sp-local-tag "#" "<%# " " %>"))
-   #+end_src
+  (sp-with-modes '(web-mode)
+    (sp-local-pair "%" "%"
+                   :unless '(sp-in-string-p)
+                   :post-handlers '(((lambda (&rest _ignored)
+                                       (just-one-space)
+                                       (save-excursion (insert " ")))
+                                     "SPC" "=" "#")))
+    (sp-local-tag "%" "<% "  " %>")
+    (sp-local-tag "=" "<%= " " %>")
+    (sp-local-tag "#" "<%# " " %>"))
+#+end_src
 
 ** cperl-mode
 
    cperl-mode is a more advanced mode for programming Perl than the default Perl Mode.
-   #+begin_src emacs-lisp
+
+#+begin_src emacs-lisp
   ;;; cperl-mode
 
   (mapc (lambda (pair)
@@ -922,58 +927,76 @@
 
   (add-hook 'cperl-mode-hook 'wf-cperl-mode-init)
 
-   #+end_src
+#+end_src
+
+** XML
+
+#+BEGIN_SRC emacs-lisp
+  (require 'nxml-mode)
+
+  (push '("<\\?xml" . nxml-mode) magic-mode-alist)
+
+  ;; pom files should be treated as xml files
+  (add-to-list 'auto-mode-alist '("\\.pom$" . nxml-mode))
+
+  (setq nxml-child-indent 4)
+  (setq nxml-attribute-indent 4)
+  (setq nxml-auto-insert-xml-declaration-flag nil)
+  (setq nxml-bind-meta-tab-to-complete-flag t)
+  (setq nxml-slash-auto-complete-flag t)
+#+END_SRC
 
 ** org-mode
 
 Org mode is for keeping notes, maintaining TODO lists, planning projects, and authoring documents with a fast and effective plain-text system.
-   #+begin_src emacs-lisp
-     (require 'org)
-     (require 'remember)
-     (require 'org-mouse)
 
-     (org-indent-mode -1)
+#+begin_src emacs-lisp
+  (require 'org)
+  (require 'remember)
+  (require 'org-mouse)
 
-     ;; I want files with the extension ".org" to open in org-mode.
-     (add-to-list 'auto-mode-alist
-                  '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
+  (org-indent-mode -1)
 
-     ;; Some basic keybindings.
-     (global-set-key "\C-cl" 'org-store-link)
-     (global-set-key "\C-ca" 'org-agenda)
-     (global-set-key "\C-cr" 'org-remember)
+  ;; I want files with the extension ".org" to open in org-mode.
+  (add-to-list 'auto-mode-alist
+               '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
-     ;; a basic set of keywords to start out
-     (setq org-todo-keywords
-           '((sequence "TODO(t)" "STRT(s)" "|" "DONE(d)")
-             (sequencep "WAIT(w@/!)" "|" "CANL(c@/!)")))
+  ;; Some basic keybindings.
+  (global-set-key "\C-cl" 'org-store-link)
+  (global-set-key "\C-ca" 'org-agenda)
+  (global-set-key "\C-cr" 'org-remember)
 
-     (setq org-todo-keyword-faces
-           '(("TODO" :foreground "red" :weight bold)
-             ("DONE" :foreground "forest green" :weight bold)
-             ("WAIT" :foreground "orange" :weight bold)
-             ("CANL" :foreground "forest green" :weight bold)))
+  ;; a basic set of keywords to start out
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "STRT(s)" "|" "DONE(d)")
+          (sequencep "WAIT(w@/!)" "|" "CANL(c@/!)")))
 
-     ;; I use org's tag feature to implement contexts.
-     (setq org-tag-alist '(("OFFICE"  . ?o)
-                           ("HOME"    . ?h)
-                           ("SERVER"  . ?s)
-                           ("PROJECT" . ?p)))
+  (setq org-todo-keyword-faces
+        '(("TODO" :foreground "red" :weight bold)
+          ("DONE" :foreground "forest green" :weight bold)
+          ("WAIT" :foreground "orange" :weight bold)
+          ("CANL" :foreground "forest green" :weight bold)))
 
-     ;; I put the archive in a separate file, because the gtd file will
-     ;; probably already get pretty big just with current tasks.
-     (setq org-archive-location "%s_archive::")
+  ;; I use org's tag feature to implement contexts.
+  (setq org-tag-alist '(("OFFICE"  . ?o)
+                        ("HOME"    . ?h)
+                        ("SERVER"  . ?s)
+                        ("PROJECT" . ?p)))
 
-     (defun org-summary-todo (n-done n-not-done)
-       "Switch entry to DONE when all subentries are done, to TODO otherwise."
-       (let (org-log-done org-log-states)   ; turn off logging
-         (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
-     (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-   #+end_src
+  ;; I put the archive in a separate file, because the gtd file will
+  ;; probably already get pretty big just with current tasks.
+  (setq org-archive-location "%s_archive::")
+
+  (defun org-summary-todo (n-done n-not-done)
+    "Switch entry to DONE when all subentries are done, to TODO otherwise."
+    (let (org-log-done org-log-states)   ; turn off logging
+      (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+  (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+#+end_src
 
 ** LaTeX and AUCTEX
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
   ;; AucTeX
 
   (when *is-mac-p*
@@ -1087,21 +1110,21 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (autoload 'reftex-index-phrase-mode
     "reftex-index" "Phrase mode" t)
 
-   #+END_SRC
+#+END_SRC
 
 ** markdown-mode
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
   (autoload 'markdown-mode "markdown-mode"
      "Major mode for editing Markdown files" t)
   (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-   #+END_SRC
+#+END_SRC
 
 * Key Bindings
 
-  #+begin_src emacs-lisp
+#+begin_src emacs-lisp
   ;; resolve conflict with Windows IME
   (when window-system
     (global-set-key (kbd "M-SPC") 'set-mark-command))
@@ -1210,15 +1233,15 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (global-set-key (kbd "C-<") 'mc/mark-previous-liks-this)
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
-
-  #+end_src
+#+end_src
 
 * Misc
 
 ** Abbrev
 
    Define some words abbreviation.
-   #+begin_src emacs-lisp
+
+#+begin_src emacs-lisp
   ;; my personal abbreviations
   (define-abbrev-table 'global-abbrev-table
     '(
@@ -1271,12 +1294,13 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
 
   ;; turn on abbrev mode
   (abbrev-mode 1)
-   #+end_src
+#+end_src
 
 ** Alias
 
    Use some alias to shorten commands.
-   #+begin_src emacs-lisp
+
+#+begin_src emacs-lisp
   ; shortening of often used commands
 
   (defalias 'ff 'toggle-frame-fullscreen)
@@ -1328,4 +1352,4 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (defalias 'acm 'auto-complete-mode)
   (defalias 'vlm 'visual-line-mode)
   (defalias 'glm 'global-linum-mode)
-   #+end_src
+#+end_src
