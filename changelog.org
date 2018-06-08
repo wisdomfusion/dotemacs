@@ -1,6 +1,9 @@
 # -*- mode: org; coding: utf-8 -*-
 #+STARTUP: showall
 
+* 2018-06-08
+- set up some major modes
+
 * 2018-06-04
 - version 0.1.0 released
 
@@ -13,8 +16,8 @@
 * 2015-12-21
 - clean old modes and tools
 - change multi-web-mode to web-mode.el
-  
-* 2013-08-15 
+
+* 2013-08-15
 - add slime switch, and turn it off by default
 - improve document
 

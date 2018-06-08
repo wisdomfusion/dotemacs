@@ -68,6 +68,7 @@
       js2-mode
       php-mode
       emmet-mode
+      material-theme
       go-mode
       python-mode
       auctex
@@ -192,11 +193,11 @@
                               (font-spec :family "PingFang SC" :size 16)))))
     (if *is-win-p*
         (progn
-          (set-face-attribute 'default nil :font "Consolas 12")
+          (set-face-attribute 'default nil :font "Consolas 11")
           (dolist (charset '(kana han symbol cjk-misc bopomofo))
             (set-fontset-font (frame-parameter nil 'font)
                               charset
-                              (font-spec :family "YaHei Consolas Hybrid" :size 16))))))
+                              (font-spec :family "Microsoft YaHei" :size 16))))))
 
   (setq-default line-spacing 4)
 
@@ -209,99 +210,102 @@
 * UI Settings
 
 #+begin_src emacs-lisp
-    (when (fboundp 'tool-bar-mode)
-         (tool-bar-mode -1))
+  (when (fboundp 'tool-bar-mode)
+       (tool-bar-mode -1))
 
-    (menu-bar-mode -1)
-    (tooltip-mode -1)
+  (menu-bar-mode -1)
+  (tooltip-mode -1)
 
-    ;; the blinking cursor is nothing, but an annoyance
-    (blink-cursor-mode -1)
+  (load-theme 'material t)
+  ;; (load-theme 'material-light t)
 
-    ;; disable the annoying bell ring
-    (setq ring-bell-function 'ignore)
+  ;; the blinking cursor is nothing, but an annoyance
+  (blink-cursor-mode -1)
 
-    ;; disable startup screen
-    (setq inhibit-startup-screen t)
+  ;; disable the annoying bell ring
+  (setq ring-bell-function 'ignore)
 
-    (setq frame-title-format
-          '(buffer-file-name "%f" ("%b")))
+  ;; disable startup screen
+  (setq inhibit-startup-screen t)
 
-    (setq-default show-trailing-whitespace t)
-    (add-to-list 'write-file-functions 'delete-trailing-whitespace)
+  (setq frame-title-format
+        '(buffer-file-name "%f" ("%b")))
 
-    (mouse-wheel-mode t)
+  (setq-default show-trailing-whitespace t)
+  (add-to-list 'write-file-functions 'delete-trailing-whitespace)
 
-    ;; nice scrolling
-    (setq scroll-margin 1
-          scroll-step 1
-          scroll-conservatively 100000
-          scroll-preserve-screen-position 1)
+  (mouse-wheel-mode t)
 
-    ;; clean mode line
-    (defvar mode-line-cleaner-alist
-      `((abbrev-mode    . "")
-        (undo-tree-mode . "")
-        ;; Major modes
-        (lisp-interaction-mode . "λ")
-        (cperl-mode            . "pl")
-        (python-mode           . "py")
-        (ruby-mode             . "rb")
-        (emacs-lisp-mode       . "el")
-        (js2-mode              . "js")))
-    (defun clean-mode-line ()
-      (interactive)
-      (loop for cleaner in mode-line-cleaner-alist
-            do (let* ((mode (car cleaner))
-                     (mode-str (cdr cleaner))
-                     (old-mode-str (cdr (assq mode minor-mode-alist))))
-                 (when old-mode-str
-                     (setcar old-mode-str mode-str))
-                   ;; major mode
-                 (when (eq mode major-mode)
-                   (setq mode-name mode-str)))))
-    (add-hook 'after-change-major-mode-hook 'clean-mode-line)
+  ;; nice scrolling
+  (setq scroll-margin 1
+        scroll-step 1
+        scroll-conservatively 100000
+        scroll-preserve-screen-position 1)
 
-    ;; display time on mode-line
-    (setq display-time-day-and-date t)
-    (setq display-time-format "%m/%d %H:%M")           ; 11/10 15:26
-    ;; (setq display-time-format "%a %d %b %I:%M %p")  ; Fri 10 Nov 3:26 PM
-    ;; (setq display-time-format "%a %d %b %H:%M")     ; Fri 10 Nov 15:26
-    (display-time)
+  ;; clean mode line
+  (defvar mode-line-cleaner-alist
+    `((abbrev-mode    . "")
+      (undo-tree-mode . "")
+      ;; Major modes
+      (lisp-interaction-mode . "λ")
+      (cperl-mode            . "pl")
+      (python-mode           . "py")
+      (ruby-mode             . "rb")
+      (emacs-lisp-mode       . "el")
+      (js2-mode              . "js")))
+  (defun clean-mode-line ()
+    (interactive)
+    (loop for cleaner in mode-line-cleaner-alist
+          do (let* ((mode (car cleaner))
+                   (mode-str (cdr cleaner))
+                   (old-mode-str (cdr (assq mode minor-mode-alist))))
+               (when old-mode-str
+                   (setcar old-mode-str mode-str))
+                 ;; major mode
+               (when (eq mode major-mode)
+                 (setq mode-name mode-str)))))
+  (add-hook 'after-change-major-mode-hook 'clean-mode-line)
 
-    ;; mode line settings
-    (line-number-mode t)
-    (column-number-mode t)
-    (size-indication-mode t)
-    (global-hl-line-mode t) ; highlight current line
+  ;; display time on mode-line
+  (setq display-time-day-and-date t)
+  (setq display-time-format "%m/%d %H:%M")           ; 11/10 15:26
+  ;; (setq display-time-format "%a %d %b %I:%M %p")  ; Fri 10 Nov 3:26 PM
+  ;; (setq display-time-format "%a %d %b %H:%M")     ; Fri 10 Nov 15:26
+  (display-time)
 
-    (global-linum-mode t)
+  ;; mode line settings
+  (line-number-mode t)
+  (column-number-mode t)
+  (size-indication-mode t)
+  (global-hl-line-mode t) ; highlight current line
 
-    (require 'volatile-highlights)
-    (volatile-highlights-mode t)
-    (diminish 'volatile-highlights-mode)
+  (global-linum-mode t)
 
-    (require 'smart-mode-line)
-    (setq sml/no-confirm-load-theme t)
-    ;; delegate theming to the currently active theme
-    (setq sml/theme nil)
-    (add-hook 'after-init-hook #'sml/setup)
+  (require 'volatile-highlights)
+  (volatile-highlights-mode t)
+  (diminish 'volatile-highlights-mode)
 
-    ;; show available keybindings after you start typing
-    (require 'which-key)
-    (which-key-mode 1)
+  (require 'smart-mode-line)
+  (setq sml/no-confirm-load-theme t)
+  ;; delegate theming to the currently active theme
+  (setq sml/theme nil)
+  (add-hook 'after-init-hook #'sml/setup)
 
-    ;; frame demostration
-    (defun set-frame-size-according-to-resolution ()
-      (interactive)
-      (when window-system
-        (if (> (x-display-pixel-width) 1280)
-            (add-to-list 'default-frame-alist (cons 'width 100))
-          (add-to-list 'default-frame-alist (cons 'width 80)))
-        (add-to-list 'default-frame-alist (cons 'height 35))))
-    (set-frame-size-according-to-resolution)
-    ;; frame postition
-    (setq initial-frame-alist '((top . 30) (left . 100)))
+  ;; show available keybindings after you start typing
+  (require 'which-key)
+  (which-key-mode 1)
+
+  ;; frame demostration
+  (defun set-frame-size-according-to-resolution ()
+    (interactive)
+    (when window-system
+      (if (> (x-display-pixel-width) 1280)
+          (add-to-list 'default-frame-alist (cons 'width 100))
+        (add-to-list 'default-frame-alist (cons 'width 80)))
+      (add-to-list 'default-frame-alist (cons 'height 35))))
+  (set-frame-size-according-to-resolution)
+  ;; frame postition
+  (setq initial-frame-alist '((top . 30) (left . 100)))
 
 #+end_src
 
@@ -894,6 +898,9 @@
   (autoload 'scss-mode "scss-mode")
   (add-to-list 'auto-mode-alist '("\\.scss\\'" . scss-mode))
 
+  ;; emmet
+
+  (require 'emmet-mode)
 
 #+end_src
 
