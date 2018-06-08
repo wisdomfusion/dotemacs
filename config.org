@@ -980,6 +980,16 @@
     (sp-local-tag "%" "<% "  " %>")
     (sp-local-tag "=" "<%= " " %>")
     (sp-local-tag "#" "<%# " " %>"))
+
+  (defun wf-web-mode-hook ()
+    (setq web-mode-markup-indent-offset 4)
+    (setq web-mode-css-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-style-padding 1)
+    (setq web-mode-script-padding 1)
+    (setq web-mode-block-padding 0))
+
+  (add-hook 'web-mode-hook  'wf-web-mode-hook)
 #+end_src
 
 ** cperl-mode
