@@ -93,13 +93,13 @@
       move-text
       hl-todo
       paredit
+      web-mode
       sass-mode
       scss-mode
+      rainbow-mode
       smart-mode-line
       smartparens
-      web-mode
       which-key
-      rainbow-mode
       yaml-mode
       zop-to-char
       yasnippet
@@ -120,8 +120,7 @@
       ;; scala
       scala-mode
       ensime
-      geiser
-      yaml-mode)
+      geiser)
     "A list of packages to ensure are installed at launch.")
 
   (defun wf-packages-installed-p ()
@@ -231,7 +230,7 @@
   (setq frame-title-format
         '(buffer-file-name "%f" ("%b")))
 
-  (setq-default show-trailing-whitespace t)
+  ;; (setq-default show-trailing-whitespace t)
   (add-to-list 'write-file-functions 'delete-trailing-whitespace)
 
   (mouse-wheel-mode t)
@@ -274,12 +273,11 @@
   (display-time)
 
   ;; mode line settings
+  ;; (global-linum-mode t)
   (line-number-mode t)
   (column-number-mode t)
   (size-indication-mode t)
   (global-hl-line-mode t) ; highlight current line
-
-  (global-linum-mode t)
 
   (require 'volatile-highlights)
   (volatile-highlights-mode t)
