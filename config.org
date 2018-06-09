@@ -215,6 +215,7 @@
 
   (menu-bar-mode -1)
   (tooltip-mode -1)
+  (scroll-bar-mode -1)
 
   (load-theme 'material t)
   ;; (load-theme 'material-light t)
