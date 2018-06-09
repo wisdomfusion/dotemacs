@@ -97,6 +97,7 @@
       sass-mode
       scss-mode
       rainbow-mode
+      powerline
       smart-mode-line
       smartparens
       which-key
@@ -244,7 +245,10 @@
   ;; clean mode line
   (defvar mode-line-cleaner-alist
     `((abbrev-mode    . "")
+      (company-mode   . "")
       (undo-tree-mode . "")
+      (eldoc-mode     . "")
+      (paredit-mode   . " π")
       ;; Major modes
       (lisp-interaction-mode . "λ")
       (cperl-mode            . "pl")
@@ -273,8 +277,9 @@
   (display-time)
 
   ;; mode line settings
-  ;; (global-linum-mode t)
   (line-number-mode t)
+  ;; (global-linum-mode t)
+  (add-hook 'prog-mode-hook 'linum-mode)
   (column-number-mode t)
   (size-indication-mode t)
   (global-hl-line-mode t) ; highlight current line
@@ -282,6 +287,9 @@
   (require 'volatile-highlights)
   (volatile-highlights-mode t)
   (diminish 'volatile-highlights-mode)
+
+  (require 'powerline)
+  (powerline-default-theme)
 
   (require 'smart-mode-line)
   (setq sml/no-confirm-load-theme t)
@@ -298,12 +306,17 @@
     (interactive)
     (when window-system
       (if (> (x-display-pixel-width) 1280)
-          (add-to-list 'default-frame-alist (cons 'width 100))
+          (add-to-list 'default-frame-alist (cons 'width 120))
         (add-to-list 'default-frame-alist (cons 'width 80)))
-      (add-to-list 'default-frame-alist (cons 'height 35))))
+      ;; for the height, subtract a couple hundred pixels
+      ;; from the screen height (for panels, menubars and
+      ;; whatnot), then divide by the height of a char to
+      ;; get the height we want
+      (add-to-list 'default-frame-alist
+                   (cons 'height (/ (- (x-display-pixel-height) 200) (frame-char-height))))))
   (set-frame-size-according-to-resolution)
   ;; frame postition
-  (setq initial-frame-alist '((top . 30) (left . 100)))
+  ;;(setq initial-frame-alist '((top . 30) (left . 100)))
 
 #+end_src
 
@@ -401,6 +414,15 @@
 
   (show-smartparens-global-mode +1)
 
+  ;; paredit-mode
+  (autoload 'enable-paredit-mode "paredit"
+    "Turn on pseudo-structural editing of Lisp code."
+    t)
+  (add-hook 'emacs-lisp-mode-hook       'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook             'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
+  (add-hook 'scheme-mode-hook           'enable-paredit-mode)
+
   ;; mouse avoidance
   ;; banish, exile, jump, animate,
   ;; cat-and-mouse, proteus
@@ -482,6 +504,8 @@
   ;; projectile is a project management mode
   (require 'projectile)
   (setq projectile-cache-file (expand-file-name "projectile.cache" wf-my-savefile-dir))
+  (setq projectile-mode-line
+         '(:eval (format " Proj[%s]" (projectile-project-name))))
   (projectile-global-mode t)
 
   ;; avy allows us to effectively navigate to visible things
