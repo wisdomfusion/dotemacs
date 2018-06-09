@@ -64,10 +64,12 @@
     '(ace-window
       anzu
       avy
+      browse-kill-ring
       company
       js2-mode
       php-mode
       emmet-mode
+      easy-kill
       material-theme
       go-mode
       python-mode
@@ -232,8 +234,13 @@
   (setq frame-title-format
         '(buffer-file-name "%f" ("%b")))
 
+  ;; whitespace-mode config
+  (require 'whitespace)
+  (setq whitespace-line-column 80) ;; limit line length
+  (setq whitespace-style '(face tabs empty trailing lines-tail))
   ;; (setq-default show-trailing-whitespace t)
   (add-to-list 'write-file-functions 'delete-trailing-whitespace)
+
 
   (mouse-wheel-mode t)
 
@@ -302,6 +309,11 @@
   (require 'which-key)
   (which-key-mode 1)
 
+  ;; tramp, for sudo access
+  (require 'tramp)
+  ;; keep in mind known issues with zsh - see emacs wiki
+  (setq tramp-default-method "ssh")
+
   ;; frame demostration
   (defun set-frame-size-according-to-resolution ()
     (interactive)
@@ -335,6 +347,7 @@
 
   ;; text-mode default
   (setq initial-major-mode 'text-mode)
+  (add-hook 'text-mode-hook 'abbrev-mode)
 
   ;; make the last line end in a carriage return
   (setq require-final-newline t)
@@ -393,9 +406,9 @@
   ;; highlight just brackets
   (setq show-paren-style 'parenthesis)
   ;; highlight entire bracket expression
-  ;(setq show-paren-style 'expression)
+                                          ;(setq show-paren-style 'expression)
   ;; highlight brackets if visible, else entire expression
-  ;(setq show-paren-style 'mixed)
+                                          ;(setq show-paren-style 'mixed)
   ;; typing any left bracket automatically insert the right matching bracket
   ;; new feature in Emacs 24
   (electric-pair-mode t)
@@ -405,6 +418,9 @@
                               (?\" . ?\")
                               (?\{ . ?\})
                               ))
+
+  ;; smart tab behavior - indent or complete
+  (setq tab-always-indent 'complete)
 
   ;; smart pairing for all
   (require 'smartparens-config)
@@ -423,6 +439,13 @@
   (add-hook 'lisp-mode-hook             'enable-paredit-mode)
   (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
   (add-hook 'scheme-mode-hook           'enable-paredit-mode)
+
+  ;; meaningful names for buffers with the same name
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'forward)
+  (setq uniquify-separator "/")
+  (setq uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
+  (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
 
   ;; mouse avoidance
   ;; banish, exile, jump, animate,
@@ -453,10 +476,10 @@
 
   ;; undo-tree
   (when (require 'undo-tree nil 'noerror)
-       (global-undo-tree-mode 1)
-       (defalias 'redo 'undo-tree-redo)
-       (global-set-key (kbd "C-z") 'undo)
-       (global-set-key (kbd "C-S-z") 'redo))
+    (global-undo-tree-mode 1)
+    (defalias 'redo 'undo-tree-redo)
+    (global-set-key (kbd "C-z") 'undo)
+    (global-set-key (kbd "C-S-z") 'redo))
 
   ;; saveplace remembers your location in a file when saving files
   (setq save-place-file (expand-file-name "saveplace" wf-my-savefile-dir))
@@ -485,6 +508,8 @@
         ;; problems with remote files
         recentf-auto-cleanup 'never)
 
+  (recentf-mode 1)
+
   ;; bookmarks
   (require 'bookmark)
   (setq bookmark-default-file (expand-file-name "bookmarks" wf-my-savefile-dir)
@@ -506,7 +531,7 @@
   (require 'projectile)
   (setq projectile-cache-file (expand-file-name "projectile.cache" wf-my-savefile-dir))
   (setq projectile-mode-line
-         '(:eval (format " Proj[%s]" (projectile-project-name))))
+        '(:eval (format " Proj[%s]" (projectile-project-name))))
   (projectile-global-mode t)
 
   ;; avy allows us to effectively navigate to visible things
@@ -528,20 +553,12 @@
 
   ;; to prevent error like:
   ;; "help-setup-xref: Symbol's value as variable is void: help-xref-following"
-  (require 'help-mode nil 'noerror)
+  (require 'help-mode)
 
-  (require 'htmlize nil 'noerror)
+  (require 'htmlize)
 
   ;; diminish keeps the modeline tidy
-  (require 'diminish nil 'noerror)
-
-  (when (require 'uniquify nil 'noerror)
-    (setq uniquify-buffer-name-style 'forward)
-    (setq uniquify-separator "/")
-    ; rename after killing uniquified
-    (setq uniquify-after-kill-buffer-p t)
-    ; don't muck with special buffers
-    (setq uniquify-ignore-buffers-re "^\\*"))
+  (require 'diminish)
 
   (setq make-backup-files nil)  ; stop creating those backup~ files
   (setq auto-save-default nil)  ; stop creating those #auto-save# files
@@ -554,6 +571,45 @@
   (global-auto-revert-mode t)
 
   (require 'expand-region)
+
+  ;; enable some really cool extensions like C-x C-j(dired-jump)
+  (require 'dired-x)
+
+  ;; ediff - don't start another frame
+  (require 'ediff)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+  ;; clean up obsolete buffers automatically
+  (require 'midnight)
+
+  ;; smarter kill-ring navigation
+  (require 'browse-kill-ring)
+  (browse-kill-ring-default-keybindings)
+  (global-set-key (kbd "s-y") 'browse-kill-ring)
+
+  (defadvice exchange-point-and-mark (before deactivate-mark activate compile)
+    "When called with no active region, do not activate mark."
+    (interactive
+     (list (not (region-active-p)))))
+
+  (require 'tabify)
+  (defmacro with-region-or-buffer (func)
+    "When called with no active region, call FUNC on current buffer."
+    `(defadvice ,func (before with-region-or-buffer activate compile)
+       (interactive
+        (if mark-active
+            (list (region-beginning) (region-end))
+          (list (point-min) (point-max))))))
+
+  (with-region-or-buffer indent-region)
+  (with-region-or-buffer untabify)
+
+  ;; enable winner-mode to manage window configurations
+  (winner-mode +1)
+
+  ;; easy-kill
+  (global-set-key [remap kill-ring-save] 'easy-kill)
+  (global-set-key [remap mark-sexp] 'easy-mark)
 
   ;; re-builder
   (require 're-builder)
@@ -625,9 +681,9 @@
   ;; Get around the emacswiki spam protection
   (eval-after-load "oddmuse"
     '(add-hook 'oddmuse-mode-hook
-              (lambda ()
-                (unless (string-match "question" oddmuse-post)
-                  (setq oddmuse-post (concat "uihnscuskc=1;" oddmuse-post))))))
+               (lambda ()
+                 (unless (string-match "question" oddmuse-post)
+                   (setq oddmuse-post (concat "uihnscuskc=1;" oddmuse-post))))))
 #+end_src
 
 * User Defined Functions
