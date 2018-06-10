@@ -66,11 +66,10 @@
       avy
       browse-kill-ring
       company
+      diff-hl
       js2-mode
       php-mode
       emmet-mode
-      easy-kill
-      material-theme
       go-mode
       python-mode
       auctex
@@ -218,9 +217,6 @@
   (menu-bar-mode -1)
   (tooltip-mode -1)
   (scroll-bar-mode -1)
-
-  (load-theme 'material t)
-  ;; (load-theme 'material-light t)
 
   ;; the blinking cursor is nothing, but an annoyance
   (blink-cursor-mode -1)
@@ -607,9 +603,10 @@
   ;; enable winner-mode to manage window configurations
   (winner-mode +1)
 
-  ;; easy-kill
-  (global-set-key [remap kill-ring-save] 'easy-kill)
-  (global-set-key [remap mark-sexp] 'easy-mark)
+  ;; diff-hl
+  (global-diff-hl-mode +1)
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
 
   ;; re-builder
   (require 're-builder)
@@ -1576,10 +1573,9 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
 
   ;; multiple-cursors
   (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") 'mc/mark-previous-liks-this)
-  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
+  (global-set-key (kbd "C->")         'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<")         'mc/mark-previous-liks-this)
+  (global-set-key (kbd "C-c C-<")     'mc/mark-all-like-this)
 #+end_src
 
 * Misc
