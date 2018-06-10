@@ -1,7 +1,7 @@
 # -*- mode: org; coding: utf-8 -*-
 #+TITLE: Emacs config using org-mode
-#+AUTHOR: WisdomFusion <WisdomFusion[at]gmail[dot]com>
-#+DATE: May 23, 2018
+#+AUTHOR: WisdomFusion <WisdomFusion@gmail.com>
+#+DATE: Jun 10, 2018
 #+STARTUP: hidestars
 #+STARTUP: showeverything
 
@@ -250,8 +250,8 @@
   ;; disable startup screen
   (setq inhibit-startup-screen t)
 
-  (setq frame-title-format
-        '(buffer-file-name "%f" ("%b")))
+  ;; emacs title
+  (setq frame-title-format '("%f [%m]"))
 
   ;; whitespace-mode config
   (require 'whitespace)
@@ -352,8 +352,12 @@
       (add-to-list 'default-frame-alist
                    (cons 'height (/ (- (x-display-pixel-height) 200) (frame-char-height))))))
   (set-frame-size-according-to-resolution)
-  ;; frame postition
-  ;;(setq initial-frame-alist '((top . 30) (left . 100)))
+
+  (when window-system
+    ;; frame postition
+    (setq initial-frame-alist '((top . 100) (left . 200))))
+
+  ;;(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 #+end_src
 
