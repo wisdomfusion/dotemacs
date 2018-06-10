@@ -63,17 +63,18 @@
   (defvar wf-packages
     '(ace-window
       anzu
+      auctex
       avy
       browse-kill-ring
       company
+      clojure-mode
       diff-hl
       js2-mode
       php-mode
       emmet-mode
+      material-theme
       go-mode
       python-mode
-      auctex
-      clojure-mode
       diminish
       expand-region
       undo-tree
@@ -237,6 +238,9 @@
   ;; (setq-default show-trailing-whitespace t)
   (add-to-list 'write-file-functions 'delete-trailing-whitespace)
 
+  ;; themes
+  (load-theme 'material t)
+  ;; (load-theme 'material-light t)
 
   (mouse-wheel-mode t)
 
@@ -606,7 +610,7 @@
   ;; diff-hl
   (global-diff-hl-mode +1)
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  ;; (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
 
   ;; re-builder
   (require 're-builder)
