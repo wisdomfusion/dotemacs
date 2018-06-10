@@ -120,6 +120,7 @@
       sass-mode
       scss-mode
       rainbow-mode
+      typescript-mode
       powerline
       smart-mode-line
       smartparens
@@ -284,6 +285,8 @@
       (python-mode           . "py")
       (ruby-mode             . "rb")
       (emacs-lisp-mode       . "el")
+      (typescript-mode       . "ts")
+      (javascript-mode       . "js")
       (js2-mode              . "js")))
   (defun clean-mode-line ()
     (interactive)
