@@ -45,6 +45,27 @@
   ;;  (normal-top-level-add-subdirs-to-load-path))
 #+end_src
 
+** exec-path
+
+#+BEGIN_SRC emacs-lisp
+  (when *is-mac-p*
+    ;; PATH env and exec-path
+    ;; difference between exec-path and PATH.
+    ;; The value of environment variable “PATH” is used by emacs
+    ;; when you are running a shell in emacs, similar to when you
+    ;; are using a shell in a terminal.
+    ;; The exec-path is used by emacs itself to find programs it
+    ;; needs for its features, such as spell checking, file
+    ;; compression, compiling, grep, diff, etc. Original from
+    ;; http://ergoemacs.org/emacs/emacs_env_var_paths.html
+    (setenv "PATH"
+            (concat (getenv "PATH")
+             ":/opt/local/bin:/usr/local/bin:/Library/TeX/texbin"))
+    (setq exec-path
+          (append exec-path
+           '("/opt/local/bin" "/usr/local/bin" "Library/TeX/texbin"))))
+#+END_SRC
+
 ** ELPA
 
    ELPA is the Emacs Lisp Package Archive, now included in Emacs 24.
@@ -852,6 +873,15 @@
 
   Major modes for coding: lisp, elisp, f2e, php, perl, etc.
 
+** shell
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'shell-mode-hook
+    (lambda ()
+      (define-key shell-mode-map (kbd "<M-up>") 'comint-previous-input)
+      (define-key shell-mode-map (kbd "<M-down>") 'comint-next-input)))
+#+END_SRC
+
 ** company
 
 #+BEGIN_SRC emacs-lisp
@@ -1209,23 +1239,6 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
 
 #+BEGIN_SRC emacs-lisp
   ;; AucTeX
-
-  (when *is-mac-p*
-    ;; PATH env and exec-path
-    ;; difference between exec-path and PATH.
-    ;; The value of environment variable “PATH” is used by emacs
-    ;; when you are running a shell in emacs, similar to when you
-    ;; are using a shell in a terminal.
-    ;; The exec-path is used by emacs itself to find programs it
-    ;; needs for its features, such as spell checking, file
-    ;; compression, compiling, grep, diff, etc. Original from
-    ;; http://ergoemacs.org/emacs/emacs_env_var_paths.html
-    (setenv "PATH"
-            (concat (getenv "PATH")
-             ":/opt/local/bin:/usr/local/bin:/Library/TeX/texbin"))
-    (setq exec-path
-          (append exec-path
-           '("/opt/local/bin" "/usr/local/bin" "Library/TeX/texbin"))))
 
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
