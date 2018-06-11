@@ -1,6 +1,14 @@
 # -*- mode: org; coding: utf-8 -*-
 #+STARTUP: showall
 
+* 2018-06-10
+- fix UI settings
+- magit, typescript, emmet
+- materail theme
+- fix shell on macOS
+- dired-x, clean mode line, paredit-mode
+- and more small fixes
+
 * 2018-06-08
 - set up some major modes
 
