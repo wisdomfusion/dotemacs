@@ -280,6 +280,7 @@
       (eldoc-mode     . "")
       (paredit-mode   . " π")
       ;; Major modes
+      (dired-mode            . "dir")
       (lisp-interaction-mode . "λ")
       (cperl-mode            . "pl")
       (python-mode           . "py")
@@ -287,6 +288,7 @@
       (emacs-lisp-mode       . "el")
       (typescript-mode       . "ts")
       (javascript-mode       . "js")
+      (js-mode               . "js")
       (js2-mode              . "js")))
   (defun clean-mode-line ()
     (interactive)
