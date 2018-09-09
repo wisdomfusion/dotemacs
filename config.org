@@ -108,6 +108,7 @@
       htmlize
       projectile
       flycheck
+      fill-column-indicator
       git-timemachine
       gitconfig-mode
       gitignore-mode
@@ -253,12 +254,23 @@
   ;; emacs title
   (setq frame-title-format '("%f [%m]"))
 
+  ;; set fill-column
+  (setq default-fill-column 78)
+  (turn-off-auto-fill)
+
   ;; whitespace-mode config
   (require 'whitespace)
-  (setq whitespace-line-column 80) ;; limit line length
+  (setq whitespace-line-column 78) ;; limit line length
   (setq whitespace-style '(face tabs empty trailing lines-tail))
   ;; (setq-default show-trailing-whitespace t)
   (add-to-list 'write-file-functions 'delete-trailing-whitespace)
+
+  ;; fill-column-indicator
+  (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
+  (global-fci-mode 1)
+  (setq fci-rule-width 1)
+  (setq fci-rule-color "darkblue")
+  (setq fci-rule-column 78)
 
   ;; themes
   (load-theme 'material t)
@@ -400,10 +412,6 @@
   (setq tab-always-indent 'complete)   ; smart tab behaviar - indent or complete
   (setq-default indent-tabs-mode nil)  ; use space instead of tab
   (setq default-tab-width 4)
-
-  ;; set fill-column
-  (setq default-fill-column 78)
-  (turn-off-auto-fill)
 
   ;; search whitespace regexp
   (setq search-whitespace-regexp ".*?")
@@ -1143,7 +1151,7 @@
           cperl-clobber-lisp-bindings t
           cperl-close-paren-offset -4
           cperl-continued-brace-offset -4
-          cperl-continued-statement-offset 8
+          cperl-continued-statement-offset 4
           cperl-extra-newline-before-brace t
           cperl-brace-offset -4
           cperl-label-offset -2
@@ -1154,26 +1162,19 @@
           cperl-electric-linefeed nil
           cperl-electric-keywords nil
           cperl-extra-newline-before-brace nil
-          cperl-extra-newline-before-brace-multiline nil)
-
-    ;; if you want all the bells and whistles
-    ;; (setq cperl-hairy)
+          cperl-extra-newline-before-brace-multiline nil
+          cperl-invalid-face nil)
 
     (set-face-background 'cperl-array-face nil)
-    (set-face-background 'cperl-hash-face nil)
-    (setq cperl-invalid-face nil))
+    (set-face-background 'cperl-hash-face nil))
 
   (local-set-key (kbd "C-h f") 'cperl-perldoc)
 
   (define-abbrev-table 'global-abbrev-table
-    '(("pdbg"   "use Data::Dumper qw( Dumper );\nwarn Dumper[];" nil 1)
-      ("phbp"   "#!/usr/bin/perl -w"                             nil 1)
-      ("pusc"   "use Smart::Comments;\n\n### "                   nil 1)
-      ("putm"   "use Test::More 'no_plan';"                      nil 1)))
-
-  (custom-set-faces
-    '(cperl-array-face ((t (:background nil :weight normal))))
-    '(cperl-hash-face  ((t (:background nil :weight normal)))))
+    '(("pdbg"   "use Data::Dumper qw( Dumper );" nil 1)
+      ("phbp"   "#!/usr/bin/env perl -w"         nil 1)
+      ("pusc"   "use Smart::Comments;\n\n### "   nil 1)
+      ("putm"   "use Test::More 'no_plan';"      nil 1)))
 
   (add-hook 'cperl-mode-hook 'wf-cperl-mode-init)
 
