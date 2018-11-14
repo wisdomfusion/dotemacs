@@ -73,11 +73,9 @@
 #+begin_src emacs-lisp
   (require 'package)
 
-  (setq package-archives '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-                           ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-                           ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
-                           ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/")
-                           ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
+  (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                           ("melpa" . "https://melpa.org/packages/")
+                           ("org" . "http://orgmode.org/elpa/")))
 
   (package-initialize)
 
@@ -324,11 +322,12 @@
 
   ;; mode line settings
   (line-number-mode t)
-  ;; (global-linum-mode t)
+  (global-linum-mode t)
   (add-hook 'prog-mode-hook 'linum-mode)
   (column-number-mode t)
   (size-indication-mode t)
   (global-hl-line-mode t) ; highlight current line
+  ;; (global-visual-line-mode t)
 
   (require 'volatile-highlights)
   (volatile-highlights-mode t)
@@ -1137,6 +1136,8 @@
 #+begin_src emacs-lisp
   ;;; cperl-mode
 
+  (defalias 'perl-mode 'cperl-mode)
+
   (mapc (lambda (pair)
           (if (eq (cdr pair) 'perl-mode)
               (setcdr pair 'cperl-mode)))
@@ -1156,7 +1157,7 @@
           cperl-brace-offset -4
           cperl-label-offset -2
           cperl-lazy-help-time 3
-          cperl-tab-always-indent nil
+          cperl-tab-always-indent t
           cperl-electric-lbrace-space t
           cperl-electric-parens nil
           cperl-electric-linefeed nil
@@ -1168,16 +1169,16 @@
     (set-face-background 'cperl-array-face nil)
     (set-face-background 'cperl-hash-face nil))
 
-  (local-set-key (kbd "C-h f") 'cperl-perldoc)
-
   (define-abbrev-table 'global-abbrev-table
     '(("pdbg"   "use Data::Dumper qw( Dumper );" nil 1)
       ("phbp"   "#!/usr/bin/env perl -w"         nil 1)
       ("pusc"   "use Smart::Comments;\n\n### "   nil 1)
       ("putm"   "use Test::More 'no_plan';"      nil 1)))
 
-  (add-hook 'cperl-mode-hook 'wf-cperl-mode-init)
-
+  (add-hook 'cperl-mode-hook
+            (lambda ()
+              (wf-cperl-mode-init)
+              (local-set-key (kbd "C-h f") 'cperl-perldoc)))
 #+end_src
 
 ** XML
@@ -1243,6 +1244,7 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
     (let (org-log-done org-log-states)   ; turn off logging
       (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
   (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+
 #+end_src
 
 ** LaTeX and AUCTEX
