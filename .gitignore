@@ -9,6 +9,7 @@
 config.el
 /elpa/
 /my/save
+/transient/
 
 /eshell/
 /server/
