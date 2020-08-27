@@ -7,14 +7,6 @@
 
 * Global Settings
 
-** cl-lib
-
-   Some Common Lisp functions and macros can be used in Emacs Lisp programs.
-
-#+begin_src emacs-lisp
-  (require 'cl-lib)
-#+end_src
-
 ** User Info
 
    My full name and mail address
