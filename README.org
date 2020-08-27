@@ -9,8 +9,8 @@ My .emacs.d configration, structured as an [[http://orgmode.org/][org-mode]] fil
 
 * Requirement
 
-- GNU Emacs 24.4 or later
-- macOS, *nix, Windows XP/7/8/8.1/10
+- GNU Emacs 24.4 or later (including 27.1)
+- macOS, *nix, Windows 7/8/8.1/10
 - Install [[http://www.sbcl.org/][sbcl]] and [[https://common-lisp.net/project/slime/][slime]], before turn on slime on in init.el
 
 #+BEGIN_SRC emacs-lisp
@@ -58,7 +58,7 @@ Because I use org-mode in my daily life, I adjust font size seperately with Engl
 
 ** elpa
    
-My dotemacs use tsinghua.edu.cn as elpa source in China mainland, adjust those archive urls if you have faster or native ones.
+My dotemacs use tsinghua.edu.cn as elpa mirror in China mainland, adjust those archives if you have faster or native ones.
 
 #+BEGIN_SRC emacs-lisp
   (setq package-archives '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")

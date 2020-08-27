@@ -1,19 +1,11 @@
 # -*- mode: org; coding: utf-8 -*-
 #+TITLE: Emacs config using org-mode
 #+AUTHOR: WisdomFusion <WisdomFusion@gmail.com>
-#+DATE: Jun 10, 2018
+#+DATE: Aug 27, 2020
 #+STARTUP: hidestars
 #+STARTUP: showeverything
 
 * Global Settings
-
-** cl
-
-   Some Common Lisp functions and macros can be used in Emacs Lisp programs.
-
-#+begin_src emacs-lisp
-  (require 'cl)
-#+end_src
 
 ** User Info
 
@@ -73,38 +65,37 @@
 #+begin_src emacs-lisp
   (require 'package)
 
-  (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                           ("melpa" . "https://melpa.org/packages/")
-                           ("org" . "http://orgmode.org/elpa/")))
+  ;; international elpa
+  ;; (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+  ;;                          ("melpa" . "https://melpa.org/packages/")
+  ;;                          ("org" . "http://orgmode.org/elpa/")))
+  ;; elpa from ustc
+  (setq package-archives '(("gnu" . "https://mirrors.ustc.edu.cn/elpa/gnu/")
+                          ("melpa" . "https://mirrors.ustc.edu.cn/elpa/melpa/")
+                          ("melpa-stable" . "https://mirrors.ustc.edu.cn/elpa/melpa-stable/")
+                          ("org" . "https://mirrors.ustc.edu.cn/elpa/org/")))
 
-  (package-initialize)
+
+  ;; (package-initialize)
+  (unless package--initialized (package-initialize t))
 
   (defvar wf-packages
     '(ace-window
-      anzu
       auctex
-      avy
-      browse-kill-ring
       company
-      clojure-mode
       diff-hl
       js2-mode
       php-mode
       emmet-mode
-      material-theme
-      go-mode
       python-mode
       diminish
       expand-region
       undo-tree
       volatile-highlights
-      haskell-mode
+      projectile
       helm
       helm-projectile
-      helm-descbinds
-      helm-ag
       htmlize
-      projectile
       flycheck
       fill-column-indicator
       git-timemachine
@@ -127,29 +118,16 @@
       yaml-mode
       zop-to-char
       yasnippet
-      ;; golang
       go-mode
       company-go
       go-eldoc
       go-projectile
-      gotest
-      ;; ruby-lang
-      inf-ruby
-      yari
-      ;; rust
-      rust-mode
-      racer
-      flycheck-rust
-      cargo
-      ;; scala
-      scala-mode
-      ensime
-      geiser)
+      gotest)
     "A list of packages to ensure are installed at launch.")
 
   (defun wf-packages-installed-p ()
     "Check if all packages are installed."
-    (every #'package-installed-p wf-packages))
+    (seq-every-p #'package-installed-p wf-packages))
 
   (defun wf-install-packages ()
     "Install all packages listed in `wf-packages'."
@@ -571,16 +549,6 @@
         '(:eval (format " Proj[%s]" (projectile-project-name))))
   (projectile-global-mode t)
 
-  ;; avy allows us to effectively navigate to visible things
-  (require 'avy)
-  (setq avy-background t)
-  (setq avy-style 'at-full)
-
-  ;; anzu-mode enhances isearch & query-replace by showing total matches and current match position
-  (require 'anzu)
-  (diminish 'anzu-mode)
-  (global-anzu-mode)
-
   (global-set-key (kbd "M-%") 'anzu-query-replace)
   (global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
 
@@ -618,11 +586,6 @@
 
   ;; clean up obsolete buffers automatically
   (require 'midnight)
-
-  ;; smarter kill-ring navigation
-  (require 'browse-kill-ring)
-  (browse-kill-ring-default-keybindings)
-  (global-set-key (kbd "s-y") 'browse-kill-ring)
 
   (defadvice exchange-point-and-mark (before deactivate-mark activate compile)
     "When called with no active region, do not activate mark."
@@ -940,11 +903,6 @@
   (global-set-key (kbd "C-c h") 'helm-command-prefix)
   (global-unset-key (kbd "C-x c"))
 
-  (define-key helm-command-map (kbd "o")     'helm-occur)
-  (define-key helm-command-map (kbd "g")     'helm-do-grep)
-  (define-key helm-command-map (kbd "C-c w") 'helm-wikipedia-suggest)
-  (define-key helm-command-map (kbd "SPC")   'helm-all-mark-rings)
-
   ;; helm everywhere
 
   (require 'helm-eshell)
@@ -964,16 +922,15 @@
             #'(lambda ()
                 (substitute-key-definition 'eshell-list-history 'helm-eshell-history eshell-mode-map)))
 
-  (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-  (setq projectile-completion-system 'helm)
-  (helm-descbinds-mode)
   (helm-mode 1)
 
   ;; enable Helm version of Projectile with replacment commands
   (helm-projectile-on)
 
 #+END_SRC
+
 ** Lisp
+
 *** slime
 
 #+begin_src emacs-lisp
@@ -1480,19 +1437,6 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
 
   (add-hook 'scala-mode-hook (lambda ()
                                (run-hooks 'wf-scala-mode-hook)))
-#+END_SRC
-
-** scheme
-
-#+BEGIN_SRC emacs-lisp
-  (require 'geiser)
-
-  ;; geiser replies on a REPL to provide autodoc and completion
-  (setq geiser-mode-start-repl-p t)
-
-  ;; keep the home clean
-  (setq geiser-repl-history-filename
-        (expand-file-name "geiser-history" wf-my-savefile-dir))
 #+END_SRC
 
 * Key Bindings
