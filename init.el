@@ -8,6 +8,7 @@
 ;; Version: 1.0.0
 ;;
 
+(setq byte-compile-warnings '(cl-functions))
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,

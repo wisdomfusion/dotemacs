@@ -7,6 +7,14 @@
 
 * Global Settings
 
+** cl-lib
+
+   Some Common Lisp functions and macros can be used in Emacs Lisp programs.
+
+#+begin_src emacs-lisp
+  (require 'cl-lib)
+#+end_src
+
 ** User Info
 
    My full name and mail address
@@ -80,8 +88,7 @@
   (unless package--initialized (package-initialize t))
 
   (defvar wf-packages
-    '(ace-window
-      auctex
+    '(auctex
       company
       diff-hl
       js2-mode
@@ -98,10 +105,6 @@
       htmlize
       flycheck
       fill-column-indicator
-      git-timemachine
-      gitconfig-mode
-      gitignore-mode
-      magit
       markdown-mode
       move-text
       hl-todo
@@ -117,12 +120,7 @@
       which-key
       yaml-mode
       zop-to-char
-      yasnippet
-      go-mode
-      company-go
-      go-eldoc
-      go-projectile
-      gotest)
+      yasnippet)
     "A list of packages to ensure are installed at launch.")
 
   (defun wf-packages-installed-p ()
@@ -610,7 +608,6 @@
   ;; diff-hl
   (global-diff-hl-mode +1)
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
 
   ;; re-builder
   (require 're-builder)
@@ -673,11 +670,6 @@
     '(progn
        (set-face-foreground 'diff-added "green4")
        (set-face-foreground 'diff-removed "red3")))
-
-  (eval-after-load "magit"
-    '(progn
-       (set-face-foreground 'magit-diff-added "green4")
-       (set-face-foreground 'magit-diff-removed "red3")))
 
   ;; Get around the emacswiki spam protection
   (eval-after-load "oddmuse"
@@ -1315,54 +1307,6 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 #+END_SRC
 
-** go-mode
-
-#+BEGIN_SRC emacs-lisp
-  (require 'go-projectile)
-
-  ;; Ignore go test -c output files
-  (add-to-list 'completion-ignored-extensions ".test")
-
-  (define-key 'help-command (kbd "G") 'godoc)
-
-  (eval-after-load 'go-mode
-    '(progn
-       (defun wf-go-mode-defaults ()
-         ;; Add to default go-mode key bindings
-         (let ((map go-mode-map))
-           (define-key map (kbd "C-c a") 'go-test-current-project) ;; current package, really
-           (define-key map (kbd "C-c m") 'go-test-current-file)
-           (define-key map (kbd "C-c .") 'go-test-current-test)
-           (define-key map (kbd "C-c b") 'go-run)
-           (define-key map (kbd "C-h f") 'godoc-at-point))
-
-         ;; Prefer goimports to gofmt if installed
-         (let ((goimports (executable-find "goimports")))
-           (when goimports
-             (setq gofmt-command goimports)))
-
-         ;; gofmt on save
-         (add-hook 'before-save-hook 'gofmt-before-save nil t)
-
-         ;; stop whitespace being highlighted
-         (whitespace-toggle-options '(tabs))
-
-         ;; Company mode settings
-         (set (make-local-variable 'company-backends) '(company-go))
-
-         ;; El-doc for Go
-         (go-eldoc-setup)
-
-         ;; CamelCase aware editing operations
-         (subword-mode +1))
-
-       (setq wf-go-mode-hook 'wf-go-mode-defaults)
-
-       (add-hook 'go-mode-hook (lambda ()
-                                 (run-hooks 'wf-go-mode-hook)))))
-
-#+END_SRC
-
 * Key Bindings
 
 #+begin_src emacs-lisp
@@ -1441,9 +1385,6 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (global-set-key (kbd "C-M-%") 'query-replace)
   (global-set-key (kbd "M-<f12>") 'recentf-open-files)
 
-  (global-set-key (kbd "C-x g") 'magit-status)
-  (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
-
   (global-set-key (kbd "C-=") 'er/expand-region)
 
   ;; Jump to a definition in the current file. (Protip: this is awesome.)
@@ -1459,10 +1400,6 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
 
   (global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
   (global-set-key (kbd "s-.") 'avy-goto-word-or-subword-1)
-
-  ;; improved window navigation with ace-window
-  (global-set-key (kbd "s-w") 'ace-window)
-  (global-set-key [remap other-window] 'ace-window)
 
   (global-set-key (kbd "C-c e")    'wf-eval-and-replace)
   (global-set-key (kbd "<M-up>")   'wf-swap-line-up)
