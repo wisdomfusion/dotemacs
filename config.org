@@ -1,8 +1,7 @@
 # -*- mode: org; coding: utf-8 -*-
 #+TITLE: Emacs config using org-mode
 #+AUTHOR: WisdomFusion <WisdomFusion@gmail.com>
-#+DATE: Aug 27, 2020
-#+STARTUP: hidestars
+#+DATE: Feb 24, 2021
 #+STARTUP: showeverything
 
 * Global Settings
@@ -177,31 +176,18 @@
         (progn
           ; English Font
           (set-face-attribute 'default nil :font "Menlo 14")
-          ; Chinese Font
+          ; CJK Font
           (dolist (charset '(kana han symbol cjk-misc bopomofo))
             (set-fontset-font (frame-parameter nil 'font)
                               charset
                               (font-spec :family "PingFang SC" :size 16)))))
     (if *is-win-p*
-        (set-face-attribute 'default nil :font "Unifont 12")))
-
-  ;; (when window-system
-  ;;   (if *is-mac-p*
-  ;;       (progn
-  ;;         ; English Font
-  ;;         (set-face-attribute 'default nil :font "Menlo 14")
-  ;;         ; Chinese Font
-  ;;         (dolist (charset '(kana han symbol cjk-misc bopomofo))
-  ;;           (set-fontset-font (frame-parameter nil 'font)
-  ;;                             charset
-  ;;                             (font-spec :family "PingFang SC" :size 16)))))
-  ;;   (if *is-win-p*
-  ;;       (progn
-  ;;         (set-face-attribute 'default nil :font "Consolas 11")
-  ;;         (dolist (charset '(kana han symbol cjk-misc bopomofo))
-  ;;           (set-fontset-font (frame-parameter nil 'font)
-  ;;                             charset
-  ;;                             (font-spec :family "Microsoft YaHei" :size 16))))))
+        (progn
+          (set-face-attribute 'default nil :font "Fira Code 11")
+          (dolist (charset '(kana han symbol cjk-misc bopomofo))
+            (set-fontset-font (frame-parameter nil 'font)
+                              charset
+                              (font-spec :family "Microsoft YaHei" :size 18))))))
 
 
   (setq-default line-spacing 4)
@@ -1198,6 +1184,7 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
     "Switch entry to DONE when all subentries are done, to TODO otherwise."
     (let (org-log-done org-log-states)   ; turn off logging
       (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+
   (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
 
 #+end_src
