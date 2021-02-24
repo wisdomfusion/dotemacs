@@ -69,11 +69,10 @@
   ;;                          ("melpa" . "https://melpa.org/packages/")
   ;;                          ("org" . "http://orgmode.org/elpa/")))
   ;; elpa from ustc
-  (setq package-archives '(("gnu" . "https://mirrors.ustc.edu.cn/elpa/gnu/")
-                          ("melpa" . "https://mirrors.ustc.edu.cn/elpa/melpa/")
-                          ("melpa-stable" . "https://mirrors.ustc.edu.cn/elpa/melpa-stable/")
-                          ("org" . "https://mirrors.ustc.edu.cn/elpa/org/")))
-
+  (setq package-archives '(("gnu" . "http://mirrors.ustc.edu.cn/elpa/gnu/")
+                           ("melpa" . "http://mirrors.ustc.edu.cn/elpa/melpa/")
+                           ("melpa-stable" . "http://mirrors.ustc.edu.cn/elpa/melpa-stable/")
+                           ("org" . "http://mirrors.ustc.edu.cn/elpa/org/")))
 
   ;; (package-initialize)
   (unless package--initialized (package-initialize t))
@@ -92,6 +91,7 @@
       volatile-highlights
       projectile
       helm
+      helm-fuzzy
       helm-projectile
       htmlize
       flycheck
@@ -863,10 +863,13 @@
 ** helm
 #+BEGIN_SRC emacs-lisp
   ;; helm
-
+  (require 'helm)
   (require 'helm-config)
 
   (global-set-key (kbd "M-x") 'helm-M-x)
+
+  (setq helm-completion-style 'helm-fuzzy)
+  (setq completion-styles '(flex))
 
   (setq helm-recentf-fuzzy-match t)
   (setq helm-buffers-fuzzy-matching t)
