@@ -183,12 +183,26 @@
                               charset
                               (font-spec :family "PingFang SC" :size 16)))))
     (if *is-win-p*
-        (progn
-          (set-face-attribute 'default nil :font "Consolas 11")
-          (dolist (charset '(kana han symbol cjk-misc bopomofo))
-            (set-fontset-font (frame-parameter nil 'font)
-                              charset
-                              (font-spec :family "Microsoft YaHei" :size 16))))))
+        (set-face-attribute 'default nil :font "Unifont 12")))
+
+  ;; (when window-system
+  ;;   (if *is-mac-p*
+  ;;       (progn
+  ;;         ; English Font
+  ;;         (set-face-attribute 'default nil :font "Menlo 14")
+  ;;         ; Chinese Font
+  ;;         (dolist (charset '(kana han symbol cjk-misc bopomofo))
+  ;;           (set-fontset-font (frame-parameter nil 'font)
+  ;;                             charset
+  ;;                             (font-spec :family "PingFang SC" :size 16)))))
+  ;;   (if *is-win-p*
+  ;;       (progn
+  ;;         (set-face-attribute 'default nil :font "Consolas 11")
+  ;;         (dolist (charset '(kana han symbol cjk-misc bopomofo))
+  ;;           (set-fontset-font (frame-parameter nil 'font)
+  ;;                             charset
+  ;;                             (font-spec :family "Microsoft YaHei" :size 16))))))
+
 
   (setq-default line-spacing 4)
 
