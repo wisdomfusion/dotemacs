@@ -1150,6 +1150,7 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (require 'org)
   (require 'remember)
   (require 'org-mouse)
+  (require 'org-tempo)
 
   (org-indent-mode -1)
 
