@@ -106,6 +106,7 @@
       rainbow-mode
       typescript-mode
       powerline
+      material-theme
       smart-mode-line
       smartparens
       which-key
