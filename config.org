@@ -71,8 +71,9 @@
 
   ;; elpa from tuna.tsinghua.edu.cn
   (setq package-archives '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-			   ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
-
+                           ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+                           ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
+                           ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
 
   ;; (package-initialize)
   (unless package--initialized (package-initialize t))
@@ -128,8 +129,8 @@
       (message "%s" "DONE")
       ;; Install the missing packages
       (dolist (package wf-packages)
-	(when (not (package-installed-p package))
-	  (package-install package)))))
+        (when (not (package-installed-p package))
+          (package-install package)))))
 
   (wf-install-packages)
 
