@@ -1,7 +1,7 @@
 # -*- mode: org; coding: utf-8 -*-
 #+TITLE: Emacs config using org-mode
 #+AUTHOR: WisdomFusion <WisdomFusion@gmail.com>
-#+DATE: Feb 24, 2021
+#+DATE: <2022-02-03 Thu>
 #+STARTUP: showeverything
 
 * Global Settings
@@ -97,6 +97,7 @@
       flycheck
       fill-column-indicator
       markdown-mode
+      magit
       move-text
       hl-todo
       paredit
