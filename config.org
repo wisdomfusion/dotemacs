@@ -71,7 +71,7 @@
 
   ;; elpa from tuna.tsinghua.edu.cn
   (setq package-archives '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-                           ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+                           ("Melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
                            ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
                            ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
 
@@ -108,6 +108,8 @@
       rainbow-mode
       typescript-mode
       powerline
+      solarized-theme
+      doom-themes
       material-theme
       smart-mode-line
       smartparens
@@ -242,8 +244,25 @@
   (setq fci-rule-column 78)
 
   ;; themes
-  (load-theme 'material t)
+  ;; https://melpa.org/#/?q=theme&sort=downloads&asc=false
+  ;; (load-theme 'material t)
   ;; (load-theme 'material-light t)
+  ;; (load-theme 'solarized-dark t)
+  ;; (load-theme 'solarized-light t)
+
+  (require 'doom-themes)
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  ;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each
+  ;; theme may have their own settings.
+  (load-theme 'doom-one t)
+  ;; (load-theme 'doom-one-light t)
+  ;; (load-theme 'doom-vibrant t)
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Enable custom neotree theme
+  (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
 
   (mouse-wheel-mode t)
 
