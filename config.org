@@ -1191,16 +1191,17 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
           (sequencep "WAIT(w@/!)" "|" "CANL(c@/!)")))
 
   (setq org-todo-keyword-faces
-        '(("TODO" :foreground "red" :weight bold)
-          ("DONE" :foreground "forest green" :weight bold)
+        '(("TODO" :foreground "orange red" :weight bold)
+          ("STRT" :foreground "cyan" :weight bold)
+          ("DONE" :foreground "lime green" :weight bold)
           ("WAIT" :foreground "orange" :weight bold)
-          ("CANL" :foreground "forest green" :weight bold)))
+          ("CANL" :foreground "dim gray" :weight bold)))
 
   ;; I use org's tag feature to implement contexts.
-  (setq org-tag-alist '(("OFFICE"  . ?o)
-                        ("HOME"    . ?h)
-                        ("SERVER"  . ?s)
-                        ("PROJECT" . ?p)))
+  (setq org-tag-alist '(("WORK" . ?w)
+                        ("HOME" . ?h)
+                        ("SERV" . ?s)
+                        ("PROJ" . ?p)))
 
   ;; I put the archive in a separate file, because the gtd file will
   ;; probably already get pretty big just with current tasks.
