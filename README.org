@@ -9,15 +9,15 @@ My .emacs.d configration, structured as an [[http://orgmode.org/][org-mode]] fil
 
 * Requirement
 
-- GNU Emacs 24.4 or later (including 27.1)
-- macOS, *nix, Windows 7/8/8.1/10
+- GNU Emacs 29.0 or later
+- macOS, *nix
 - Install [[http://www.sbcl.org/][sbcl]] and [[https://common-lisp.net/project/slime/][slime]], before turn on slime on in init.el
 
 #+BEGIN_SRC emacs-lisp
   (defconst *hack-slime-p* t)
 #+END_SRC
 
-* Installation
+* INSTALLATION
 
 Git clone or just download and exract files to *~/.emacs.d/* folder, and restart your Emacs.
 
