@@ -82,10 +82,6 @@
     '(auctex
       company
       diff-hl
-      js2-mode
-      php-mode
-      emmet-mode
-      python-mode
       diminish
       expand-region
       undo-tree
@@ -102,11 +98,7 @@
       move-text
       hl-todo
       paredit
-      web-mode
-      sass-mode
-      scss-mode
       rainbow-mode
-      typescript-mode
       powerline
       solarized-theme
       doom-themes
