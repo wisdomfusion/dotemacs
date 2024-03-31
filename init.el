@@ -8,6 +8,10 @@
 ;; Version: 1.0.0
 ;;
 
+(when (version< emacs-version "29.0")
+  (error "This dotemacs requires at least GNU Emacs 29.0, but you're running %s" emacs-version))
+
+
 (setq byte-compile-warnings '(cl-functions))
 
 ;; Added by Package.el.  This must come before configurations of
@@ -17,9 +21,6 @@
 (package-initialize)
 
 (message "GNU Emacs is powering up... Be patient plz.")
-
-(when (version< emacs-version "24.4")
-  (error "This dotemacs requires at least GNU Emacs 24.4, but you're running %s" emacs-version))
 
 ;; Always load newest byte code
 (setq load-prefer-newer t)
@@ -46,7 +47,7 @@
 (defconst *hack-slime-p* nil)
 
 ;; load config.org
-(require 'org-install)
+;;(require 'org-install)
 (require 'ob-tangle)
 (org-babel-load-file "~/.emacs.d/config.org")
 

@@ -253,7 +253,7 @@
   (require 'doom-themes)
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+	doom-themes-enable-italic t) ; if nil, italics is universally disabled
   ;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each
   ;; theme may have their own settings.
   (load-theme 'doom-one t)
@@ -268,9 +268,9 @@
 
   ;; nice scrolling
   (setq scroll-margin 1
-        scroll-step 1
-        scroll-conservatively 100000
-        scroll-preserve-screen-position 1)
+	scroll-step 1
+	scroll-conservatively 100000
+	scroll-preserve-screen-position 1)
 
   ;; clean mode line
   (defvar mode-line-cleaner-alist
@@ -292,15 +292,15 @@
       (js2-mode              . "js")))
   (defun clean-mode-line ()
     (interactive)
-    (loop for cleaner in mode-line-cleaner-alist
-          do (let* ((mode (car cleaner))
-                   (mode-str (cdr cleaner))
-                   (old-mode-str (cdr (assq mode minor-mode-alist))))
-               (when old-mode-str
-                   (setcar old-mode-str mode-str))
-                 ;; major mode
-               (when (eq mode major-mode)
-                 (setq mode-name mode-str)))))
+    (cl-loop for cleaner in mode-line-cleaner-alist
+	  do (let* ((mode (car cleaner))
+		   (mode-str (cdr cleaner))
+		   (old-mode-str (cdr (assq mode minor-mode-alist))))
+	       (when old-mode-str
+		   (setcar old-mode-str mode-str))
+		 ;; major mode
+	       (when (eq mode major-mode)
+		 (setq mode-name mode-str)))))
   (add-hook 'after-change-major-mode-hook 'clean-mode-line)
 
   ;; display time on mode-line
@@ -312,7 +312,7 @@
 
   ;; mode line settings
   (line-number-mode t)
-  (global-linum-mode t)
+  (global-display-line-numbers-mode)
   (add-hook 'prog-mode-hook 'linum-mode)
   (column-number-mode t)
   (size-indication-mode t)
@@ -346,14 +346,14 @@
     (interactive)
     (when window-system
       (if (> (x-display-pixel-width) 1280)
-          (add-to-list 'default-frame-alist (cons 'width 120))
-        (add-to-list 'default-frame-alist (cons 'width 80)))
+	  (add-to-list 'default-frame-alist (cons 'width 120))
+	(add-to-list 'default-frame-alist (cons 'width 80)))
       ;; for the height, subtract a couple hundred pixels
       ;; from the screen height (for panels, menubars and
       ;; whatnot), then divide by the height of a char to
       ;; get the height we want
       (add-to-list 'default-frame-alist
-                   (cons 'height (/ (- (x-display-pixel-height) 200) (frame-char-height))))))
+		   (cons 'height (/ (- (x-display-pixel-height) 200) (frame-char-height))))))
   (set-frame-size-according-to-resolution)
 
   (when window-system
@@ -886,7 +886,6 @@
 #+BEGIN_SRC emacs-lisp
   ;; helm
   (require 'helm)
-  (require 'helm-config)
 
   (global-set-key (kbd "M-x") 'helm-M-x)
 
@@ -963,136 +962,6 @@
   (add-hook 'emacs-lisp-mode-hook
             '(lambda ()
                (modify-syntax-entry ?- "w")))
-#+end_src
-
-** css-mode & scss-mode
-
-#+begin_src emacs-lisp
-  ;; css
-
-  (autoload 'css-mode "css-mode")
-
-  ;; set the indentation style to the c-mode style
-  (setq cssm-indent-function 'cssm-c-style-indenter)
-  ;; use this mode when loading .css files
-  (setq auto-mode-alist (cons '("\\.css\\'" . css-mode) auto-mode-alist))
-
-  (eval-after-load 'css-mode
-    '(progn
-       (setq css-indent-offset 2)
-       (rainbow-mode +1)))
-
-  ;; scss
-
-  ;; turn off annoying auto-compile on save
-  (setq scss-compile-at-save nil)
-
-  (autoload 'scss-mode "scss-mode")
-  (add-to-list 'auto-mode-alist '("\\.scss\\'" . scss-mode))
-
-  ;; emmet
-
-  (require 'emmet-mode)
-
-  (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-  (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
-  (add-hook 'web-mode-hook  'emmet-mode) ;; web-mode
-
-#+end_src
-
-** js2-mode
-
-#+begin_src emacs-lisp
-  (require 'js2-mode)
-
-  (add-to-list 'auto-mode-alist '("\\.js\\'"    . js2-mode))
-  (add-to-list 'auto-mode-alist '("\\.pac\\'"   . js2-mode))
-  (add-to-list 'interpreter-mode-alist '("node" . js2-mode))
-
-  (eval-after-load 'js2-mode
-    '(progn
-       (defun wf-js-mode-defaults ()
-         ;; electric-layout-mode doesn't play nice with smartparens
-         (setq-local electric-layout-rules '((?\; . after)))
-         (setq mode-name "JS2")
-         (js2-imenu-extras-mode +1))
-
-       (setq wf-js-mode-hook 'wf-js-mode-defaults)
-
-       (add-hook 'js2-mode-hook (lambda () (run-hooks 'wf-js-mode-hook)))))
-
-#+end_src
-
-** php-mode
-
-#+begin_src emacs-lisp
-  ;;; php-mode
-  (require 'php-mode)
-  (autoload 'php-mode "php-mode" "Major mode for editing php code." t)
-  (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
-  (add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
-  (add-hook 'php-mode-hook (lambda ()
-      (defun wf-php-lineup-arglist-intro (langelem)
-        (save-excursion
-          (goto-char (cdr langelem))
-          (vector (+ (current-column) c-basic-offset))))
-      (defun wf-php-lineup-arglist-close (langelem)
-        (save-excursion
-          (goto-char (cdr langelem))
-          (vector (current-column))))
-      (c-set-offset 'arglist-intro 'wf-php-lineup-arglist-intro)
-      (c-set-offset 'arglist-close 'wf-php-lineup-arglist-close)))
-  (defun wf-php-mode-init ()
-    "Set some buffer-local variables."
-    ;;(setq tab-width 4)
-    (setq c-basic-offset 4)
-    (setq case-fold-search t)
-    (setq indent-tabs-mode nil)
-    (c-set-offset 'case-label '+)
-    (c-set-offset 'arglist-intro '+)
-    (c-set-offset 'arglist-cont 0)
-    (c-set-offset 'arglist-close 0))
-  (add-hook 'php-mode-hook 'wf-php-mode-init)
-#+end_src
-
-** web-mode
-
-#+begin_src emacs-lisp
-  (require 'web-mode)
-  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist
-               '("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode))
-
-  ;; make web-mode play nice with smartparens
-  (setq web-mode-enable-auto-pairing nil)
-
-  (sp-with-modes '(web-mode)
-    (sp-local-pair "%" "%"
-                   :unless '(sp-in-string-p)
-                   :post-handlers '(((lambda (&rest _ignored)
-                                       (just-one-space)
-                                       (save-excursion (insert " ")))
-                                     "SPC" "=" "#")))
-    (sp-local-tag "%" "<% "  " %>")
-    (sp-local-tag "=" "<%= " " %>")
-    (sp-local-tag "#" "<%# " " %>"))
-
-  (defun wf-web-mode-hook ()
-    (setq web-mode-markup-indent-offset 4)
-    (setq web-mode-css-indent-offset 2)
-    (setq web-mode-code-indent-offset 2)
-    (setq web-mode-style-padding 1)
-    (setq web-mode-script-padding 1)
-    (setq web-mode-block-padding 0))
-
-  (add-hook 'web-mode-hook  'wf-web-mode-hook)
 #+end_src
 
 ** cperl-mode
