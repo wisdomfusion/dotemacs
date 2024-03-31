@@ -1,6 +1,11 @@
 # -*- mode: org; coding: utf-8 -*-
 #+STARTUP: showall
 
+* 2024-03-31
+- upgrade to Emacs 29
+- fix org-install error
+- fix some compatibility issues
+
 * 2018-06-10
 - fix UI settings
 - magit, typescript, emmet

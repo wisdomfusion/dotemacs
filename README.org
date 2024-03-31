@@ -17,7 +17,7 @@ My .emacs.d configration, structured as an [[http://orgmode.org/][org-mode]] fil
   (defconst *hack-slime-p* t)
 #+END_SRC
 
-* INSTALLATION
+* Installation
 
 Git clone or just download and exract files to *~/.emacs.d/* folder, and restart your Emacs.
 
