@@ -305,7 +305,6 @@
   ;; mode line settings
   (line-number-mode t)
   (global-display-line-numbers-mode)
-  (add-hook 'prog-mode-hook 'linum-mode)
   (column-number-mode t)
   (size-indication-mode t)
   (global-hl-line-mode t) ; highlight current line
@@ -350,7 +349,7 @@
 
   (when window-system
     ;; frame postition
-    (setq initial-frame-alist '((top . 100) (left . 200))))
+    (setq initial-frame-alist '((top . 0) (left . 200))))
 
   ;;(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
@@ -503,10 +502,7 @@
   ;; saveplace remembers your location in a file when saving files
   (setq save-place-file (expand-file-name "saveplace" wf-my-savefile-dir))
   ;; activate it for all buffers
-  (if (< emacs-major-version 25)
-      (progn (require 'saveplace)
-             (setq-default save-place t))
-    (save-place-mode 1))
+  (save-place-mode 1)
 
   ;; savehist keeps track of some history
   (require 'savehist)
@@ -1409,5 +1405,4 @@ Org mode is for keeping notes, maintaining TODO lists, planning projects, and au
   (defalias 'dsm 'desktop-save-mode)
   (defalias 'acm 'auto-complete-mode)
   (defalias 'vlm 'visual-line-mode)
-  (defalias 'glm 'global-linum-mode)
 #+end_src
